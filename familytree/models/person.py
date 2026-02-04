@@ -9,8 +9,8 @@ class Person(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     first_name: Mapped[str] = mapped_column(String, nullable=False)
     last_name: Mapped[str] = mapped_column(String, nullable=False)
-    birth_year: Mapped[int] = mapped_column(Integer)
-    death_year: Mapped[int] = mapped_column(Integer)
+    death_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    birth_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     father_id: Mapped[int | None] = mapped_column(
         Integer, ForeignKey("persons.id"), nullable=True

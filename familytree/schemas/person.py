@@ -3,7 +3,6 @@ from typing import Optional
 
 
 class PersonBase(BaseModel):
-
     first_name: str
     last_name: str
 
@@ -25,5 +24,4 @@ class PersonUpdate(PersonBase):
 
 
 class PersonOut(PersonBase):
-
     id: int

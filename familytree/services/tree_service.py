@@ -14,6 +14,7 @@ async def build_tree(
     db: AsyncSession = None,
     visited_ids: Optional[Set[int]] = None,
     include_parents: bool = True,
+    include_children: bool = True,
 ):
     if visited_ids is None:
         visited_ids = set()
@@ -34,14 +35,15 @@ async def build_tree(
     tree["father"] = None
     tree["mother"] = None
 
+    # Загружаем родителей, но **не загружаем их детей**
     if include_parents:
         if person.father_id and db:
             stmt = (
                 select(Person)
-                .options(selectinload(Person.father))
-                .options(selectinload(Person.mother))
-                .options(selectinload(Person.children_from_father))
-                .options(selectinload(Person.children_from_mother))
+                .options(selectinload(Person.father))  # <- загружаем отца отца
+                .options(selectinload(Person.mother))  # <- загружаем мать отца
+                # .options(selectinload(Person.children_from_father))  # <- не загружаем детей отца
+                # .options(selectinload(Person.children_from_mother))  # <- не загружаем детей матери
                 .where(Person.id == person.father_id)
             )
             result = await db.execute(stmt)
@@ -54,15 +56,16 @@ async def build_tree(
                     db,
                     visited_ids.copy(),
                     include_parents=True,
+                    include_children=False,  # <- не загружаем детей у родителей
                 )
 
         if person.mother_id and db:
             stmt = (
                 select(Person)
-                .options(selectinload(Person.father))
-                .options(selectinload(Person.mother))
-                .options(selectinload(Person.children_from_father))
-                .options(selectinload(Person.children_from_mother))
+                .options(selectinload(Person.father))  # <- отец матери
+                .options(selectinload(Person.mother))  # <- мать матери
+                # .options(selectinload(Person.children_from_father))
+                # .options(selectinload(Person.children_from_mother))
                 .where(Person.id == person.mother_id)
             )
             result = await db.execute(stmt)
@@ -75,10 +78,13 @@ async def build_tree(
                     db,
                     visited_ids.copy(),
                     include_parents=True,
+                    include_children=False,  # <- не загружаем детей у родителей
                 )
 
     children = []
-    if db:
+
+    # Загружаем детей **только для текущего человека**
+    if include_children and db:
         stmt = (
             select(Person)
             .options(selectinload(Person.father))
@@ -98,8 +104,9 @@ async def build_tree(
                     db,
                     visited_ids.copy(),
                     include_parents=False,
+                    include_children=True,  # <- дети могут иметь родителей, но не их детей
                 )
-                if child_data:
+                if child:
                     children.append(child_data)
 
     tree["children"] = children

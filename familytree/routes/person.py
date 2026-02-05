@@ -6,7 +6,6 @@ from sqlalchemy.orm import selectinload
 from familytree.database import get_db
 from familytree.models import Person
 from familytree.schemas.person import PersonCreate, PersonOut, PersonUpdate
-from familytree.services.tree import build_tree
 
 router = APIRouter(prefix="/person", tags=["Person"])
 
@@ -69,26 +68,3 @@ async def delete_person(person_id: int, db: AsyncSession = Depends(get_db)):
     await db.delete(person)
     await db.commit()
     return {"status": "deleted", "id": person_id}
-
-
-@router.get("/{person_id}/tree")
-async def get_tree(
-    person_id: int,
-    depth: int = 3,
-    db: AsyncSession = Depends(get_db),
-):
-    stmt = (
-        select(Person)
-        .options(selectinload(Person.father))
-        .options(selectinload(Person.mother))
-        .options(selectinload(Person.children_from_father))
-        .options(selectinload(Person.children_from_mother))
-        .where(Person.id == person_id)
-    )
-    result = await db.execute(stmt)
-    person = result.scalar_one_or_none()
-
-    if not person:
-        raise HTTPException(status_code=404, detail="Person not found")
-
-    return await build_tree(person, max_depth=depth, db=db)

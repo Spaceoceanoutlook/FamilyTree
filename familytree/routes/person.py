@@ -47,7 +47,7 @@ async def get_person(person_id: int, db: AsyncSession = Depends(get_db)):
     return person
 
 
-@router.put(
+@router.patch(
     "/{person_id}",
     summary="Обновить данные человека",
     response_model=PersonOut,

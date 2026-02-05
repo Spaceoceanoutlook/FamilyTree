@@ -27,8 +27,15 @@ class PersonCreate(PersonBase):
     pass
 
 
-class PersonUpdate(PersonBase):
-    pass
+class PersonUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    birth_year: Optional[int] = None
+    death_year: Optional[int] = None
+    mother_id: Optional[int] = None
+    father_id: Optional[int] = None
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PersonOut(PersonBase):

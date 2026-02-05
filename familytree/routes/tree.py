@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -10,10 +10,13 @@ from familytree.services.tree_service import build_tree
 router = APIRouter(prefix="/tree", tags=["Tree"])
 
 
-@router.get("/{person_id}")
+@router.get(
+    "/{person_id}",
+    summary="Получить полное дерево родства для человека",
+    response_model_exclude_none=True,
+)
 async def get_tree(
-    person_id: int,
-    depth: int = 3,
+    person_id: int = Path(..., ge=1),
     db: AsyncSession = Depends(get_db),
 ):
     stmt = (
@@ -30,4 +33,4 @@ async def get_tree(
     if not person:
         raise HTTPException(status_code=404, detail="Person not found")
 
-    return await build_tree(person, max_depth=depth, db=db)
+    return await build_tree(person, db=db)

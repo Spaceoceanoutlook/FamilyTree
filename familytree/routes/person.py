@@ -18,6 +18,20 @@ async def create_person(data: PersonCreate, db: AsyncSession = Depends(get_db)):
     await db.refresh(new_person)
     return new_person
 
+@router.get(
+    "/",
+    summary="Получить информацию о всех людях в базе данных",
+    response_model=list[PersonOut],
+    response_model_exclude_none=True,
+)
+async def get_persons(db: AsyncSession = Depends(get_db)):
+    stmt = select(Person)
+    persons = await db.scalars(stmt)
+
+    if not persons:
+        raise HTTPException(status_code=404, detail="Empty")
+
+    return persons
 
 @router.get(
     "/{person_id}",

@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+
 from familytree.routers import person
 
 app = FastAPI(title="Family Tree")

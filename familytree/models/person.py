@@ -1,6 +1,7 @@
-from familytree.models import Base
-from sqlalchemy import String, Integer, ForeignKey
+from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from familytree.models import Base
 
 
 class Person(Base):

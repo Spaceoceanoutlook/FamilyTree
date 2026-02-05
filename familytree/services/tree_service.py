@@ -22,21 +22,18 @@ async def build_tree(
 
     visited_ids.add(person.id)
 
-    # Начинаем с базовых полей
     tree = {
         "id": person.id,
         "first_name": person.first_name,
         "last_name": person.last_name,
     }
 
-    # Добавляем только если значение не None
     if person.birth_year is not None:
         tree["birth_year"] = person.birth_year
 
     if person.death_year is not None:
         tree["death_year"] = person.death_year
 
-    # Родители
     if include_parents:
         if person.father_id and db:
             stmt = (
@@ -78,7 +75,6 @@ async def build_tree(
                 if mother:
                     tree["mother"] = mother_data
 
-    # Дети
     children = []
     if include_children and db:
         stmt = (
@@ -103,7 +99,6 @@ async def build_tree(
                 if child:
                     children.append(child_data)
 
-    # Добавляем детей только если они есть
     if children:
         tree["children"] = children
 

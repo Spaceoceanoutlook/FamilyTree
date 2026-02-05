@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, validator
+from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Optional
 
 
@@ -12,11 +12,13 @@ class PersonBase(BaseModel):
     mother_id: Optional[int] = None
     father_id: Optional[int] = None
 
-    @validator("father_id", "mother_id", pre=True)
+    @field_validator("father_id", "mother_id", mode="before")
+    @classmethod
     def zero_to_none(cls, v):
         return None if v == 0 else v
 
-    @validator("birth_year", "death_year", pre=True)
+    @field_validator("birth_year", "death_year", mode="before")
+    @classmethod
     def zero_to_none_year(cls, v):
         return None if v == 0 else v
 

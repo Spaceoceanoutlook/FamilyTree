@@ -1,6 +1,6 @@
 from familytree.models import Base
 from sqlalchemy import String, Integer, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class Person(Base):
@@ -17,4 +17,18 @@ class Person(Base):
     )
     mother_id: Mapped[int | None] = mapped_column(
         Integer, ForeignKey("persons.id"), nullable=True
+    )
+
+    father: Mapped["Person"] = relationship(
+        "Person",
+        foreign_keys=[father_id],
+        remote_side=[id],
+        backref="children_from_father",
+    )
+
+    mother: Mapped["Person"] = relationship(
+        "Person",
+        foreign_keys=[mother_id],
+        remote_side=[id],
+        backref="children_from_mother",
     )

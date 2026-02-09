@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Семейное древо</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+    input, button { padding: 5px 10px; font-size: 16px; margin-right: 5px; }
+
+    .person { margin-left: 40px; } /* увеличенный отступ */
+    .person .label { font-weight: bold; cursor: pointer; display: inline-block; padding: 2px 5px; border-radius: 4px; }
+    .person .label:hover { background-color: #e0f7fa; } /* подсветка при наведении */
+    .children { margin-left: 30px; display: none; }
+    .expanded > .children { display: block; }
+
+    /* Цвета по поколениям */
+    .generation-0 > .label { background-color: #ffd54f; } /* выбранный человек */
+    .generation-1 > .label { background-color: #81d4fa; } /* родители */
+    .generation-2 > .label { background-color: #aed581; } /* бабушки/дедушки */
+    .generation-3 > .label { background-color: #ffab91; } /* пра-поколения */
+  </style>
+</head>
+<body>
+
+<h1>Семейное древо</h1>
+
+<label for="personId">Введите ID:</label>
+<input type="number" id="personId" value="13" min="1">
+<button onclick="loadTree()">Загрузить</button>
+
+<div id="family-tree" style="margin-top:20px;"></div>
+
+<script>
+async function loadTree() {
+  const id = document.getElementById('personId').value;
+  const treeContainer = document.getElementById('family-tree');
+  treeContainer.innerHTML = 'Загрузка...';
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/tree/${id}`, {
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!response.ok) throw new Error('Ошибка при загрузке данных');
+
+    const data = await response.json();
+    treeContainer.innerHTML = renderPerson(data, 0); // начинаем с поколения 0
+
+    // Кликабельность только на имя/фамилию
+    document.querySelectorAll('.label').forEach(label => {
+      label.addEventListener('click', e => {
+        e.stopPropagation();
+        const parent = label.parentElement;
+        parent.classList.toggle('expanded');
+      });
+    });
+
+  } catch (error) {
+    treeContainer.innerHTML = `<span style="color:red">${error.message}</span>`;
+  }
+}
+
+// Рекурсивная функция с передачей поколения
+function renderPerson(person, generation) {
+  if (!person) return '';
+
+  let html = `<div class="person generation-${generation}">
+    <span class="label">${person.first_name} ${person.last_name}</span>`;
+  if (person.birth_year || person.death_year) {
+    html += ` (${person.birth_year || '?'}${person.death_year ? '–' + person.death_year : ''})`;
+  }
+
+  let childrenHtml = '';
+
+  if (person.father || person.mother) {
+    childrenHtml += '<div class="children">';
+    if (person.father) childrenHtml += `<div><span class="label">Отец:</span> ${renderPerson(person.father, generation + 1)}</div>`;
+    if (person.mother) childrenHtml += `<div><span class="label">Мать:</span> ${renderPerson(person.mother, generation + 1)}</div>`;
+    childrenHtml += '</div>';
+  }
+
+  if (person.children && person.children.length > 0) {
+    childrenHtml += '<div class="children"><span class="label">Дети:</span>';
+    person.children.forEach(child => {
+      childrenHtml += renderPerson(child, generation + 1);
+    });
+    childrenHtml += '</div>';
+  }
+
+  html += childrenHtml + '</div>';
+  return html;
+}
+
+// Автозагрузка для ID по умолчанию
+loadTree();
+</script>
+
+</body>
+</html>

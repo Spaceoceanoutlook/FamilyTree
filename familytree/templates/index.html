@@ -4,20 +4,48 @@
 <meta charset="UTF-8">
 <title>Семейное древо</title>
 <style>
-body { font-family: Arial, sans-serif; padding: 20px; }
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: linear-gradient(to bottom right, #f0f8ff, #e6f7ff);
+}
 input, button, select { padding: 5px 10px; font-size: 16px; margin-right: 5px; }
 
+/* Контейнер дерева */
 .tree-container { margin-top: 20px; }
 
-/* Основные стили дерева */
-.person { margin-left: 40px; position: relative; }
-.person .label { font-weight: bold; cursor: pointer; padding: 2px 5px; border-radius: 4px; display: inline-block; }
-.person .label:hover { background-color: #e0f7fa; } /* подсветка при наведении */
+/* Основные стили карточек людей */
+.person {
+    margin-left: 50px;
+    position: relative;
+    margin-bottom: 5px;
+}
+.person .card {
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    display: inline-block;
+    transition: background-color 0.2s;
+}
+.person .card:hover {
+    background-color: #e0f7fa;
+}
+.label {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Дети и родители скрыты по умолчанию */
 .children { margin-left: 30px; display: none; }
 .person.expanded > .children { display: block; }
 
-/* Подсветка выбранного человека */
-.generation-0 > .label { background-color: #ffd54f; }
+/* Цвет для выбранного человека */
+.generation-0 > .card { background-color: #ffe082; }
+
+/* Подписи родителей и детей */
+.person .role { font-weight: normal; color: #555; margin-right: 5px; }
+
 </style>
 </head>
 <body>
@@ -49,7 +77,6 @@ async function loadPeople() {
   }
 }
 
-// Загружаем дерево выбранного человека
 async function loadSelectedTree() {
   const select = document.getElementById('personSelect');
   const id = select.value;
@@ -64,11 +91,10 @@ async function loadSelectedTree() {
     const data = await res.json();
     container.innerHTML = renderPerson(data, 0);
 
-    // Добавляем кликабельность на имя/фамилию
     document.querySelectorAll('.label').forEach(label => {
       label.addEventListener('click', e => {
         e.stopPropagation();
-        const parent = label.parentElement;
+        const parent = label.closest('.person');
         parent.classList.toggle('expanded');
       });
     });
@@ -77,29 +103,32 @@ async function loadSelectedTree() {
   }
 }
 
-// Рекурсивная функция для генерации HTML дерева
 function renderPerson(person, generation) {
   if (!person) return '';
 
-  let html = `<div class="person generation-${generation}">
-    <span class="label">${person.first_name} ${person.last_name}</span>`;
+  let labelText = `${person.first_name} ${person.last_name}`;
   if (person.birth_year || person.death_year) {
-    html += ` (${person.birth_year || '?'}${person.death_year ? '–' + person.death_year : ''})`;
+    labelText += ` (${person.birth_year || '?'}${person.death_year ? '–' + person.death_year : ''})`;
   }
+
+  let html = `<div class="person generation-${generation}">
+      <div class="card">
+        <span class="label">${labelText}</span>
+      </div>`;
 
   let childrenHtml = '';
 
   // Родители
   if (person.father || person.mother) {
     childrenHtml += '<div class="children">';
-    if (person.father) childrenHtml += `<div><span class="label">Отец:</span> ${renderPerson(person.father, generation + 1)}</div>`;
-    if (person.mother) childrenHtml += `<div><span class="label">Мать:</span> ${renderPerson(person.mother, generation + 1)}</div>`;
+    if (person.father) childrenHtml += `<div><span class="role">Отец:</span>${renderPerson(person.father, generation + 1)}</div>`;
+    if (person.mother) childrenHtml += `<div><span class="role">Мать:</span>${renderPerson(person.mother, generation + 1)}</div>`;
     childrenHtml += '</div>';
   }
 
   // Дети
   if (person.children && person.children.length > 0) {
-    childrenHtml += '<div class="children"><span class="label">Дети:</span>';
+    childrenHtml += '<div class="children"><span class="role">Дети:</span>';
     person.children.forEach(child => {
       childrenHtml += renderPerson(child, generation + 1);
     });

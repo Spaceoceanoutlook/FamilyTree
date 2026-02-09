@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 class PersonBase(BaseModel):
     first_name: str
-    last_name: str
+    last_name: Optional[str] = None
 
     birth_year: Optional[int] = None
     death_year: Optional[int] = None

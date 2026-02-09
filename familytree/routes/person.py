@@ -26,7 +26,7 @@ async def create_person(data: PersonCreate, db: AsyncSession = Depends(get_db)):
     response_model_exclude_none=True,
 )
 async def get_persons(db: AsyncSession = Depends(get_db)):
-    stmt = select(Person)
+    stmt = select(Person).order_by(Person.first_name)
     persons = await db.scalars(stmt)
     return persons
 

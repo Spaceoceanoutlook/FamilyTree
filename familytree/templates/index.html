@@ -5,17 +5,18 @@
 <title>Семейное древо</title>
 <style>
 body { font-family: Arial, sans-serif; padding: 20px; }
-input, button { padding: 5px 10px; margin-right: 5px; font-size: 16px; }
+input, button, select { padding: 5px 10px; font-size: 16px; margin-right: 5px; }
+
+.tree-container { margin-top: 20px; }
 
 /* Основные стили дерева */
-.tree-container { margin-top: 20px; }
-.person { margin-left: 40px; position: relative; } /* увеличенный отступ */
+.person { margin-left: 40px; position: relative; }
 .person .label { font-weight: bold; cursor: pointer; padding: 2px 5px; border-radius: 4px; display: inline-block; }
 .person .label:hover { background-color: #e0f7fa; } /* подсветка при наведении */
 .children { margin-left: 30px; display: none; }
 .person.expanded > .children { display: block; }
 
-/* Подсветка текущего человека */
+/* Подсветка выбранного человека */
 .generation-0 > .label { background-color: #ffd54f; }
 </style>
 </head>
@@ -23,28 +24,47 @@ input, button { padding: 5px 10px; margin-right: 5px; font-size: 16px; }
 
 <h1>Семейное древо</h1>
 
-<label for="personId">Введите ID:</label>
-<input type="number" id="personId" value="13" min="1">
-<button onclick="loadTree()">Загрузить</button>
+<label for="personSelect">Выберите человека:</label>
+<select id="personSelect">
+  <option value="">-- Выберите --</option>
+</select>
+<button onclick="loadSelectedTree()">Показать дерево</button>
 
 <div id="family-tree" class="tree-container"></div>
 
 <script>
-async function loadTree() {
-  const id = document.getElementById('personId').value;
+async function loadPeople() {
+  try {
+    const res = await fetch('http://127.0.0.1:8000/person/', { headers: { 'Accept': 'application/json' } });
+    const people = await res.json();
+    const select = document.getElementById('personSelect');
+    people.forEach(p => {
+      const option = document.createElement('option');
+      option.value = p.id;
+      option.text = `${p.first_name} ${p.last_name}${p.birth_year ? ' (' + p.birth_year + ')' : ''}`;
+      select.appendChild(option);
+    });
+  } catch(err) {
+    console.error('Ошибка при загрузке людей:', err);
+  }
+}
+
+// Загружаем дерево выбранного человека
+async function loadSelectedTree() {
+  const select = document.getElementById('personSelect');
+  const id = select.value;
+  if (!id) return;
+
   const container = document.getElementById('family-tree');
   container.innerHTML = 'Загрузка...';
 
   try {
-    const res = await fetch(`http://127.0.0.1:8000/tree/${id}`, {
-      headers: { 'Accept': 'application/json' }
-    });
-    if (!res.ok) throw new Error('Ошибка при загрузке данных');
-
+    const res = await fetch(`http://127.0.0.1:8000/tree/${id}`, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error('Ошибка при загрузке дерева');
     const data = await res.json();
     container.innerHTML = renderPerson(data, 0);
 
-    // Клик по имени для раскрытия ветки
+    // Добавляем кликабельность на имя/фамилию
     document.querySelectorAll('.label').forEach(label => {
       label.addEventListener('click', e => {
         e.stopPropagation();
@@ -52,13 +72,12 @@ async function loadTree() {
         parent.classList.toggle('expanded');
       });
     });
-
   } catch(err) {
     container.innerHTML = `<span style="color:red">${err.message}</span>`;
   }
 }
 
-// Рекурсивная функция для генерации дерева
+// Рекурсивная функция для генерации HTML дерева
 function renderPerson(person, generation) {
   if (!person) return '';
 
@@ -91,8 +110,7 @@ function renderPerson(person, generation) {
   return html;
 }
 
-// Автозагрузка по умолчанию
-loadTree();
+loadPeople();
 </script>
 
 </body>

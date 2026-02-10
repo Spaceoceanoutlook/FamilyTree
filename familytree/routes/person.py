@@ -6,17 +6,9 @@ from sqlalchemy.orm import selectinload
 from familytree.database import get_db
 from familytree.models import Person
 from familytree.schemas.person import PersonCreate, PersonOut, PersonUpdate
+from familytree.security import verify_admin
 
 router = APIRouter(prefix="/person", tags=["Person"])
-
-
-@router.post("/", summary="Создать нового человека", response_model=PersonOut)
-async def create_person(data: PersonCreate, db: AsyncSession = Depends(get_db)):
-    new_person = Person(**data.model_dump())
-    db.add(new_person)
-    await db.commit()
-    await db.refresh(new_person)
-    return new_person
 
 
 @router.get(
@@ -29,6 +21,23 @@ async def get_persons(db: AsyncSession = Depends(get_db)):
     stmt = select(Person).order_by(Person.first_name)
     persons = await db.scalars(stmt)
     return persons
+
+
+@router.post(
+    "/",
+    summary="Создать нового человека",
+    response_model=PersonOut,
+    dependencies=[Depends(verify_admin)],
+)
+async def create_person(
+    data: PersonCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    new_person = Person(**data.model_dump())
+    db.add(new_person)
+    await db.commit()
+    await db.refresh(new_person)
+    return new_person
 
 
 @router.get(
@@ -51,9 +60,12 @@ async def get_person(person_id: int, db: AsyncSession = Depends(get_db)):
     "/{person_id}",
     summary="Обновить данные человека",
     response_model=PersonOut,
+    dependencies=[Depends(verify_admin)],
 )
 async def update_person(
-    person_id: int, data: PersonUpdate, db: AsyncSession = Depends(get_db)
+    person_id: int,
+    data: PersonUpdate,
+    db: AsyncSession = Depends(get_db),
 ):
     stmt = select(Person).where(Person.id == person_id)
     person = await db.scalar(stmt)
@@ -69,8 +81,13 @@ async def update_person(
     return person
 
 
-@router.delete("/{person_id}", summary="Удалить человека")
-async def delete_person(person_id: int, db: AsyncSession = Depends(get_db)):
+@router.delete(
+    "/{person_id}", summary="Удалить человека", dependencies=[Depends(verify_admin)]
+)
+async def delete_person(
+    person_id: int,
+    db: AsyncSession = Depends(get_db),
+):
     stmt = select(Person).where(Person.id == person_id)
     person = await db.scalar(stmt)
 

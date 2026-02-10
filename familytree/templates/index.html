@@ -50,7 +50,7 @@ input, button, select { padding: 5px 10px; font-size: 16px; margin-right: 5px; }
 </head>
 <body>
 
-<h1>Семейное древо</h1>
+<h1>Генеалогическое древо</h1>
 
 <label for="personSelect">Выберите человека:</label>
 <select id="personSelect">
@@ -63,7 +63,7 @@ input, button, select { padding: 5px 10px; font-size: 16px; margin-right: 5px; }
 <script>
 async function loadPeople() {
   try {
-    const res = await fetch('http://127.0.0.1:8000/person/', { headers: { 'Accept': 'application/json' } });
+    const res = await fetch('/person/', { headers: { 'Accept': 'application/json' } });
     const people = await res.json();
     const select = document.getElementById('personSelect');
     people.forEach(p => {
@@ -86,7 +86,7 @@ async function loadSelectedTree() {
   container.innerHTML = 'Загрузка...';
 
   try {
-    const res = await fetch(`http://127.0.0.1:8000/tree/${id}`, { headers: { 'Accept': 'application/json' } });
+    const res = await fetch(`/tree/${id}`, { headers: { 'Accept': 'application/json' } });
     if (!res.ok) throw new Error('Ошибка при загрузке дерева');
     const data = await res.json();
     container.innerHTML = renderPerson(data, 0);

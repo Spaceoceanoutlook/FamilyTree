@@ -3,10 +3,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from familytree.auth import get_current_admin
 from familytree.database import get_db
 from familytree.models import Person
 from familytree.schemas.person import PersonCreate, PersonOut, PersonUpdate
-from familytree.security import verify_admin
 
 router = APIRouter(prefix="/person", tags=["Person"])
 
@@ -27,7 +27,7 @@ async def get_persons(db: AsyncSession = Depends(get_db)):
     "/",
     summary="Создать нового человека",
     response_model=PersonOut,
-    dependencies=[Depends(verify_admin)],
+    dependencies=[Depends(get_current_admin)],
 )
 async def create_person(
     data: PersonCreate,
@@ -60,7 +60,7 @@ async def get_person(person_id: int, db: AsyncSession = Depends(get_db)):
     "/{person_id}",
     summary="Обновить данные человека",
     response_model=PersonOut,
-    dependencies=[Depends(verify_admin)],
+    dependencies=[Depends(get_current_admin)],
 )
 async def update_person(
     person_id: int,
@@ -82,7 +82,9 @@ async def update_person(
 
 
 @router.delete(
-    "/{person_id}", summary="Удалить человека", dependencies=[Depends(verify_admin)]
+    "/{person_id}",
+    summary="Удалить человека",
+    dependencies=[Depends(get_current_admin)],
 )
 async def delete_person(
     person_id: int,

@@ -9,7 +9,11 @@ class Settings(BaseSettings):
     postgres_host: str
     postgres_port: int
 
-    admin_password: str
+    jwt_secret_key: str
+    jwt_algorithm: str
+    access_token_expire_minutes: int
+
+    hashed_admin_password: str
 
     @property
     def sqlalchemy_url(self) -> str:

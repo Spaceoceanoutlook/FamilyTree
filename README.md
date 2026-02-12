@@ -17,16 +17,7 @@ POSTGRES_DB=familytree_db
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
 ```
-В системе должен быть установлен poetry
-
-Установка библиотек:
-```bash 
-poetry install
-```
-
-Для корректной работы приложения, версия python должны быть < 3.14
-
-Если глобальная версия python >= 3.14, то установить 3.13.0 через pyenv, после чего выполнить
+В системе должен быть установлен poetry. Для корректной работы приложения, версия python должны быть < 3.14. Если глобальная версия python >= 3.14, то установить 3.13.0 через pyenv, после чего выполнить
 ```bash 
 poetry env use ~/.pyenv/versions/3.13.0/bin/python
 ```
@@ -34,6 +25,14 @@ poetry env use ~/.pyenv/versions/3.13.0/bin/python
 Активировать виртуальное окружение:
 ```bash 
 poetry env activate
+```
+Установка библиотек:
+```bash 
+poetry install
+```
+Генерируем хэш пароля и JWT secret key. Полученные значения добавить в .env
+```bash 
+python familytree/generate_secrets.py
 ```
 Запустить приложение
 ```bash 

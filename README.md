@@ -16,13 +16,16 @@ POSTGRES_PASSWORD=1234
 POSTGRES_DB=familytree_db
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
+
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
 ```
 В системе должен быть установлен poetry. Для корректной работы приложения, версия python должны быть < 3.14. Если глобальная версия python >= 3.14, то установить 3.13.0 через pyenv, после чего выполнить
 ```bash 
 poetry env use ~/.pyenv/versions/3.13.0/bin/python
 ```
 
-Активировать виртуальное окружение:
+Активировать виртуальное окружение и добавить путь в interpreter path (VSCODE):
 ```bash 
 poetry env activate
 ```

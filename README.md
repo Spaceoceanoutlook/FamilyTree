@@ -25,11 +25,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 poetry env use ~/.pyenv/versions/3.13.0/bin/python
 ```
 
-Активировать виртуальное окружение и добавить путь в interpreter path (VSCODE):
+Добавляем полученный путь в Select Interpreter и активируем:
 ```bash 
 poetry env activate
 ```
-Установка библиотек:
+Перезапускаем терминал и устанавливаем библиотеки:
 ```bash 
 poetry install
 ```

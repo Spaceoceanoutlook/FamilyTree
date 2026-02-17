@@ -9,20 +9,20 @@ from familytree.auth import (
     get_current_admin,
     verify_password,
 )
-from familytree.schemas.auth import Token, TokenData
+from familytree.schemas.auth import Token
 from settings import settings
 
 router = APIRouter(tags=["Auth"])
 
 
-@router.post("/auth/token", response_model=Token)
+@router.post("/auth/token", summary="Получение токена для админа", response_model=Token)
 async def login_for_access_token(
     form: OAuth2PasswordRequestForm = Depends(),
 ) -> Token:
     """
     Получение JWT токена для администратора
 
-    - **username**: имя пользователя (для админа: "admin")
+    - **username**: "admin"
     - **password**: пароль администратора
     """
     if form.username != "admin":
@@ -45,8 +45,3 @@ async def login_for_access_token(
     )
 
     return Token(access_token=access_token, token_type="bearer")
-
-
-@router.get("/auth/me", summary="Получить информацию о текущем пользователе")
-async def read_users_me(current_admin: TokenData = Depends(get_current_admin)) -> dict:
-    return {"username": current_admin.username, "role": "admin"}

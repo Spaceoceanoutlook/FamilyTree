@@ -19,14 +19,7 @@ async def get_tree(
     person_id: int = Path(..., ge=1),
     db: AsyncSession = Depends(get_db),
 ):
-    stmt = (
-        select(Person)
-        .options(selectinload(Person.father))
-        .options(selectinload(Person.mother))
-        .options(selectinload(Person.children_from_father))
-        .options(selectinload(Person.children_from_mother))
-        .where(Person.id == person_id)
-    )
+    stmt = select(Person).where(Person.id == person_id)
     result = await db.execute(stmt)
     person = result.scalar_one_or_none()
 

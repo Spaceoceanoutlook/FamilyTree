@@ -2,9 +2,9 @@
 
 Сервис для составления генеалогического древа
 
-## Запуск проекта
+### Запуск проекта
 
-### 1. Клонирование репозитория
+Клонирование репозитория
 
 ```bash
 git clone https://github.com/Spaceoceanoutlook/FamilyTree.git
@@ -12,7 +12,7 @@ git clone https://github.com/Spaceoceanoutlook/FamilyTree.git
 Открыть проект в редакторе, в корне проекта создать файл `.env` и добавить следующие переменные:
 ```
 POSTGRES_USER=user
-POSTGRES_PASSWORD=1234
+POSTGRES_PASSWORD=
 POSTGRES_DB=familytree_db
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
@@ -20,22 +20,9 @@ POSTGRES_PORT=5432
 JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 ```
-В системе должен быть установлен poetry. Для корректной работы приложения, версия python должны быть < 3.14. Если глобальная версия python >= 3.14, то установить 3.13.0 через pyenv, после чего выполнить
-```bash 
-poetry env use ~/.pyenv/versions/3.13.0/bin/python
-```
-
-Добавляем полученный путь в Select Interpreter и активируем:
-```bash 
-poetry env activate
-```
-Перезапускаем терминал и устанавливаем библиотеки:
-```bash 
-poetry install
-```
 Генерируем хэш пароля и JWT secret key. Полученные значения добавить в .env
 ```bash 
-python familytree/generate_secrets.py
+docker compose run --rm api python familytree/generate_secrets.py
 ```
 Запустить приложение
 ```bash 
@@ -46,7 +33,6 @@ docker compose up --build -d
 docker compose exec api alembic revision --autogenerate -m "init"
 docker compose exec api alembic upgrade head
 ```
-
 Запускать приложение
 ```bash 
 docker compose up -d

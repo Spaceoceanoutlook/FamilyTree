@@ -6,6 +6,7 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 # Генерация секретного ключа для JWT
 secret_key = secrets.token_urlsafe(32)
+print()
 print(f"JWT_SECRET_KEY={secret_key}")
 
 # Генерация хэша пароля

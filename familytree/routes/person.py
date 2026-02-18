@@ -20,9 +20,7 @@ router = APIRouter(
 def get_person_service(
     db: AsyncSession = Depends(get_db),
 ) -> PersonService:
-
     repo = PersonRepository(db)
-
     return PersonService(repo)
 
 
@@ -58,7 +56,6 @@ async def get_person(
 ):
     try:
         return await service.get_person(person_id)
-
     except ValueError:
         raise HTTPException(404, "Person not found")
 
@@ -75,7 +72,6 @@ async def update_person(
 ):
     try:
         return await service.update(person_id, data)
-
     except ValueError:
         raise HTTPException(404, "Person not found")
 
@@ -90,11 +86,9 @@ async def delete_person(
 ):
     try:
         await service.delete(person_id)
-
         return {
             "status": "deleted",
             "id": person_id,
         }
-
     except ValueError:
         raise HTTPException(404, "Person not found")

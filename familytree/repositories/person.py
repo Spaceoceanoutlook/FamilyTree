@@ -33,7 +33,5 @@ class PersonRepository:
                 Person.mother_id == parent_id,
             )
         )
-
         result = await self.db.execute(stmt)
-
         return result.scalars().all()

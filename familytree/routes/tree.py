@@ -22,6 +22,5 @@ async def get_tree(
 ):
     try:
         return await service.get_tree(person_id)
-
     except ValueError:
         raise HTTPException(404, "Person not found")

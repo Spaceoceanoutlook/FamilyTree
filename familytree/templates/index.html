@@ -33,6 +33,10 @@
         text-shadow: 0 2px 4px rgba(0,20,40,0.08);
     }
 
+    .header a {
+                text-decoration: none;
+    }
+
     .controls {
         background: rgba(255,255,255,0.7);
         backdrop-filter: blur(12px);
@@ -236,8 +240,9 @@
 </head>
 <body>
 <div class="app-container">
-    <h1>🌿 Родословная</h1>
-
+    <div class="header"><a href="/">
+        <h1>🌿 Родословная</h1></a>
+    </div>
     <div class="controls">
         <label for="personSelect">Выберите человека:</label>
         <select id="personSelect">

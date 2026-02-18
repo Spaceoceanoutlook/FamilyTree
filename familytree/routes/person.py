@@ -1,101 +1,100 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from familytree.auth import get_current_admin
 from familytree.database import get_db
-from familytree.models import Person
-from familytree.schemas.person import PersonCreate, PersonOut, PersonUpdate
+from familytree.repositories.person import PersonRepository
+from familytree.schemas.person import (
+    PersonCreate,
+    PersonOut,
+    PersonUpdate,
+)
+from familytree.services.person import PersonService
 
-router = APIRouter(prefix="/person", tags=["Person"])
+router = APIRouter(
+    prefix="/person",
+    tags=["Person"],
+)
+
+
+def get_person_service(
+    db: AsyncSession = Depends(get_db),
+) -> PersonService:
+
+    repo = PersonRepository(db)
+
+    return PersonService(repo)
 
 
 @router.get(
     "/",
-    summary="Получить информацию о всех людях в базе данных",
     response_model=list[PersonOut],
-    response_model_exclude_none=True,
 )
-async def get_persons(db: AsyncSession = Depends(get_db)):
-    stmt = select(Person).order_by(Person.last_name)
-    persons = await db.scalars(stmt)
-    return persons
+async def get_persons(
+    service: PersonService = Depends(get_person_service),
+):
+    return await service.get_all()
 
 
 @router.post(
     "/",
-    summary="Создать нового человека",
     response_model=PersonOut,
     dependencies=[Depends(get_current_admin)],
 )
 async def create_person(
     data: PersonCreate,
-    db: AsyncSession = Depends(get_db),
+    service: PersonService = Depends(get_person_service),
 ):
-    new_person = Person(**data.model_dump())
-    db.add(new_person)
-    await db.commit()
-    await db.refresh(new_person)
-    return new_person
+    return await service.create(data)
 
 
 @router.get(
     "/{person_id}",
-    summary="Получить информацию о человеке",
     response_model=PersonOut,
-    response_model_exclude_none=True,
 )
-async def get_person(person_id: int, db: AsyncSession = Depends(get_db)):
-    stmt = select(Person).where(Person.id == person_id)
-    person = await db.scalar(stmt)
+async def get_person(
+    person_id: int,
+    service: PersonService = Depends(get_person_service),
+):
+    try:
+        return await service.get_person(person_id)
 
-    if not person:
-        raise HTTPException(status_code=404, detail="Person not found")
-
-    return person
+    except ValueError:
+        raise HTTPException(404, "Person not found")
 
 
 @router.patch(
     "/{person_id}",
-    summary="Обновить данные человека",
     response_model=PersonOut,
     dependencies=[Depends(get_current_admin)],
 )
 async def update_person(
     person_id: int,
     data: PersonUpdate,
-    db: AsyncSession = Depends(get_db),
+    service: PersonService = Depends(get_person_service),
 ):
-    stmt = select(Person).where(Person.id == person_id)
-    person = await db.scalar(stmt)
+    try:
+        return await service.update(person_id, data)
 
-    if not person:
-        raise HTTPException(status_code=404, detail="Person not found")
-
-    for key, value in data.model_dump(exclude_unset=True).items():
-        setattr(person, key, value)
-
-    await db.commit()
-    await db.refresh(person)
-    return person
+    except ValueError:
+        raise HTTPException(404, "Person not found")
 
 
 @router.delete(
     "/{person_id}",
-    summary="Удалить человека",
     dependencies=[Depends(get_current_admin)],
 )
 async def delete_person(
     person_id: int,
-    db: AsyncSession = Depends(get_db),
+    service: PersonService = Depends(get_person_service),
 ):
-    stmt = select(Person).where(Person.id == person_id)
-    person = await db.scalar(stmt)
+    try:
+        await service.delete(person_id)
 
-    if not person:
-        raise HTTPException(status_code=404, detail="Person not found")
+        return {
+            "status": "deleted",
+            "id": person_id,
+        }
 
-    await db.delete(person)
-    await db.commit()
-    return {"status": "deleted", "id": person_id}
+    except ValueError:
+        raise HTTPException(404, "Person not found")

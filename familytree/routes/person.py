@@ -18,7 +18,7 @@ router = APIRouter(prefix="/person", tags=["Person"])
     response_model_exclude_none=True,
 )
 async def get_persons(db: AsyncSession = Depends(get_db)):
-    stmt = select(Person).order_by(Person.first_name)
+    stmt = select(Person).order_by(Person.last_name)
     persons = await db.scalars(stmt)
     return persons
 

@@ -2,143 +2,358 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Генеалогическое древо</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Родословная</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background: linear-gradient(to bottom right, #f0f8ff, #e6f7ff);
-}
-input, button, select { padding: 5px 10px; font-size: 16px; margin-right: 5px; }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-/* Контейнер дерева */
-.tree-container { margin-top: 20px; }
+    body {
+        font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+        background: linear-gradient(145deg, #f6f9fc 0%, #edf4f8 100%);
+        min-height: 100vh;
+        padding: 2rem 1.5rem;
+    }
 
-/* Основные стили карточек людей */
-.person {
-    margin-left: 50px;
-    position: relative;
-    margin-bottom: 5px;
-}
-.person .card {
-    padding: 5px 10px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    display: inline-block;
-    transition: background-color 0.2s;
-}
-.person .card:hover {
-    background-color: #e0f7fa;
-}
-.label {
-    font-weight: bold;
-    cursor: pointer;
-}
+    .app-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-/* Дети и родители скрыты по умолчанию */
-.children { margin-left: 30px; display: none; }
-.person.expanded > .children { display: block; }
+    h1 {
+        font-weight: 500;
+        font-size: 2.2rem;
+        letter-spacing: -0.5px;
+        color: #1e3c5c;
+        margin-bottom: 1.8rem;
+        padding-left: 0;
+        text-shadow: 0 2px 4px rgba(0,20,40,0.08);
+    }
 
-/* Цвет для выбранного человека */
-.generation-0 > .card { background-color: #ffe082; }
+    .controls {
+        background: rgba(255,255,255,0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.6);
+        border-radius: 60px;
+        padding: 0.6rem 0.6rem 0.6rem 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 10px 30px -10px rgba(31, 66, 99, 0.2);
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+    }
 
-/* Подписи родителей и детей */
-.person .role { font-weight: normal; color: #555; margin-right: 5px; }
+    .controls label {
+        color: #1e3c5c;
+        font-weight: 500;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+    }
 
+    .controls select, .controls button {
+        background: white;
+        border: none;
+        padding: 0.7rem 1.2rem;
+        border-radius: 40px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 20, 40, 0.05);
+    }
+
+    .controls select {
+        min-width: 340px;
+        cursor: pointer;
+        color: #1e3c5c;
+        border: 1px solid rgba(79, 139, 201, 0.2);
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234f8bc9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px;
+    }
+
+    .controls select:hover {
+        border-color: #4f8bc9;
+        box-shadow: 0 8px 16px -8px #4f8bc9;
+    }
+
+    .controls button {
+        background: linear-gradient(145deg, #4f8bc9, #3a6ca3);
+        color: white;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 10px 18px -8px #2b5a8c;
+        transition: all 0.15s ease;
+        padding: 0.7rem 2rem;
+        letter-spacing: 0.3px;
+    }
+
+    .controls button:hover {
+        background: linear-gradient(145deg, #5d9ad9, #3f78b5);
+        transform: scale(1.02);
+        box-shadow: 0 14px 22px -10px #1e3e60;
+    }
+
+    .controls button:active {
+        transform: scale(0.98);
+    }
+
+    /* Контейнер родословной */
+    .pedigree-container {
+        background: rgba(255,255,255,0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 36px;
+        padding: 2rem 1.8rem;
+        border: 1px solid rgba(255,255,255,0.7);
+        box-shadow: 0 25px 45px -20px rgba(23, 55, 83, 0.3);
+    }
+
+    .person {
+        position: relative;
+        margin-bottom: 0.25rem;
+    }
+
+    .card {
+        display: inline-flex;
+        align-items: center;
+        background: white;
+        border-radius: 40px;
+        padding: 0.45rem 1.5rem 0.45rem 1.2rem;
+        border: none;
+        box-shadow: 0 8px 16px -8px rgba(0, 32, 64, 0.12), 0 0 0 1px rgba(79, 139, 201, 0.1);
+        transition: all 0.2s ease;
+        cursor: pointer;
+        margin: 4px 0;
+    }
+
+    .card:hover {
+        background: #f0f9ff;
+        box-shadow: 0 12px 22px -12px #2b5a8c, 0 0 0 1px #4f8bc9;
+        transform: translateY(-1px);
+    }
+
+    .label {
+        font-weight: 500;
+        color: #153e5a;
+        font-size: 1.05rem;
+    }
+
+    /* Линии и отступы */
+    .children {
+        margin-left: 42px;
+        padding-left: 18px;
+        border-left: 2px dashed #b3d2f0;
+        display: none;
+    }
+
+    .person.expanded > .children {
+        display: block;
+        animation: fadeSlide 0.2s ease;
+    }
+
+    @keyframes fadeSlide {
+        from { opacity: 0.4; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Роль (Отец, Мать, Дети) */
+    .role {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #537a9f;
+        background: rgba(79, 139, 201, 0.08);
+        padding: 0.2rem 1rem;
+        border-radius: 20px;
+        display: inline-block;
+        margin: 8px 0 4px 0;
+        border: 1px solid rgba(79, 139, 201, 0.15);
+        backdrop-filter: blur(2px);
+    }
+
+    /* Подсветка выбранного (корень) */
+    .generation-0 > .card {
+        background: linear-gradient(115deg, #f0f7ff, #e3f0fa);
+        box-shadow: 0 8px 18px -10px #2b5a8c, 0 0 0 1px #8bb9e5;
+    }
+
+    .generation-0 > .card .label {
+        color: #1e3c5c;
+        font-weight: 600;
+    }
+
+    /* Загрузка */
+    .loading-state {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #1e3c5c;
+        font-size: 1.2rem;
+        padding: 2rem;
+    }
+
+    .loading-state::after {
+        content: "";
+        width: 24px;
+        height: 24px;
+        border: 3px solid #b3d2f0;
+        border-top: 3px solid #4f8bc9;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .error-message {
+        background: #ffefef;
+        color: #b33f3f;
+        padding: 1rem 2rem;
+        border-radius: 40px;
+        border-left: 8px solid #c74a4a;
+        font-weight: 500;
+        box-shadow: 0 8px 18px rgba(180, 60, 60, 0.1);
+    }
+
+    .empty-state {
+        color: #6f8fa8;
+        text-align: center;
+        padding: 3rem 1rem;
+        font-style: italic;
+    }
 </style>
 </head>
 <body>
+<div class="app-container">
+    <h1>🌿 Родословная</h1>
 
-<h1>Генеалогическое древо</h1>
+    <div class="controls">
+        <label for="personSelect">Выберите человека:</label>
+        <select id="personSelect">
+            <option value="">— никто не выбран —</option>
+        </select>
+        <button onclick="loadSelectedTree()">Показать</button>
+    </div>
 
-<label for="personSelect">Выберите человека:</label>
-<select id="personSelect">
-  <option value="">-- Выберите --</option>
-</select>
-<button onclick="loadSelectedTree()">Показать дерево</button>
-
-<div id="family-tree" class="tree-container"></div>
+    <div id="pedigree-container" class="pedigree-container">
+        <div class="empty-state">
+            ✨ Выберите человека, чтобы увидеть его предков и потомков
+        </div>
+    </div>
+</div>
 
 <script>
 async function loadPeople() {
-  try {
-    const res = await fetch('/person/', { headers: { 'Accept': 'application/json' } });
-    const people = await res.json();
-    const select = document.getElementById('personSelect');
-    people.forEach(p => {
-      const option = document.createElement('option');
-      option.value = p.id;
-      option.text = `${p.first_name} ${p.last_name}${p.birth_year ? ' (' + p.birth_year + ')' : ''}`;
-      select.appendChild(option);
-    });
-  } catch(err) {
-    console.error('Ошибка при загрузке людей:', err);
-  }
+    try {
+        const res = await fetch('/person/', { headers: { 'Accept': 'application/json' } });
+        const people = await res.json();
+        const select = document.getElementById('personSelect');
+        select.innerHTML = '<option value="">— выберите человека —</option>';
+        people.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.id;
+            const years = p.birth_year ? ` (${p.birth_year}${p.death_year ? '–' + p.death_year : ''})` : '';
+            option.text = `${p.last_name} ${p.first_name}${years}`;
+            select.appendChild(option);
+        });
+    } catch(err) {
+        console.error('Ошибка загрузки списка людей:', err);
+        document.getElementById('personSelect').innerHTML = '<option value="">— ошибка загрузки —</option>';
+    }
 }
 
 async function loadSelectedTree() {
-  const select = document.getElementById('personSelect');
-  const id = select.value;
-  if (!id) return;
+    const select = document.getElementById('personSelect');
+    const id = select.value;
+    if (!id) {
+        document.getElementById('pedigree-container').innerHTML = '<div class="empty-state">👆 Пожалуйста, выберите человека</div>';
+        return;
+    }
 
-  const container = document.getElementById('family-tree');
-  container.innerHTML = 'Загрузка...';
+    const container = document.getElementById('pedigree-container');
+    container.innerHTML = '<div class="loading-state">Загружаем родословную</div>';
 
-  try {
-    const res = await fetch(`/tree/${id}`, { headers: { 'Accept': 'application/json' } });
-    if (!res.ok) throw new Error('Ошибка при загрузке дерева');
-    const data = await res.json();
-    container.innerHTML = renderPerson(data, 0);
+    try {
+        const res = await fetch(`/tree/${id}`, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+        const data = await res.json();
 
-    document.querySelectorAll('.label').forEach(label => {
-      label.addEventListener('click', e => {
-        e.stopPropagation();
-        const parent = label.closest('.person');
-        parent.classList.toggle('expanded');
-      });
-    });
-  } catch(err) {
-    container.innerHTML = `<span style="color:red">${err.message}</span>`;
-  }
+        if (!data) {
+            container.innerHTML = '<div class="error-message">⚠️ Данные не найдены</div>';
+            return;
+        }
+
+        container.innerHTML = renderPerson(data, 0);
+
+        // Добавляем обработчики клика на карточки (раскрытие)
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const personBlock = card.closest('.person');
+                if (personBlock) {
+                    personBlock.classList.toggle('expanded');
+                }
+            });
+        });
+
+    } catch(err) {
+        container.innerHTML = `<div class="error-message">❌ ${err.message}</div>`;
+    }
 }
 
 function renderPerson(person, generation) {
-  if (!person) return '';
+    if (!person) return '';
 
-  let labelText = `${person.first_name} ${person.last_name}`;
-  if (person.birth_year || person.death_year) {
-    labelText += ` (${person.birth_year || '?'}${person.death_year ? '–' + person.death_year : ''})`;
-  }
+    const name = `${person.first_name || ''} ${person.last_name || ''}`.trim() || 'Без имени';
+    let years = '';
+    if (person.birth_year || person.death_year) {
+        years = ` ${person.birth_year || '?'}${person.death_year ? '–' + person.death_year : ''}`;
+    }
 
-  let html = `<div class="person generation-${generation}">
-      <div class="card">
-        <span class="label">${labelText}</span>
-      </div>`;
+    let html = `<div class="person generation-${generation}">
+        <div class="card">
+            <span class="label">${name}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ''}</span>
+        </div>`;
 
-  let childrenHtml = '';
+    let childrenHtml = '';
 
-  // Родители
-  if (person.father || person.mother) {
-    childrenHtml += '<div class="children">';
-    if (person.father) childrenHtml += `<div><span class="role">Отец:</span>${renderPerson(person.father, generation + 1)}</div>`;
-    if (person.mother) childrenHtml += `<div><span class="role">Мать:</span>${renderPerson(person.mother, generation + 1)}</div>`;
-    childrenHtml += '</div>';
-  }
+    // Родители
+    if (person.father || person.mother) {
+        childrenHtml += '<div class="children">';
+        if (person.father) {
+            childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1)}</div>`;
+        }
+        if (person.mother) {
+            childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1)}</div>`;
+        }
+        childrenHtml += '</div>';
+    }
 
-  // Дети
-  if (person.children && person.children.length > 0) {
-    childrenHtml += '<div class="children"><span class="role">Дети:</span>';
-    person.children.forEach(child => {
-      childrenHtml += renderPerson(child, generation + 1);
-    });
-    childrenHtml += '</div>';
-  }
+    // Дети
+    if (person.children && person.children.length > 0) {
+        childrenHtml += '<div class="children"><span class="role">Дети</span>';
+        person.children.forEach(child => {
+            childrenHtml += renderPerson(child, generation + 1);
+        });
+        childrenHtml += '</div>';
+    }
 
-  html += childrenHtml + '</div>';
-  return html;
+    html += childrenHtml + '</div>';
+    return html;
 }
 
+// Загружаем список людей при старте
 loadPeople();
 </script>
 

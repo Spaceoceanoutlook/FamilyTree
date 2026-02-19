@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from familytree.auth import get_current_admin
@@ -28,8 +28,14 @@ def get_person_service(
 
 @router.get("/", response_model=list[PersonOut])
 async def get_persons(
+    first_name: Optional[str] = Query(default=None, description="Фильтр по имени"),
+    last_name: Optional[str] = Query(default=None, description="Фильтр по фамилии"),
     service: PersonService = Depends(get_person_service),
 ):
+    if first_name or last_name:
+        return await service.get_persons_by_name(
+            first_name=first_name, last_name=last_name
+        )
     return await service.get_all()
 
 
@@ -43,18 +49,6 @@ async def create_person(
     service: PersonService = Depends(get_person_service),
 ):
     return await service.create(data)
-
-
-@router.get(
-    "/persons",
-    response_model=list[PersonOut],
-)
-async def get_persons_by_name(
-    first_name: Optional[str] = None,
-    last_name: Optional[str] = None,
-    service: PersonService = Depends(get_person_service),
-):
-    return await service.get_persons_by_name(first_name=first_name, last_name=last_name)
 
 
 @router.get(

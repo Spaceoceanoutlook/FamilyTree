@@ -191,7 +191,6 @@
         font-style: italic;
     }
 
-    /* === КОНТЕЙНЕР РОДОСЛОВНОЙ === */
     .pedigree-container {
         background: rgba(255,255,255,0.6);
         backdrop-filter: blur(8px);
@@ -232,7 +231,6 @@
         font-size: 1.1rem;
     }
 
-    /* Линии и отступы */
     .children {
         margin-left: 42px;
         padding-left: 18px;
@@ -250,7 +248,6 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Роль (Отец, Мать, Дети) */
     .role {
         font-size: 0.9rem;
         font-weight: 600;
@@ -266,7 +263,6 @@
         backdrop-filter: blur(2px);
     }
 
-    /* Подсветка выбранного (корень) */
     .generation-0 > .card {
         background: linear-gradient(115deg, #f0f7ff, #e3f0fa);
         box-shadow: 0 8px 18px -10px #2b5a8c, 0 0 0 1px #8bb9e5;
@@ -277,7 +273,6 @@
         font-weight: 600;
     }
 
-    /* Загрузка */
     .loading-state {
         display: flex;
         align-items: center;
@@ -322,7 +317,6 @@
         font-size: 1.2rem;
     }
 
-    /* Адаптивность */
     @media (max-width: 650px) {
         .controls {
             flex-direction: column;
@@ -400,7 +394,6 @@ async function searchPeople() {
     resultsContainer.classList.add('visible');
 
     try {
-        // Формируем query-параметры
         const params = new URLSearchParams();
         if (firstName) params.append('first_name', firstName);
         if (lastName) params.append('last_name', lastName);
@@ -445,24 +438,19 @@ function renderSearchResults(people) {
     container.classList.add('visible');
 }
 
-// 💬 Показать сообщение в результатах
 function showSearchMessage(message) {
     const container = document.getElementById('searchResults');
     container.innerHTML = `<div class="search-empty">${message}</div>`;
     container.classList.add('visible');
 }
 
-// 👤 Выбор человека из результатов
 function selectPerson(personId, element) {
-    // Убираем выделение со всех
     document.querySelectorAll('.search-result-item').forEach(el => el.classList.remove('selected'));
-    // Добавляем выделение выбранному
     if (element) element.classList.add('selected');
     
     selectedPersonId = personId;
 }
 
-// 🌳 Загрузка дерева для выбранного человека
 async function loadSelectedTree() {
     if (!selectedPersonId) {
         document.getElementById('pedigree-container').innerHTML = 
@@ -482,7 +470,6 @@ async function loadSelectedTree() {
 
         container.innerHTML = renderPerson(data, 0);
 
-        // Обработчики клика для раскрытия/сворачивания
         document.querySelectorAll('.card').forEach(card => {
             card.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -499,7 +486,6 @@ async function loadSelectedTree() {
     }
 }
 
-// === Рендеринг родословной (рекурсивный) ===
 function renderPerson(person, generation) {
     if (!person) return '';
 
@@ -516,7 +502,6 @@ function renderPerson(person, generation) {
 
     let childrenHtml = '';
 
-    // Родители
     if (person.father || person.mother) {
         childrenHtml += '<div class="children">';
         if (person.father) {
@@ -528,7 +513,6 @@ function renderPerson(person, generation) {
         childrenHtml += '</div>';
     }
 
-    // Дети
     if (person.children && person.children.length > 0) {
         childrenHtml += '<div class="children"><span class="role">Дети</span>';
         person.children.forEach(child => {
@@ -541,9 +525,7 @@ function renderPerson(person, generation) {
     return html;
 }
 
-// === Инициализация при загрузке страницы ===
 document.addEventListener('DOMContentLoaded', () => {
-    // Поиск по нажатию Enter в полях ввода
     document.getElementById('firstNameInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') searchPeople();
     });
@@ -551,7 +533,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') searchPeople();
     });
     
-    // Скрытие результатов при клике вне области поиска
     document.addEventListener('click', (e) => {
         const controls = document.querySelector('.controls');
         const results = document.getElementById('searchResults');

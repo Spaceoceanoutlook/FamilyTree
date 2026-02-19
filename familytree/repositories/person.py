@@ -49,5 +49,6 @@ class PersonRepository:
                 Person.mother_id == parent_id,
             )
         )
+        stmt = stmt.order_by(Person.birth_year.asc())
         result = await self.db.execute(stmt)
         return result.scalars().all()

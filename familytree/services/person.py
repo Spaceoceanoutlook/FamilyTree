@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.exc import SQLAlchemyError
 
 from familytree.models import Person
@@ -14,11 +16,19 @@ class PersonService:
         self.repo = repo
         self.db = repo.db
 
-    async def get_person(self, person_id: int) -> PersonOut:
+    async def get_person_by_id(self, person_id: int) -> PersonOut:
         person = await self.repo.get_by_id(person_id)
         if not person:
             raise ValueError("Person not found")
         return PersonOut.model_validate(person)
+
+    async def get_persons_by_name(
+        self, first_name: Optional[str] = None, last_name: Optional[str] = None
+    ) -> list[PersonOut]:
+        persons = await self.repo.get_by_name(
+            first_name=first_name, last_name=last_name
+        )
+        return [PersonOut.model_validate(p) for p in persons]
 
     async def get_all(self) -> list[PersonOut]:
         persons = await self.repo.get_all()

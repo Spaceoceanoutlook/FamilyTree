@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,10 +26,7 @@ def get_person_service(
     return PersonService(repo)
 
 
-@router.get(
-    "/",
-    response_model=list[PersonOut],
-)
+@router.get("/", response_model=list[PersonOut])
 async def get_persons(
     service: PersonService = Depends(get_person_service),
 ):
@@ -47,15 +46,27 @@ async def create_person(
 
 
 @router.get(
+    "/persons",
+    response_model=list[PersonOut],
+)
+async def get_persons_by_name(
+    first_name: Optional[str] = None,
+    last_name: Optional[str] = None,
+    service: PersonService = Depends(get_person_service),
+):
+    return await service.get_persons_by_name(first_name=first_name, last_name=last_name)
+
+
+@router.get(
     "/{person_id}",
     response_model=PersonOut,
 )
-async def get_person(
+async def get_person_by_id(
     person_id: int,
     service: PersonService = Depends(get_person_service),
 ):
     try:
-        return await service.get_person(person_id)
+        return await service.get_person_by_id(person_id)
     except ValueError:
         raise HTTPException(404, "Person not found")
 
@@ -86,9 +97,6 @@ async def delete_person(
 ):
     try:
         await service.delete(person_id)
-        return {
-            "status": "deleted",
-            "id": person_id,
-        }
+        return {"status": "deleted", "id": person_id}
     except ValueError:
         raise HTTPException(404, "Person not found")

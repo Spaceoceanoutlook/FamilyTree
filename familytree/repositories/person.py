@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from familytree.models import Person
@@ -23,11 +23,14 @@ class PersonRepository:
             stmt = stmt.where(func.lower(Person.first_name) == func.lower(first_name))
         if last_name:
             stmt = stmt.where(func.lower(Person.last_name) == func.lower(last_name))
+        stmt = stmt.order_by(
+            func.lower(Person.last_name), func.lower(Person.first_name)
+        )
         result = await self.db.execute(stmt)
         return result.scalars().all()
 
     async def get_all(self) -> list[Person]:
-        stmt = select(Person).order_by(Person.last_name)
+        stmt = select(Person).order_by(Person.id)
         result = await self.db.execute(stmt)
         return result.scalars().all()
 

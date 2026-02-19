@@ -44,45 +44,45 @@
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(255,255,255,0.6);
         border-radius: 60px;
-        padding: 0.8rem 1rem; /* Увеличен padding для более высокой панели */
+        padding: 0.6rem 0.8rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 1rem; /* Увеличен gap */
+        gap: 0.6rem;
         box-shadow: 0 10px 30px -10px rgba(31, 66, 99, 0.2);
-        margin-bottom: 2.5rem;
+        margin-bottom: 0.5rem;
         flex-wrap: wrap;
-        width: 100%; /* Такая же ширина, как у контейнера результатов */
+        width: 100%;
+        position: relative;
+        z-index: 101;
     }
 
-    .controls select {
+    .search-input {
         background: white;
-        border: none;
-        padding: 0.9rem 1.8rem; /* Увеличен padding */
+        border: 1px solid rgba(79, 139, 201, 0.2);
+        padding: 0.6rem 1rem;
         border-radius: 50px;
-        font-size: 1.1rem; /* Увеличен шрифт */
+        font-size: 1.1rem;
         font-family: inherit;
         outline: none;
         transition: all 0.2s ease;
         box-shadow: 0 4px 10px rgba(0, 20, 40, 0.05);
-        cursor: pointer;
+        flex: 1;
+        min-width: 100px;
         color: #1e3c5c;
-        border: 1px solid rgba(79, 139, 201, 0.2);
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%234f8bc9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 1.2rem center;
-        background-size: 18px;
-        flex: 1; /* Растягивается на доступное пространство */
-        min-width: 250px; /* Минимальная ширина */
     }
 
-    .controls select:hover {
+    .search-input:focus {
         border-color: #4f8bc9;
         box-shadow: 0 8px 16px -8px #4f8bc9;
     }
 
-    .controls button {
+    .search-input::placeholder {
+        color: #8aa3b8;
+        opacity: 1;
+    }
+
+    .search-btn {
         background: linear-gradient(145deg, #4f8bc9, #3a6ca3);
         color: white;
         font-weight: 600;
@@ -90,25 +90,108 @@
         cursor: pointer;
         box-shadow: 0 10px 18px -8px #2b5a8c;
         transition: all 0.15s ease;
-        padding: 0.9rem 2rem; /* Увеличен padding */
-        letter-spacing: 0.5px;
+        padding: 0.6rem 1.2rem;
         border-radius: 50px;
-        font-size: 1.1rem; /* Увеличен шрифт */
+        font-size: 1.1rem;
         font-family: inherit;
         white-space: nowrap;
     }
 
-    .controls button:hover {
+    .search-btn:hover {
         background: linear-gradient(145deg, #5d9ad9, #3f78b5);
         transform: scale(1.02);
         box-shadow: 0 14px 22px -10px #1e3e60;
     }
 
-    .controls button:active {
-        transform: scale(0.98);
+    .view-btn {
+        background: linear-gradient(145deg, #5cb87a, #4a9a62);
+        color: white;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 10px 18px -8px #3a7a4e;
+        transition: all 0.15s ease;
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-family: inherit;
+        white-space: nowrap;
     }
 
-    /* Контейнер родословной */
+    .view-btn:hover {
+        background: linear-gradient(145deg, #6ec88a, #5aab72);
+        transform: scale(1.02);
+        box-shadow: 0 14px 22px -10px #2e6a3e;
+    }
+
+    .search-results {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 15px 35px -15px rgba(31, 66, 99, 0.25);
+        border: 1px solid rgba(79, 139, 201, 0.15);
+        margin: -0.5rem auto 2.5rem;
+        max-height: 300px;
+        overflow-y: auto;
+        display: none;
+        z-index: 100;
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .search-results.visible {
+        display: block;
+        animation: slideDown 0.2s ease;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .search-result-item {
+        padding: 0.9rem 1.8rem;
+        cursor: pointer;
+        transition: background 0.15s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(79, 139, 201, 0.08);
+    }
+
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+
+    .search-result-item:hover {
+        background: #f0f9ff;
+    }
+
+    .search-result-item.selected {
+        background: #e3f0fa;
+        border-left: 3px solid #4f8bc9;
+    }
+
+    .search-result-name {
+        font-weight: 500;
+        color: #1e3c5c;
+        font-size: 1.1rem;
+    }
+
+    .search-result-years {
+        font-size: 0.95rem;
+        color: #6f8fa8;
+        font-weight: 300;
+    }
+
+    .search-empty {
+        padding: 1.5rem;
+        text-align: center;
+        color: #6f8fa8;
+        font-style: italic;
+    }
+
+    /* === КОНТЕЙНЕР РОДОСЛОВНОЙ === */
     .pedigree-container {
         background: rgba(255,255,255,0.6);
         backdrop-filter: blur(8px);
@@ -116,7 +199,7 @@
         padding: 2rem 1.8rem;
         border: 1px solid rgba(255,255,255,0.7);
         box-shadow: 0 25px 45px -20px rgba(23, 55, 83, 0.3);
-        width: 100%; /* Та же ширина, что и у controls */
+        width: 100%;
     }
 
     .person {
@@ -129,7 +212,7 @@
         align-items: center;
         background: white;
         border-radius: 40px;
-        padding: 0.6rem 1.8rem 0.6rem 1.5rem; /* Увеличен padding */
+        padding: 0.6rem 1.8rem 0.6rem 1.5rem;
         border: none;
         box-shadow: 0 8px 16px -8px rgba(0, 32, 64, 0.12), 0 0 0 1px rgba(79, 139, 201, 0.1);
         transition: all 0.2s ease;
@@ -146,7 +229,7 @@
     .label {
         font-weight: 500;
         color: #153e5a;
-        font-size: 1.1rem; /* Увеличен шрифт */
+        font-size: 1.1rem;
     }
 
     /* Линии и отступы */
@@ -169,13 +252,13 @@
 
     /* Роль (Отец, Мать, Дети) */
     .role {
-        font-size: 0.9rem; /* Увеличен шрифт */
+        font-size: 0.9rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
         color: #537a9f;
         background: rgba(79, 139, 201, 0.08);
-        padding: 0.3rem 1.2rem; /* Увеличен padding */
+        padding: 0.3rem 1.2rem;
         border-radius: 20px;
         display: inline-block;
         margin: 10px 0 6px 0;
@@ -236,84 +319,154 @@
         text-align: center;
         padding: 3rem 1rem;
         font-style: italic;
-        font-size: 1.2rem; /* Увеличен шрифт */
+        font-size: 1.2rem;
     }
 
-    /* Адаптивность для мобильных устройств */
+    /* Адаптивность */
     @media (max-width: 650px) {
         .controls {
             flex-direction: column;
             align-items: stretch;
             border-radius: 40px;
-            padding: 1.2rem;
-            gap: 0.8rem;
+            padding: 1rem;
+            gap: 0.6rem;
         }
         
-        .controls select {
+        .search-input {
             width: 100%;
             text-align: center;
-            text-align-last: center;
-            font-size: 1rem;
-            padding: 0.8rem 1.2rem;
+            font-size: 0.95rem;
+            padding: 0.6rem 1rem;
         }
         
-        .controls button {
+        .search-btn, .view-btn {
             width: 100%;
-            font-size: 1rem;
-            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
+            padding: 0.6rem 1.2rem;
         }
     }
 </style>
 </head>
 <body>
 <div class="app-container">
-    <div class="header"><a href="/">
-        <h1>🌿 Родословная</h1></a>
+    <div class="header">
+        <a href="/">
+            <h1>🌿 Родословная</h1>
+        </a>
     </div>
+    
     <div class="controls">
-        <select id="personSelect">
-        </select>
-        <button onclick="loadSelectedTree()">Посмотреть</button>
+        <input 
+            type="text" 
+            id="firstNameInput" 
+            placeholder="Имя" 
+            class="search-input"
+            autocomplete="off"
+        >
+        <input 
+            type="text" 
+            id="lastNameInput" 
+            placeholder="Фамилия" 
+            class="search-input"
+            autocomplete="off"
+        >
+        <button onclick="searchPeople()" class="search-btn">🔍 Найти</button>
+        <button onclick="loadSelectedTree()" class="view-btn">🌳 Дерево</button>
     </div>
+
+    <div id="searchResults" class="search-results"></div>
 
     <div id="pedigree-container" class="pedigree-container">
         <div class="empty-state">
-            ✨ Выберите человека, чтобы увидеть его корни и ветви
+            ✨ Введите имя и (или) фамилию, чтобы найти человека и увидеть его родословную
         </div>
     </div>
 </div>
 
 <script>
-async function loadPeople() {
+let selectedPersonId = null; 
+
+async function searchPeople() {
+    const firstName = document.getElementById('firstNameInput').value.trim();
+    const lastName = document.getElementById('lastNameInput').value.trim();
+    
+    if (!firstName && !lastName) {
+        showSearchMessage('⚠️ Введите имя и (или) фамилию для поиска');
+        return;
+    }
+
+    const resultsContainer = document.getElementById('searchResults');
+    resultsContainer.innerHTML = '<div class="search-empty">🔎 Поиск...</div>';
+    resultsContainer.classList.add('visible');
+
     try {
-        const res = await fetch('/person/', { headers: { 'Accept': 'application/json' } });
-        const people = await res.json();
-        const select = document.getElementById('personSelect');
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.text = '🌳 Выберите человека';
-        select.innerHTML = '';
-        select.appendChild(defaultOption);
+        // Формируем query-параметры
+        const params = new URLSearchParams();
+        if (firstName) params.append('first_name', firstName);
+        if (lastName) params.append('last_name', lastName);
         
-        people.forEach(p => {
-            const option = document.createElement('option');
-            option.value = p.id;
-            const years = p.birth_year ? ` (${p.birth_year}${p.death_year ? '–' + p.death_year : ''})` : '';
-            option.text = `${p.last_name} ${p.first_name}${years}`;
-            select.appendChild(option);
+        const res = await fetch(`/person/persons?${params}`, { 
+            headers: { 'Accept': 'application/json' } 
         });
+        
+        if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+        
+        const people = await res.json();
+        renderSearchResults(people);
+        
     } catch(err) {
-        console.error('Ошибка загрузки списка людей:', err);
-        const select = document.getElementById('personSelect');
-        select.innerHTML = '<option value="">⚠️ Не удалось загрузить список</option>';
+        console.error('Ошибка поиска:', err);
+        showSearchMessage(`❌ Ошибка: ${err.message}`);
     }
 }
 
+function renderSearchResults(people) {
+    const container = document.getElementById('searchResults');
+    
+    if (!people || people.length === 0) {
+        showSearchMessage('🔍 Ничего не найдено');
+        return;
+    }
+    
+    let html = '';
+    people.forEach(p => {
+        const years = p.birth_year ? ` (${p.birth_year}${p.death_year ? '–' + p.death_year : ''})` : '';
+        const isSelected = p.id === selectedPersonId ? 'selected' : '';
+        
+        html += `
+            <div class="search-result-item ${isSelected}" onclick="selectPerson(${p.id}, this)">
+                <span class="search-result-name">${p.first_name} ${p.last_name}</span>
+                ${years ? `<span class="search-result-years">${years}</span>` : ''}
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+    container.classList.add('visible');
+}
+
+// 💬 Показать сообщение в результатах
+function showSearchMessage(message) {
+    const container = document.getElementById('searchResults');
+    container.innerHTML = `<div class="search-empty">${message}</div>`;
+    container.classList.add('visible');
+}
+
+// 👤 Выбор человека из результатов
+function selectPerson(personId, element) {
+    // Убираем выделение со всех
+    document.querySelectorAll('.search-result-item').forEach(el => el.classList.remove('selected'));
+    // Добавляем выделение выбранному
+    if (element) element.classList.add('selected');
+    
+    selectedPersonId = personId;
+}
+
+// 🌳 Загрузка дерева для выбранного человека
 async function loadSelectedTree() {
-    const select = document.getElementById('personSelect');
-    const id = select.value;
-    if (!id) {
-        document.getElementById('pedigree-container').innerHTML = '<div class="empty-state">👆 Пожалуйста, выберите главного героя</div>';
+    if (!selectedPersonId) {
+        document.getElementById('pedigree-container').innerHTML = 
+            '<div class="empty-state">👆 Сначала найдите и выберите человека из списка</div>';
         return;
     }
 
@@ -321,13 +474,15 @@ async function loadSelectedTree() {
     container.innerHTML = '<div class="loading-state">Загружаем родословную</div>';
 
     try {
-        const res = await fetch(`/tree/${id}`, { headers: { 'Accept': 'application/json' } });
+        const res = await fetch(`/tree/${selectedPersonId}`, { 
+            headers: { 'Accept': 'application/json' } 
+        });
         if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
         const data = await res.json();
 
         container.innerHTML = renderPerson(data, 0);
 
-        // Добавляем обработчики клика на карточки (раскрытие)
+        // Обработчики клика для раскрытия/сворачивания
         document.querySelectorAll('.card').forEach(card => {
             card.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -339,10 +494,12 @@ async function loadSelectedTree() {
         });
 
     } catch(err) {
+        console.error('Ошибка загрузки дерева:', err);
         container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${err.message}</div>`;
     }
 }
 
+// === Рендеринг родословной (рекурсивный) ===
 function renderPerson(person, generation) {
     if (!person) return '';
 
@@ -384,8 +541,25 @@ function renderPerson(person, generation) {
     return html;
 }
 
-// Загружаем список людей при старте
-loadPeople();
+// === Инициализация при загрузке страницы ===
+document.addEventListener('DOMContentLoaded', () => {
+    // Поиск по нажатию Enter в полях ввода
+    document.getElementById('firstNameInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchPeople();
+    });
+    document.getElementById('lastNameInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchPeople();
+    });
+    
+    // Скрытие результатов при клике вне области поиска
+    document.addEventListener('click', (e) => {
+        const controls = document.querySelector('.controls');
+        const results = document.getElementById('searchResults');
+        if (!controls?.contains(e.target) && !results?.contains(e.target)) {
+            results?.classList.remove('visible');
+        }
+    });
+});
 </script>
 
 </body>

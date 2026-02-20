@@ -103,27 +103,6 @@
         box-shadow: 0 14px 22px -10px #1e3e60;
     }
 
-    .view-btn {
-        background: linear-gradient(145deg, #5cb87a, #4a9a62);
-        color: white;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 10px 18px -8px #3a7a4e;
-        transition: all 0.15s ease;
-        padding: 0.6rem 1.2rem;
-        border-radius: 50px;
-        font-size: 1.1rem;
-        font-family: inherit;
-        white-space: nowrap;
-    }
-
-    .view-btn:hover {
-        background: linear-gradient(145deg, #6ec88a, #5aab72);
-        transform: scale(1.02);
-        box-shadow: 0 14px 22px -10px #2e6a3e;
-    }
-
     .search-results {
         background: white;
         border-radius: 24px;
@@ -333,7 +312,7 @@
             padding: 0.6rem 1rem;
         }
         
-        .search-btn, .view-btn {
+        .search-btn {
             width: 100%;
             font-size: 0.95rem;
             padding: 0.6rem 1.2rem;
@@ -365,20 +344,20 @@
             autocomplete="off"
         >
         <button onclick="searchPeople()" class="search-btn">🔍 Найти</button>
-        <button onclick="loadSelectedTree()" class="view-btn">🌳 Дерево</button>
     </div>
 
     <div id="searchResults" class="search-results"></div>
 
     <div id="pedigree-container" class="pedigree-container">
         <div class="empty-state">
-            ✨ Введите имя и (или) фамилию, чтобы найти человека и увидеть его родословную
+            ✨ Введите имя и (или) фамилию, затем выберите человека из списка — родословная загрузится автоматически
         </div>
     </div>
 </div>
 
 <script>
 let selectedPersonId = null; 
+let isLoadingTree = false; // Флаг для предотвращения повторной загрузки
 
 async function searchPeople() {
     const firstName = document.getElementById('firstNameInput').value.trim();
@@ -445,18 +424,25 @@ function showSearchMessage(message) {
 }
 
 function selectPerson(personId, element) {
+    // Убираем выделение со всех
     document.querySelectorAll('.search-result-item').forEach(el => el.classList.remove('selected'));
+    // Добавляем выделение выбранному
     if (element) element.classList.add('selected');
     
     selectedPersonId = personId;
+    
+    // ✅ Автоматическая загрузка дерева при выборе
+    loadSelectedTree();
 }
 
 async function loadSelectedTree() {
     if (!selectedPersonId) {
-        document.getElementById('pedigree-container').innerHTML = 
-            '<div class="empty-state">👆 Сначала найдите и выберите человека из списка</div>';
         return;
     }
+
+    // Предотвращаем повторную загрузку того же дерева
+    if (isLoadingTree) return;
+    isLoadingTree = true;
 
     const container = document.getElementById('pedigree-container');
     container.innerHTML = '<div class="loading-state">Загружаем родословную</div>';
@@ -483,6 +469,8 @@ async function loadSelectedTree() {
     } catch(err) {
         console.error('Ошибка загрузки дерева:', err);
         container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${err.message}</div>`;
+    } finally {
+        isLoadingTree = false;
     }
 }
 

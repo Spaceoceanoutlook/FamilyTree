@@ -491,28 +491,31 @@
 let selectedPersonId = null; 
 let isLoadingTree = false;
 
+// Основная функция поиска людей
 async function searchPeople() {
     const firstName = document.getElementById('firstNameInput').value.trim();
     const lastName = document.getElementById('lastNameInput').value.trim();
-    const container = document.getElementById('pedigree-container');
-    container.innerHTML = '<div class="empty-state">✨ Введите имя и (или) фамилию человека, чтобы посмотреть его родословную</div>';
+    const treeContainer = document.getElementById('pedigree-container');
+
+    // Сброс предыдущего дерева и выбранного человека
+    treeContainer.innerHTML = '<div class="empty-state">✨ Введите имя и (или) фамилию человека, чтобы посмотреть его родословную</div>';
     selectedPersonId = null;
+
     if (!firstName && !lastName) {
         showSearchMessage('⚠️ Введите имя и (или) фамилию');
         return;
     }
+
     const resultsContainer = document.getElementById('searchResults');
     resultsContainer.innerHTML = '<div class="search-empty">🔎 Поиск...</div>';
     resultsContainer.classList.add('visible');
+
     try {
         const params = new URLSearchParams();
         if (firstName) params.append('first_name', firstName);
         if (lastName) params.append('last_name', lastName);
 
-        const res = await fetch(`/person/?${params}`, { 
-            headers: { 'Accept': 'application/json' } 
-        });
-
+        const res = await fetch(`/person/?${params}`, { headers: { 'Accept': 'application/json' } });
         if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
 
         const people = await res.json();
@@ -523,13 +526,16 @@ async function searchPeople() {
     }
 }
 
+// Рендер результатов поиска
 function renderSearchResults(people) {
     const container = document.getElementById('searchResults');
+    container.scrollTop = 0; // сброс прокрутки
+
     if (!people || people.length === 0) {
         showSearchMessage('🔍 Ничего не найдено');
         return;
     }
-    
+
     let html = '';
     people.forEach(p => {
         const years = p.birth_year ? ` (${p.birth_year}${p.death_year ? '–' + p.death_year : ''})` : '';
@@ -541,52 +547,58 @@ function renderSearchResults(people) {
             </div>
         `;
     });
+
     container.innerHTML = html;
     container.classList.add('visible');
 }
 
+// Показ сообщений поиска
 function showSearchMessage(message) {
     const container = document.getElementById('searchResults');
     container.innerHTML = `<div class="search-empty">${message}</div>`;
     container.classList.add('visible');
 }
 
+// Выбор человека из результатов
 function selectPerson(personId, element) {
-    document.querySelectorAll('.search-result-item')
-        .forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.search-result-item').forEach(el => el.classList.remove('selected'));
     if (element) element.classList.add('selected');
+
     selectedPersonId = personId;
+
+    // Скрыть список и очистить его
     const results = document.getElementById('searchResults');
+    results.innerHTML = '';
     results.classList.remove('visible');
+
     loadSelectedTree();
 }
 
+// Загрузка дерева родословной
 async function loadSelectedTree() {
-    if (!selectedPersonId) {
-        return;
-    }
+    if (!selectedPersonId || isLoadingTree) return;
 
-    if (isLoadingTree) return;
     isLoadingTree = true;
     const container = document.getElementById('pedigree-container');
     container.innerHTML = '<div class="loading-state">Загружаем родословную</div>';
+
     try {
-        const res = await fetch(`/tree/${selectedPersonId}`, { 
-            headers: { 'Accept': 'application/json' } 
-        });
+        const res = await fetch(`/tree/${selectedPersonId}`, { headers: { 'Accept': 'application/json' } });
         if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+
         const data = await res.json();
         container.innerHTML = renderPerson(data, 0);
         scrollToTree();
-        document.querySelectorAll('.card').forEach(card => {
+
+        // Обработчики разворачивания карточек
+        container.querySelectorAll('.card').forEach(card => {
             card.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const personBlock = card.closest('.person');
-                if (personBlock) {
-                    personBlock.classList.toggle('expanded');
-                }
+                if (personBlock) personBlock.classList.toggle('expanded');
             });
         });
+
     } catch(err) {
         console.error('Ошибка загрузки дерева:', err);
         container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${err.message}</div>`;
@@ -595,6 +607,7 @@ async function loadSelectedTree() {
     }
 }
 
+// Рендер человека и его родословной
 function renderPerson(person, generation) {
     if (!person) return '';
 
@@ -603,21 +616,20 @@ function renderPerson(person, generation) {
     if (person.birth_year || person.death_year) {
         years = ` ${person.birth_year || '?'}${person.death_year ? '–' + person.death_year : ''}`;
     }
+
     let html = `<div class="person generation-${generation}">
         <div class="card">
             <span class="label">${name}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ''}</span>
         </div>`;
+
     let childrenHtml = '';
     if (person.father || person.mother) {
         childrenHtml += '<div class="children">';
-        if (person.father) {
-            childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1)}</div>`;
-        }
-        if (person.mother) {
-            childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1)}</div>`;
-        }
+        if (person.father) childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1)}</div>`;
+        if (person.mother) childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1)}</div>`;
         childrenHtml += '</div>';
     }
+
     if (person.children && person.children.length > 0) {
         childrenHtml += '<div class="children"><span class="role">Дети</span>';
         person.children.forEach(child => {
@@ -625,17 +637,25 @@ function renderPerson(person, generation) {
         });
         childrenHtml += '</div>';
     }
+
     html += childrenHtml + '</div>';
     return html;
 }
 
+// Обработчики событий при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('firstNameInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') searchPeople();
+    const firstNameInput = document.getElementById('firstNameInput');
+    const lastNameInput = document.getElementById('lastNameInput');
+
+    [firstNameInput, lastNameInput].forEach(input => {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchPeople();
+            }
+        });
     });
-    document.getElementById('lastNameInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') searchPeople();
-    });
+
     document.addEventListener('click', (e) => {
         const controls = document.querySelector('.controls');
         const results = document.getElementById('searchResults');
@@ -645,9 +665,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Плавный скролл к дереву
 function scrollToTree() {
     const tree = document.getElementById('pedigree-container');
     if (!tree) return;
+
     setTimeout(() => {
         tree.scrollIntoView({
             behavior: 'smooth',
@@ -655,7 +677,6 @@ function scrollToTree() {
         });
     }, 200);
 }
-
 </script>
 
 </body>

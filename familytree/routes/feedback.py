@@ -20,7 +20,11 @@ def get_feedback_service(
     return FeedbackService(repo)
 
 
-@router.get("/", response_model=list[FeedbackOut])
+@router.get(
+    "/",
+    response_model=list[FeedbackOut],
+    dependencies=[Depends(get_current_admin)],
+)
 async def get_feedbacks(
     service: FeedbackService = Depends(get_feedback_service),
 ):
@@ -30,7 +34,6 @@ async def get_feedbacks(
 @router.post(
     "/",
     response_model=FeedbackOut,
-    dependencies=[Depends(get_current_admin)],
 )
 async def create_feedback(
     data: FeedbackCreate,

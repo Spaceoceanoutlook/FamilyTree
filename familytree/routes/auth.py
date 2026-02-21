@@ -15,7 +15,7 @@ from settings import settings
 router = APIRouter(tags=["Auth"])
 
 
-@router.post("/auth/token", summary="Получение токена для админа", response_model=Token)
+@router.post("/auth/token", response_model=Token)
 async def login_for_access_token(
     form: OAuth2PasswordRequestForm = Depends(),
 ) -> Token:

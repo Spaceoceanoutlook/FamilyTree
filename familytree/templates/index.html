@@ -385,21 +385,21 @@
 
     <div id="pedigree-container" class="pedigree-container">
         <div class="empty-state">
-            ✨ Введите имя и (или) фамилию, затем выберите человека из списка — родословная загрузится автоматически
+            ✨ Введите имя и (или) фамилию человека, чтобы посмотреть его родословную
         </div>
     </div>
 </div>
 
 <script>
 let selectedPersonId = null; 
-let isLoadingTree = false; // Флаг для предотвращения повторной загрузки
+let isLoadingTree = false;
 
 async function searchPeople() {
     const firstName = document.getElementById('firstNameInput').value.trim();
     const lastName = document.getElementById('lastNameInput').value.trim();
     
     if (!firstName && !lastName) {
-        showSearchMessage('⚠️ Введите имя и (или) фамилию для поиска');
+        showSearchMessage('⚠️ Введите имя и (или) фамилию');
         return;
     }
 

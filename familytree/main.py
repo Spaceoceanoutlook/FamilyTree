@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from familytree.routes import auth, frontend, person, tree, feedback
+from familytree.routes import auth, feedback, frontend, person, tree
 
 app = FastAPI(title="Family Tree")
 

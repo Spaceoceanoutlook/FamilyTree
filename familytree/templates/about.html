@@ -74,13 +74,6 @@
         font-weight: 600;
     }
 
-    .form-title {
-        font-size: 1.3rem;
-        font-weight: 600;
-        color: #1e3c5c;
-        margin-bottom: 0.5rem;
-    }
-
     .form-subtitle {
         color: #537a9f;
         margin-bottom: 1.5rem;
@@ -209,7 +202,6 @@
             Если вы нашли здесь себя — значит, мы родственники!
         </p>
 
-        <h2 class="form-title">📬 Написать мне</h2>
         <p class="form-subtitle">
             Если вы нашли ошибку или хотите поделиться недостающей информацией о вашей семье — напишите мне:
         </p>
@@ -254,7 +246,7 @@ async function submitForm(event) {
     };
     
     try {
-        const res = await fetch('/api/feedback', {
+        const res = await fetch('/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
@@ -265,13 +257,14 @@ async function submitForm(event) {
             formMessage.classList.add('success');
             form.reset();
         } else {
-            throw new Error('Ошибка сервера');
+            const errorData = await res.json().catch(() => ({}));
+            formMessage.textContent = errorData.detail || '❌ Ошибка отправки. Попробуйте позже.';
+            formMessage.classList.add('error');
         }
     } catch(err) {
-        // Пока эндпоинт не готов — выводим в консоль
-        formMessage.textContent = '⚠️ Эндпоинт ещё не настроен. Проверьте консоль.';
+        formMessage.textContent = '❌ Ошибка сети. Проверьте подключение.';
         formMessage.classList.add('error');
-        console.log('📬 Форма (тест):', formData);
+        console.error('Feedback error:', err);
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;

@@ -494,6 +494,9 @@ let isLoadingTree = false;
 async function searchPeople() {
     const firstName = document.getElementById('firstNameInput').value.trim();
     const lastName = document.getElementById('lastNameInput').value.trim();
+    const container = document.getElementById('pedigree-container');
+    container.innerHTML = '<div class="empty-state">✨ Введите имя и (или) фамилию человека, чтобы посмотреть его родословную</div>';
+    selectedPersonId = null;
     if (!firstName && !lastName) {
         showSearchMessage('⚠️ Введите имя и (или) фамилию');
         return;
@@ -505,10 +508,13 @@ async function searchPeople() {
         const params = new URLSearchParams();
         if (firstName) params.append('first_name', firstName);
         if (lastName) params.append('last_name', lastName);
+
         const res = await fetch(`/person/?${params}`, { 
             headers: { 'Accept': 'application/json' } 
         });
+
         if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+
         const people = await res.json();
         renderSearchResults(people);
     } catch(err) {

@@ -494,30 +494,23 @@ let isLoadingTree = false;
 async function searchPeople() {
     const firstName = document.getElementById('firstNameInput').value.trim();
     const lastName = document.getElementById('lastNameInput').value.trim();
-    
     if (!firstName && !lastName) {
         showSearchMessage('⚠️ Введите имя и (или) фамилию');
         return;
     }
-
     const resultsContainer = document.getElementById('searchResults');
     resultsContainer.innerHTML = '<div class="search-empty">🔎 Поиск...</div>';
     resultsContainer.classList.add('visible');
-
     try {
         const params = new URLSearchParams();
         if (firstName) params.append('first_name', firstName);
         if (lastName) params.append('last_name', lastName);
-        
         const res = await fetch(`/person/?${params}`, { 
             headers: { 'Accept': 'application/json' } 
         });
-        
         if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
-        
         const people = await res.json();
         renderSearchResults(people);
-        
     } catch(err) {
         console.error('Ошибка поиска:', err);
         showSearchMessage(`❌ Ошибка: ${err.message}`);
@@ -526,7 +519,6 @@ async function searchPeople() {
 
 function renderSearchResults(people) {
     const container = document.getElementById('searchResults');
-    
     if (!people || people.length === 0) {
         showSearchMessage('🔍 Ничего не найдено');
         return;
@@ -536,7 +528,6 @@ function renderSearchResults(people) {
     people.forEach(p => {
         const years = p.birth_year ? ` (${p.birth_year}${p.death_year ? '–' + p.death_year : ''})` : '';
         const isSelected = p.id === selectedPersonId ? 'selected' : '';
-        
         html += `
             <div class="search-result-item ${isSelected}" onclick="selectPerson(${p.id}, this)">
                 <span class="search-result-name">${p.first_name} ${p.last_name}</span>
@@ -544,7 +535,6 @@ function renderSearchResults(people) {
             </div>
         `;
     });
-    
     container.innerHTML = html;
     container.classList.add('visible');
 }
@@ -556,10 +546,12 @@ function showSearchMessage(message) {
 }
 
 function selectPerson(personId, element) {
-    document.querySelectorAll('.search-result-item').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.search-result-item')
+        .forEach(el => el.classList.remove('selected'));
     if (element) element.classList.add('selected');
-    
     selectedPersonId = personId;
+    const results = document.getElementById('searchResults');
+    results.classList.remove('visible');
     loadSelectedTree();
 }
 
@@ -570,19 +562,16 @@ async function loadSelectedTree() {
 
     if (isLoadingTree) return;
     isLoadingTree = true;
-
     const container = document.getElementById('pedigree-container');
     container.innerHTML = '<div class="loading-state">Загружаем родословную</div>';
-
     try {
         const res = await fetch(`/tree/${selectedPersonId}`, { 
             headers: { 'Accept': 'application/json' } 
         });
         if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
         const data = await res.json();
-
         container.innerHTML = renderPerson(data, 0);
-
+        scrollToTree();
         document.querySelectorAll('.card').forEach(card => {
             card.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -592,7 +581,6 @@ async function loadSelectedTree() {
                 }
             });
         });
-
     } catch(err) {
         console.error('Ошибка загрузки дерева:', err);
         container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${err.message}</div>`;
@@ -609,14 +597,11 @@ function renderPerson(person, generation) {
     if (person.birth_year || person.death_year) {
         years = ` ${person.birth_year || '?'}${person.death_year ? '–' + person.death_year : ''}`;
     }
-
     let html = `<div class="person generation-${generation}">
         <div class="card">
             <span class="label">${name}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ''}</span>
         </div>`;
-
     let childrenHtml = '';
-
     if (person.father || person.mother) {
         childrenHtml += '<div class="children">';
         if (person.father) {
@@ -627,7 +612,6 @@ function renderPerson(person, generation) {
         }
         childrenHtml += '</div>';
     }
-
     if (person.children && person.children.length > 0) {
         childrenHtml += '<div class="children"><span class="role">Дети</span>';
         person.children.forEach(child => {
@@ -635,7 +619,6 @@ function renderPerson(person, generation) {
         });
         childrenHtml += '</div>';
     }
-
     html += childrenHtml + '</div>';
     return html;
 }
@@ -647,7 +630,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('lastNameInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') searchPeople();
     });
-    
     document.addEventListener('click', (e) => {
         const controls = document.querySelector('.controls');
         const results = document.getElementById('searchResults');
@@ -656,6 +638,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+function scrollToTree() {
+    const tree = document.getElementById('pedigree-container');
+    if (!tree) return;
+    setTimeout(() => {
+        tree.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }, 200);
+}
+
 </script>
 
 </body>

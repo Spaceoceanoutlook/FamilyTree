@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import CHAR, CheckConstraint, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from familytree.models import Base
@@ -7,9 +7,14 @@ from familytree.models import Base
 class Person(Base):
     __tablename__ = "persons"
 
+    __table_args__ = (CheckConstraint("gender IN ('M','F')", name="ck_person_gender"),)
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     first_name: Mapped[str] = mapped_column(String, nullable=False)
     last_name: Mapped[str] = mapped_column(String, nullable=True)
+    gender: Mapped[str | None] = mapped_column(
+        CHAR(1), nullable=True, comment="M=male, F=female"
+    )
     death_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
     birth_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
 

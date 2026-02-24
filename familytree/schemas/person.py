@@ -7,6 +7,8 @@ class PersonBase(BaseModel):
     first_name: str
     last_name: Optional[str] = None
 
+    gender: Optional[str] = None
+
     birth_year: Optional[int] = None
     death_year: Optional[int] = None
 
@@ -19,6 +21,16 @@ class PersonBase(BaseModel):
     @classmethod
     def zero_to_none(cls, v):
         return None if v == 0 else v
+
+    @field_validator("gender")
+    @classmethod
+    def validate_gender(cls, v):
+        if v is None:
+            return None
+        v_upper = v.upper()
+        if v_upper not in ("M", "F"):
+            raise ValueError("gender must be 'M' or 'F'")
+        return v_upper
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -30,6 +42,7 @@ class PersonCreate(PersonBase):
 class PersonUpdate(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
+    gender: Optional[str] = None
     birth_year: Optional[int] = None
     death_year: Optional[int] = None
     mother_id: Optional[int] = None
@@ -41,6 +54,16 @@ class PersonUpdate(BaseModel):
     @classmethod
     def zero_to_none(cls, v):
         return None if v == 0 else v
+
+    @field_validator("gender")
+    @classmethod
+    def validate_gender(cls, v):
+        if v is None:
+            return None
+        v_upper = v.upper()
+        if v_upper not in ("M", "F"):
+            raise ValueError("gender must be 'M' or 'F'")
+        return v_upper
 
     model_config = ConfigDict(from_attributes=True)
 

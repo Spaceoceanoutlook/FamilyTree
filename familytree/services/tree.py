@@ -47,21 +47,18 @@ class TreeService:
                     attach_parent(node, key, parent_node)
         # children
         if include_children:
-
             children = await self.repo.get_children(person.id)
 
             spouse_id = None
             child_nodes = []
 
             for child in children:
-
                 # detect spouse
                 if child.father_id and child.father_id != person.id:
                     spouse_id = child.father_id
 
                 elif child.mother_id and child.mother_id != person.id:
                     spouse_id = child.mother_id
-
 
                 child_node = await self._build_recursive(
                     child,
@@ -73,17 +70,13 @@ class TreeService:
                 if child_node:
                     child_nodes.append(child_node)
 
-
             attach_children(node, child_nodes)
-
 
             # attach spouse with parents (no children)
             if spouse_id:
-
                 spouse = await self.repo.get_by_id(spouse_id)
 
                 if spouse and spouse.id not in visited:
-
                     spouse_node = await self._build_recursive(
                         spouse,
                         visited,

@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Родословная</title>
 <style>
-    /* ============================================
-       1. СБРОС И БАЗОВЫЕ СТИЛИ
-       ============================================ */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -19,14 +16,8 @@
         line-height: 1.5;
     }
 
-    /* ============================================
-       2. ЛЕЙАУТ И КОНТЕЙНЕРЫ
-       ============================================ */
     .app-container { max-width: 800px; margin: 0 auto; }
 
-    /* ============================================
-       3. ЗАГОЛОВОК
-       ============================================ */
     h1 {
         font-weight: 500; font-size: 2.2rem; letter-spacing: -0.5px;
         color: #1e3c5c; margin-bottom: 1.8rem;
@@ -34,9 +25,6 @@
     }
     .header a { text-decoration: none; }
 
-    /* ============================================
-       4. ПАНЕЛЬ УПРАВЛЕНИЯ (ПОИСК)
-       ============================================ */
     .controls {
         background: rgba(255,255,255,0.7); backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
@@ -68,9 +56,6 @@
         transform: scale(1.02); box-shadow: 0 14px 22px -10px #1e3e60;
     }
 
-    /* ============================================
-       5. РЕЗУЛЬТАТЫ ПОИСКА
-       ============================================ */
     .search-results {
         background: white; border-radius: 24px;
         box-shadow: 0 15px 35px -15px rgba(31, 66, 99, 0.25);
@@ -97,9 +82,6 @@
     .search-result-years { font-size: 0.95rem; color: #6f8fa8; font-weight: 300; }
     .search-empty { padding: 1.5rem; text-align: center; color: #6f8fa8; font-style: italic; }
 
-    /* ============================================
-       6. ДЕРЕВО РОДОСЛОВНОЙ
-       ============================================ */
     .pedigree-container {
         background: rgba(255,255,255,0.6); backdrop-filter: blur(8px);
         border-radius: 36px; padding: 2rem 1.8rem;
@@ -119,8 +101,10 @@
     }
     .label { font-weight: 500; color: #153e5a; font-size: 1.1rem; }
     .children {
-        margin-left: 42px; padding-left: 18px;
-        border-left: 2px dashed #b3d2f0; display: none;
+        margin-left: 42px;
+        padding-left: 18px;
+        border-left: none;
+        display: none;
     }
     .person.expanded > .children { display: block; animation: fadeSlide 0.2s ease; }
     @keyframes fadeSlide {
@@ -128,9 +112,6 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ============================================
-       7. РОЛИ (Отец, Мать, Муж, Жена, Дети)
-       ============================================ */
     .role {
         font-size: 0.9rem; font-weight: 600; text-transform: uppercase;
         letter-spacing: 1px; color: #537a9f;
@@ -144,9 +125,6 @@
     }
     .generation-0 > .card .label { color: #1e3c5c; font-weight: 600; }
 
-    /* ============================================
-       8. СОСТОЯНИЯ: ЗАГРУЗКА, ОШИБКА, ПУСТО
-       ============================================ */
     .loading-state {
         display: flex; align-items: center; justify-content: center;
         gap: 12px; color: #1e3c5c; font-size: 1.2rem; padding: 2rem;
@@ -168,9 +146,6 @@
         font-style: italic; font-size: 1.2rem;
     }
 
-    /* ============================================
-       9. КНОПКИ
-       ============================================ */
     .about-btn {
         background: linear-gradient(145deg, #10b981, #059669); color: white;
         font-weight: 600; border: none; cursor: pointer;
@@ -185,16 +160,17 @@
         transform: scale(1.02); box-shadow: 0 14px 22px -10px rgba(5, 150, 105, 0.4);
     }
 
-    /* ============================================
-       10. АДАПТИВНОСТЬ
-       ============================================ */
     @media (max-width: 650px) {
         body { padding: 1rem 0.8rem; }
         .controls { border-radius: 32px; padding: 0.8rem; gap: 0.5rem; }
         .pedigree-container { padding: 1.5rem 1rem; border-radius: 26px; max-width: 100%; overflow-x: auto; }
         .card { padding: 0.5rem 1.2rem; border-radius: 26px; }
         .label { font-size: 0.95rem; }
-        .children { margin-left: 24px; padding-left: 12px; border-left-width: 1px; }
+        .children {
+            margin-left: 24px;
+            padding-left: 12px;
+            border-left: none;
+        }
         .role { font-size: 0.75rem; padding: 0.25rem 0.7rem; }
         h1 { font-size: 1.8rem; }
     }
@@ -207,7 +183,11 @@
         .pedigree-container { padding: 1.2rem 0.8rem; border-radius: 22px; }
         .card { padding: 0.4rem 1rem; font-size: 0.9rem; border-radius: 22px; }
         .label { font-size: 0.9rem; line-height: 1.3; }
-        .children { margin-left: 16px; padding-left: 8px; }
+        .children {
+            margin-left: 24px;
+            padding-left: 12px;
+            border-left: none;
+        }
         .search-result-item { padding: 0.6rem 1rem; }
         .search-result-name { font-size: 0.95rem; }
         .search-result-years { font-size: 0.8rem; }
@@ -218,7 +198,11 @@
             width: 100%; justify-content: center;
         }
         .controls { gap: 0.6rem; }
-        .children { margin-left: 10px; padding-left: 6px; }
+        .children {
+            margin-left: 24px;
+            padding-left: 12px;
+            border-left: none;
+        }
         .card { padding: 0.35rem 0.7rem; }
         h1 { font-size: 1.5rem; }
     }

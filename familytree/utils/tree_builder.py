@@ -34,3 +34,8 @@ def attach_parent(
 ):
     if parent:
         node[key] = parent
+
+
+def attach_spouse(node: Dict, spouse: Dict | None):
+    if spouse:
+        node["spouse"] = spouse

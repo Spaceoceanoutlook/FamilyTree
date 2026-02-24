@@ -12,6 +12,8 @@ def build_node(
         "first_name": person.first_name,
         "last_name": person.last_name,
     }
+    if person.gender:
+        node["gender"] = person.gender
     if person.birth_year is not None:
         node["birth_year"] = person.birth_year
     if person.death_year is not None:

@@ -1,17 +1,20 @@
+from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
 
+class GenderEnum(str, Enum):
+    M = "M"
+    F = "F"
+
+
 class PersonBase(BaseModel):
     first_name: str
     last_name: Optional[str] = None
-
-    gender: Optional[str] = None
-
+    gender: Optional[GenderEnum] = None
     birth_year: Optional[int] = None
     death_year: Optional[int] = None
-
     mother_id: Optional[int] = None
     father_id: Optional[int] = None
 
@@ -27,10 +30,7 @@ class PersonBase(BaseModel):
     def validate_gender(cls, v):
         if v is None:
             return None
-        v_upper = v.upper()
-        if v_upper not in ("M", "F"):
-            raise ValueError("gender must be 'M' or 'F'")
-        return v_upper
+        return v.upper()
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -42,7 +42,7 @@ class PersonCreate(PersonBase):
 class PersonUpdate(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
-    gender: Optional[str] = None
+    gender: Optional[GenderEnum] = None
     birth_year: Optional[int] = None
     death_year: Optional[int] = None
     mother_id: Optional[int] = None
@@ -60,10 +60,7 @@ class PersonUpdate(BaseModel):
     def validate_gender(cls, v):
         if v is None:
             return None
-        v_upper = v.upper()
-        if v_upper not in ("M", "F"):
-            raise ValueError("gender must be 'M' or 'F'")
-        return v_upper
+        return v.upper()
 
     model_config = ConfigDict(from_attributes=True)
 

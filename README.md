@@ -28,9 +28,8 @@ docker compose run --rm api python familytree/generate_secrets.py
 ```bash 
 docker compose up --build -d
 ```
-Создать и применить миграцию (для первого запуска):
+Применить миграцию:
 ```bash 
-docker compose exec api alembic revision --autogenerate -m "init"
 docker compose exec api alembic upgrade head
 ```
 Запускать приложение

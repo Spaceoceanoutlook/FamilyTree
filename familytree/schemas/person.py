@@ -1,7 +1,9 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+from familytree.utils.normalization import normalize_russian_text
 
 
 class GenderEnum(str, Enum):
@@ -25,12 +27,12 @@ class PersonBase(BaseModel):
     def zero_to_none(cls, v):
         return None if v == 0 else v
 
-    @field_validator("gender")
+    @field_validator("gender", mode="before")
     @classmethod
     def validate_gender(cls, v):
         if v is None:
             return None
-        return v.upper()
+        return GenderEnum(v.upper())
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -55,15 +57,25 @@ class PersonUpdate(BaseModel):
     def zero_to_none(cls, v):
         return None if v == 0 else v
 
-    @field_validator("gender")
+    @field_validator("gender", mode="before")
     @classmethod
     def validate_gender(cls, v):
         if v is None:
             return None
-        return v.upper()
+        return GenderEnum(v.upper())
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class PersonOut(PersonBase):
     id: int
+
+
+class PersonSearch(BaseModel):
+    first_name: Optional[str] = Field(default=None, description="Фильтр по имени")
+    last_name: Optional[str] = Field(default=None, description="Фильтр по фамилии")
+
+    @field_validator("first_name", "last_name", mode="before")
+    @classmethod
+    def normalize_names(cls, v: str | None) -> str | None:
+        return normalize_russian_text(v)

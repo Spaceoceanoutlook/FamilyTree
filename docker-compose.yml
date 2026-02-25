@@ -9,6 +9,8 @@ services:
         - db
       env_file:
         - .env
+      volumes:
+        - .:/app
   db:
     image: postgres:18
     container_name: familytreedb

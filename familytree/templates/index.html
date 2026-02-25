@@ -1,510 +1,820 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Родословная</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Родословная</title>
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234f8bc9'/%3E%3Cstop offset='100%25' stop-color='%233a6ca3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='90' fill='url(%23g)'/%3E%3Ccircle cx='100' cy='75' r='28' fill='white'/%3E%3Ccircle cx='75' cy='95' r='18' fill='white' opacity='0.85'/%3E%3Ccircle cx='125' cy='95' r='18' fill='white' opacity='0.85'/%3E%3Crect x='92' y='110' width='16' height='35' rx='4' fill='white'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
 
-<!-- Google Fonts: Playfair Display + Inter с кириллицей -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-        font-family: 'Inter', 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
-        background: linear-gradient(145deg, #f6f9fc 0%, #edf4f8 100%);
-        min-height: 100vh;
-        padding: 2rem 1.5rem;
-        color: #1e3c5c;
-        line-height: 1.5;
-    }
-
-    .app-container { max-width: 800px; margin: 0 auto; }
-
-    /* ===== ОБНОВЛЁННЫЕ ШРИФТЫ ===== */
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Playfair Display', 'Georgia', serif;
-        font-weight: 500;
-        letter-spacing: -0.3px;
-    }
-
-    /* ===== ХЕДЕР С ЛОГОТИПОМ (БЕЗ АНИМАЦИЙ) ===== */
-    .header {
-        margin-bottom: 1.2rem;
-        display: flex;
-        justify-content: center;
-        /* Убрана анимация fadeInDown */
-    }
-    
-    .logo-link {
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        /* Убраны transition и transform */
-    }
-    
-    .logo-link svg {
-        flex-shrink: 0;
-        filter: drop-shadow(0 2px 4px rgba(31, 66, 99, 0.1));
-        /* Убраны transition и transform */
-    }
-    
-    .logo-link h1 {
-        font-family: 'Playfair Display', 'Georgia', serif;
-        font-weight: 600;
-        font-size: 2.2rem;
-        letter-spacing: -0.5px;
-        color: #1e3c5c;
-        text-shadow: 0 2px 4px rgba(0,20,40,0.08);
-        margin: 0;
-    }
-
-    /* ===== ПАНЕЛЬ УПРАВЛЕНИЯ ===== */
-    .controls {
-        background: rgba(255,255,255,0.7); backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.6); border-radius: 60px;
-        padding: 0.6rem 0.8rem; display: flex; align-items: center;
-        justify-content: center; gap: 0.6rem;
-        box-shadow: 0 10px 30px -10px rgba(31, 66, 99, 0.2);
-        margin-bottom: 0.5rem; flex-wrap: wrap; width: 100%;
-        position: relative; z-index: 101;
-    }
-    .search-input {
-        background: white; border: 1px solid rgba(79, 139, 201, 0.2);
-        padding: 0.6rem 1rem; border-radius: 50px; font-size: 1.1rem;
-        font-family: 'Inter', inherit; outline: none; transition: all 0.2s ease;
-        box-shadow: 0 4px 10px rgba(0, 20, 40, 0.05);
-        flex: 1; min-width: 100px; color: #1e3c5c;
-    }
-    .search-input:focus { border-color: #4f8bc9; box-shadow: 0 8px 16px -8px #4f8bc9; }
-    .search-input::placeholder { color: #8aa3b8; opacity: 1; }
-    .search-btn {
-        background: linear-gradient(145deg, #4f8bc9, #3a6ca3); color: white;
-        font-weight: 600; border: none; cursor: pointer;
-        box-shadow: 0 10px 18px -8px #2b5a8c; transition: all 0.15s ease;
-        padding: 0.6rem 1.2rem; border-radius: 50px; font-size: 1.1rem;
-        font-family: 'Inter', inherit; white-space: nowrap;
-    }
-    .search-btn:hover {
-        background: linear-gradient(145deg, #5d9ad9, #3f78b5);
-        transform: scale(1.02); box-shadow: 0 14px 22px -10px #1e3e60;
-    }
-
-    /* ===== РЕЗУЛЬТАТЫ ПОИСКА ===== */
-    .search-results {
-        background: white; border-radius: 24px;
-        box-shadow: 0 15px 35px -15px rgba(31, 66, 99, 0.25);
-        border: 1px solid rgba(79, 139, 201, 0.15);
-        margin: -0.5rem auto 2.5rem; max-height: 53vh;
-        overflow-y: auto; display: none; z-index: 100;
-        position: relative; width: 100%; max-width: 800px;
-    }
-    .search-results.visible { display: block; animation: slideDown 0.2s ease; }
-    @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .search-result-item {
-        padding: 0.9rem 1.8rem; cursor: pointer;
-        transition: background 0.15s ease; display: flex;
-        justify-content: space-between; align-items: center;
-        border-bottom: 1px solid rgba(79, 139, 201, 0.08);
-        font-family: 'Inter', sans-serif;
-    }
-    .search-result-item:last-child { border-bottom: none; }
-    .search-result-item:hover { background: #f0f9ff; }
-    .search-result-item.selected { background: #e3f0fa; border-left: 3px solid #4f8bc9; }
-    .search-result-name { font-weight: 500; color: #1e3c5c; font-size: 1.1rem; }
-    .search-result-years { font-size: 0.95rem; color: #6f8fa8; font-weight: 300; }
-    .search-empty { padding: 1.5rem; text-align: center; color: #6f8fa8; font-style: italic; font-family: 'Inter', sans-serif; }
-
-    /* ===== КОНТЕЙНЕР ДРЕВА ===== */
-    .pedigree-container {
-        background: rgba(255,255,255,0.6); backdrop-filter: blur(8px);
-        border-radius: 36px; padding: 2rem 1.8rem;
-        border: 1px solid rgba(255,255,255,0.7);
-        box-shadow: 0 25px 45px -20px rgba(23, 55, 83, 0.3); width: 100%;
-    }
-    .person { position: relative; margin-bottom: 0.25rem; }
-    .card {
-        display: inline-flex; align-items: center; background: white;
-        border-radius: 40px; padding: 0.6rem 1.8rem 0.6rem 1.5rem;
-        border: none; box-shadow: 0 8px 16px -8px rgba(0, 32, 64, 0.12), 0 0 0 1px rgba(79, 139, 201, 0.1);
-        transition: all 0.2s ease; cursor: pointer; margin: 6px 0;
-        font-family: 'Inter', sans-serif;
-    }
-    .card:hover {
-        background: #f0f9ff; box-shadow: 0 12px 22px -12px #2b5a8c, 0 0 0 1px #4f8bc9;
-        transform: translateY(-1px);
-    }
-    .label { 
-        font-weight: 500; color: #153e5a; font-size: 1.1rem; 
-        font-family: 'Inter', sans-serif;
-    }
-    .children {
-        margin-left: 42px;
-        padding-left: 18px;
-        border-left: none;
-        display: none;
-    }
-    .person.expanded > .children { display: block; animation: fadeSlide 0.2s ease; }
-    @keyframes fadeSlide {
-        from { opacity: 0.4; transform: translateY(-5px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .role {
-        font-size: 0.85rem; font-weight: 600; text-transform: uppercase;
-        letter-spacing: 1.2px; color: #537a9f;
-        background: rgba(79, 139, 201, 0.08); padding: 0.3rem 1.2rem;
-        border-radius: 20px; display: inline-block; margin: 10px 0 6px 0;
-        border: 1px solid rgba(79, 139, 201, 0.15); backdrop-filter: blur(2px);
-        font-family: 'Inter', sans-serif;
-    }
-    .generation-0 > .card {
-        background: linear-gradient(115deg, #f0f7ff, #e3f0fa);
-        box-shadow: 0 8px 18px -10px #2b5a8c, 0 0 0 1px #8bb9e5;
-    }
-    .generation-0 > .card .label { color: #1e3c5c; font-weight: 600; }
-
-    /* ===== СОСТОЯНИЯ ===== */
-    .loading-state {
-        display: flex; align-items: center; justify-content: center;
-        gap: 12px; color: #1e3c5c; font-size: 1.2rem; padding: 2rem;
-        font-family: 'Inter', sans-serif;
-    }
-    .loading-state::after {
-        content: ""; width: 24px; height: 24px;
-        border: 3px solid #b3d2f0; border-top: 3px solid #4f8bc9;
-        border-radius: 50%; animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    .error-message {
-        background: #ffefef; color: #b33f3f; padding: 1rem 2rem;
-        border-radius: 40px; border-left: 8px solid #c74a4a;
-        font-weight: 500; box-shadow: 0 8px 18px rgba(180, 60, 60, 0.1);
-        text-align: center; font-size: 1.1rem;
-        font-family: 'Inter', sans-serif;
-    }
-    .empty-state {
-        color: #6f8fa8; text-align: center; padding: 3rem 1rem;
-        font-style: italic; font-size: 1.2rem;
-        font-family: 'Inter', sans-serif;
-    }
-
-    .about-btn {
-        background: linear-gradient(145deg, #10b981, #059669); color: white;
-        font-weight: 600; border: none; cursor: pointer;
-        transition: all 0.15s ease; padding: 0.6rem 1.2rem;
-        border-radius: 50px; font-size: 1.1rem; font-family: 'Inter', inherit;
-        white-space: nowrap; text-decoration: none;
-        display: inline-flex; align-items: center; gap: 0.4rem;
-        box-shadow: 0 10px 18px -8px rgba(5, 150, 105, 0.3);
-    }
-    .about-btn:hover {
-        background: linear-gradient(145deg, #34d399, #10b981);
-        transform: scale(1.02); box-shadow: 0 14px 22px -10px rgba(5, 150, 105, 0.4);
-    }
-
-    /* ===== АДАПТИВ ===== */
-    @media (max-width: 650px) {
-        body { padding: 1rem 0.8rem; }
-        .header { margin-bottom: 1rem; }
-        .controls { border-radius: 32px; padding: 0.8rem; gap: 0.5rem; }
-        .pedigree-container { padding: 1.5rem 1rem; border-radius: 26px; max-width: 100%; overflow-x: auto; }
-        .card { padding: 0.5rem 1.2rem; border-radius: 26px; }
-        .label { font-size: 0.95rem; }
-        .children { margin-left: 24px; padding-left: 12px; border-left: none; }
-        .role { font-size: 0.75rem; padding: 0.25rem 0.7rem; }
-        .logo-link h1 { font-size: 1.8rem; }
-    }
-    
-    @media (max-width: 600px) {
-        body { padding: 0.8rem 0.6rem; }
-        .header { margin-bottom: 0.9rem; }
-        .controls { border-radius: 24px; padding: 0.7rem; }
-        .search-input, .search-btn, .about-btn {
-            font-size: 0.9rem; padding: 0.45rem 0.8rem; border-radius: 20px;
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .pedigree-container { padding: 1.2rem 0.8rem; border-radius: 22px; }
-        .card { padding: 0.4rem 1rem; font-size: 0.9rem; border-radius: 22px; }
-        .label { font-size: 0.9rem; line-height: 1.3; }
-        .children { margin-left: 24px; padding-left: 12px; border-left: none; }
-        .search-result-item { padding: 0.6rem 1rem; }
-        .search-result-name { font-size: 0.95rem; }
-        .search-result-years { font-size: 0.8rem; }
-        .logo-link { gap: 8px; }
-        .logo-link svg { width: 32px; height: 32px; }
-        .logo-link h1 { font-size: 1.6rem; }
-    }
-    
-    @media (max-width: 460px) {
-        .header { margin-bottom: 0.8rem; }
-        .controls { flex-direction: column; align-items: stretch; }
-        .search-input, .search-btn, .about-btn {
-            width: 100%; justify-content: center;
+
+        body {
+            font-family:
+                "Inter",
+                "Segoe UI",
+                Roboto,
+                system-ui,
+                -apple-system,
+                sans-serif;
+            background: linear-gradient(145deg, #f6f9fc 0%, #edf4f8 100%);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            color: #1e3c5c;
+            line-height: 1.5;
         }
-        .controls { gap: 0.6rem; }
-        .children { margin-left: 24px; padding-left: 12px; border-left: none; }
-        .card { padding: 0.35rem 0.7rem; }
-        .logo-link h1 { font-size: 1.5rem; }
-    }
-</style>
+
+        .app-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: "Playfair Display", "Georgia", serif;
+            font-weight: 500;
+            letter-spacing: -0.3px;
+        }
+
+        .header {
+            margin-bottom: 1.2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .logo-link svg {
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 4px rgba(31, 66, 99, 0.1));
+        }
+
+        .logo-link h1 {
+            font-family: "Playfair Display", "Georgia", serif;
+            font-weight: 600;
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+            color: #1e3c5c;
+            text-shadow: 0 2px 4px rgba(0, 20, 40, 0.08);
+            margin: 0;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 60px;
+            padding: 0.6rem 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            box-shadow: 0 10px 30px -10px rgba(31, 66, 99, 0.2);
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            width: 100%;
+            position: relative;
+            z-index: 101;
+        }
+
+        .search-input {
+            background: white;
+            border: 1px solid rgba(79, 139, 201, 0.2);
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-family: "Inter", inherit;
+            outline: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 20, 40, 0.05);
+            flex: 1;
+            min-width: 100px;
+            color: #1e3c5c;
+        }
+
+        .search-input:focus {
+            border-color: #4f8bc9;
+            box-shadow: 0 8px 16px -8px #4f8bc9;
+        }
+
+        .search-input::placeholder {
+            color: #8aa3b8;
+            opacity: 1;
+        }
+
+        .search-btn {
+            background: linear-gradient(145deg, #4f8bc9, #3a6ca3);
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 18px -8px #2b5a8c;
+            transition: all 0.15s ease;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-family: "Inter", inherit;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(145deg, #5d9ad9, #3f78b5);
+            transform: scale(1.02);
+            box-shadow: 0 14px 22px -10px #1e3e60;
+        }
+
+        .search-results {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px -15px rgba(31, 66, 99, 0.25);
+            border: 1px solid rgba(79, 139, 201, 0.15);
+            margin: -0.5rem auto 2.5rem;
+            max-height: 53vh;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .search-results.visible {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-result-item {
+            padding: 0.9rem 1.8rem;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(79, 139, 201, 0.08);
+            font-family: "Inter", sans-serif;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: #f0f9ff;
+        }
+
+        .search-result-item.selected {
+            background: #e3f0fa;
+            border-left: 3px solid #4f8bc9;
+        }
+
+        .search-result-name {
+            font-weight: 500;
+            color: #1e3c5c;
+            font-size: 1.1rem;
+        }
+
+        .search-result-years {
+            font-size: 0.95rem;
+            color: #6f8fa8;
+            font-weight: 300;
+        }
+
+        .search-empty {
+            padding: 1.5rem;
+            text-align: center;
+            color: #6f8fa8;
+            font-style: italic;
+            font-family: "Inter", sans-serif;
+        }
+
+        .pedigree-container {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 36px;
+            padding: 2rem 1.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 25px 45px -20px rgba(23, 55, 83, 0.3);
+            width: 100%;
+        }
+
+        .person {
+            position: relative;
+            margin-bottom: 0.25rem;
+        }
+
+        .card {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            border-radius: 40px;
+            padding: 0.6rem 1.8rem 0.6rem 1.5rem;
+            border: none;
+            box-shadow:
+                0 8px 16px -8px rgba(0, 32, 64, 0.12),
+                0 0 0 1px rgba(79, 139, 201, 0.1);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            margin: 6px 0;
+            font-family: "Inter", sans-serif;
+        }
+
+        .card:hover {
+            background: #f0f9ff;
+            box-shadow:
+                0 12px 22px -12px #2b5a8c,
+                0 0 0 1px #4f8bc9;
+            transform: translateY(-1px);
+        }
+
+        .label {
+            font-weight: 500;
+            color: #153e5a;
+            font-size: 1.1rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .children {
+            margin-left: 42px;
+            padding-left: 18px;
+            border-left: none;
+            display: none;
+        }
+
+        .person.expanded>.children {
+            display: block;
+            animation: fadeSlide 0.2s ease;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0.4;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .role {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #537a9f;
+            background: rgba(79, 139, 201, 0.08);
+            padding: 0.3rem 1.2rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 10px 0 6px 0;
+            border: 1px solid rgba(79, 139, 201, 0.15);
+            backdrop-filter: blur(2px);
+            font-family: "Inter", sans-serif;
+        }
+
+        .generation-0>.card {
+            background: linear-gradient(115deg, #f0f7ff, #e3f0fa);
+            box-shadow:
+                0 8px 18px -10px #2b5a8c,
+                0 0 0 1px #8bb9e5;
+        }
+
+        .generation-0>.card .label {
+            color: #1e3c5c;
+            font-weight: 600;
+        }
+
+        .loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #1e3c5c;
+            font-size: 1.2rem;
+            padding: 2rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .loading-state::after {
+            content: "";
+            width: 24px;
+            height: 24px;
+            border: 3px solid #b3d2f0;
+            border-top: 3px solid #4f8bc9;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #ffefef;
+            color: #b33f3f;
+            padding: 1rem 2rem;
+            border-radius: 40px;
+            border-left: 8px solid #c74a4a;
+            font-weight: 500;
+            box-shadow: 0 8px 18px rgba(180, 60, 60, 0.1);
+            text-align: center;
+            font-size: 1.1rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .empty-state {
+            color: #6f8fa8;
+            text-align: center;
+            padding: 3rem 1rem;
+            font-style: italic;
+            font-size: 1.2rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .about-btn {
+            background: linear-gradient(145deg, #10b981, #059669);
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-family: "Inter", inherit;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 10px 18px -8px rgba(5, 150, 105, 0.3);
+        }
+
+        .about-btn:hover {
+            background: linear-gradient(145deg, #34d399, #10b981);
+            transform: scale(1.02);
+            box-shadow: 0 14px 22px -10px rgba(5, 150, 105, 0.4);
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 1rem 0.8rem;
+            }
+
+            .header {
+                margin-bottom: 1rem;
+            }
+
+            .controls {
+                border-radius: 32px;
+                padding: 0.8rem;
+                gap: 0.5rem;
+            }
+
+            .pedigree-container {
+                padding: 1.5rem 1rem;
+                border-radius: 26px;
+                max-width: 100%;
+                overflow-x: auto;
+            }
+
+            .card {
+                padding: 0.5rem 1.2rem;
+                border-radius: 26px;
+            }
+
+            .label {
+                font-size: 0.95rem;
+            }
+
+            .children {
+                margin-left: 24px;
+                padding-left: 12px;
+                border-left: none;
+            }
+
+            .role {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.7rem;
+            }
+
+            .logo-link h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0.8rem 0.6rem;
+            }
+
+            .header {
+                margin-bottom: 0.9rem;
+            }
+
+            .controls {
+                border-radius: 24px;
+                padding: 0.7rem;
+            }
+
+            .search-input,
+            .search-btn,
+            .about-btn {
+                font-size: 0.9rem;
+                padding: 0.45rem 0.8rem;
+                border-radius: 20px;
+            }
+
+            .pedigree-container {
+                padding: 1.2rem 0.8rem;
+                border-radius: 22px;
+            }
+
+            .card {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+                border-radius: 22px;
+            }
+
+            .label {
+                font-size: 0.9rem;
+                line-height: 1.3;
+            }
+
+            .children {
+                margin-left: 24px;
+                padding-left: 12px;
+                border-left: none;
+            }
+
+            .search-result-item {
+                padding: 0.6rem 1rem;
+            }
+
+            .search-result-name {
+                font-size: 0.95rem;
+            }
+
+            .search-result-years {
+                font-size: 0.8rem;
+            }
+
+            .logo-link {
+                gap: 8px;
+            }
+
+            .logo-link svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            .logo-link h1 {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 460px) {
+            .header {
+                margin-bottom: 0.8rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input,
+            .search-btn,
+            .about-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .controls {
+                gap: 0.6rem;
+            }
+
+            .children {
+                margin-left: 24px;
+                padding-left: 12px;
+                border-left: none;
+            }
+
+            .card {
+                padding: 0.35rem 0.7rem;
+            }
+
+            .logo-link h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<div class="app-container">
-    <div class="header">
-        <a href="/" class="logo-link">
-            <!-- START LOGO SVG -->
-            <svg width="42" height="42" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
-              <defs>
-                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:#4f8bc9;stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:#3a6ca3;stop-opacity:1" />
-                </linearGradient>
-                <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.15"/>
-                </filter>
-              </defs>
-              <circle cx="100" cy="100" r="90" fill="url(#logoGradient)" filter="url(#softShadow)"/>
-              <rect x="92" y="110" width="16" height="35" rx="4" fill="white" opacity="0.95"/>
-              <circle cx="100" cy="75" r="28" fill="white" opacity="0.95"/>
-              <circle cx="75" cy="95" r="18" fill="white" opacity="0.85"/>
-              <circle cx="125" cy="95" r="18" fill="white" opacity="0.85"/>
-              <circle cx="60" cy="115" r="14" fill="white" opacity="0.75"/>
-              <circle cx="140" cy="115" r="14" fill="white" opacity="0.75"/>
-              <line x1="100" y1="103" x2="75" y2="95" stroke="white" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
-              <line x1="100" y1="103" x2="125" y2="95" stroke="white" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
-              <line x1="75" y1="113" x2="60" y2="115" stroke="white" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
-              <line x1="125" y1="113" x2="140" y2="115" stroke="white" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
-              <ellipse cx="85" cy="85" rx="12" ry="8" fill="white" opacity="0.2" transform="rotate(-30 85 85)"/>
-            </svg>
-            <!-- END LOGO SVG -->
-            <h1>Родословная</h1>
-        </a>
-    </div>
-    
-    <div class="controls">
-        <input type="text" id="firstNameInput" placeholder="Имя" class="search-input" autocomplete="off">
-        <input type="text" id="lastNameInput" placeholder="Фамилия" class="search-input" autocomplete="off">
-        <button onclick="searchPeople()" class="search-btn">🔍 Найти</button>
-        <a href="/about" class="about-btn">О проекте</a>
-    </div>
+    <div class="app-container">
+        <div class="header">
+            <a href="/" class="logo-link">
+                <svg width="42" height="42" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"
+                    style="flex-shrink: 0">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color: #4f8bc9; stop-opacity: 1" />
+                            <stop offset="100%" style="stop-color: #3a6ca3; stop-opacity: 1" />
+                        </linearGradient>
+                        <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.15" />
+                        </filter>
+                    </defs>
+                    <circle cx="100" cy="100" r="90" fill="url(#logoGradient)" filter="url(#softShadow)" />
+                    <rect x="92" y="110" width="16" height="35" rx="4" fill="white" opacity="0.95" />
+                    <circle cx="100" cy="75" r="28" fill="white" opacity="0.95" />
+                    <circle cx="75" cy="95" r="18" fill="white" opacity="0.85" />
+                    <circle cx="125" cy="95" r="18" fill="white" opacity="0.85" />
+                    <circle cx="60" cy="115" r="14" fill="white" opacity="0.75" />
+                    <circle cx="140" cy="115" r="14" fill="white" opacity="0.75" />
+                    <line x1="100" y1="103" x2="75" y2="95" stroke="white" stroke-width="2" opacity="0.6"
+                        stroke-linecap="round" />
+                    <line x1="100" y1="103" x2="125" y2="95" stroke="white" stroke-width="2" opacity="0.6"
+                        stroke-linecap="round" />
+                    <line x1="75" y1="113" x2="60" y2="115" stroke="white" stroke-width="2" opacity="0.5"
+                        stroke-linecap="round" />
+                    <line x1="125" y1="113" x2="140" y2="115" stroke="white" stroke-width="2" opacity="0.5"
+                        stroke-linecap="round" />
+                    <ellipse cx="85" cy="85" rx="12" ry="8" fill="white" opacity="0.2" transform="rotate(-30 85 85)" />
+                </svg>
+                <h1>Родословная</h1>
+            </a>
+        </div>
 
-    <div id="searchResults" class="search-results"></div>
+        <div class="controls">
+            <input type="text" id="firstNameInput" placeholder="Имя" class="search-input" autocomplete="off" />
+            <input type="text" id="lastNameInput" placeholder="Фамилия" class="search-input" autocomplete="off" />
+            <button onclick="searchPeople()" class="search-btn">🔍 Найти</button>
+            <a href="/about" class="about-btn">О проекте</a>
+        </div>
 
-    <div id="pedigree-container" class="pedigree-container">
-        <div class="empty-state">
-            ✨ Введите имя и (или) фамилию человека, чтобы посмотреть его родословную
+        <div id="searchResults" class="search-results"></div>
+
+        <div id="pedigree-container" class="pedigree-container">
+            <div class="empty-state">
+                ✨ Введите имя и (или) фамилию человека, чтобы посмотреть его
+                родословную
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-let selectedPersonId = null; 
-let isLoadingTree = false;
+    <script>
+        let selectedPersonId = null;
+        let isLoadingTree = false;
 
-function getSpouseLabelByGender(gender) {
-    const g = String(gender || '').toUpperCase().trim();
-    if (g === 'F') return 'Жена';
-    if (g === 'M') return 'Муж';
-    return 'Супруг/а';
-}
+        function getSpouseLabelByGender(gender) {
+            const g = String(gender || "")
+                .toUpperCase()
+                .trim();
+            if (g === "F") return "Жена";
+            if (g === "M") return "Муж";
+            return "Супруг/а";
+        }
 
-async function searchPeople() {
-    const firstName = document.getElementById('firstNameInput').value.trim();
-    const lastName = document.getElementById('lastNameInput').value.trim();
-    const treeContainer = document.getElementById('pedigree-container');
+        async function searchPeople() {
+            const firstName = document
+                .getElementById("firstNameInput")
+                .value.trim();
+            const lastName = document.getElementById("lastNameInput").value.trim();
+            const treeContainer = document.getElementById("pedigree-container");
 
-    treeContainer.innerHTML = '<div class="empty-state">✨ Введите имя и (или) фамилию человека, чтобы посмотреть его родословную</div>';
-    selectedPersonId = null;
+            treeContainer.innerHTML =
+                '<div class="empty-state">✨ Введите имя и (или) фамилию человека, чтобы посмотреть его родословную</div>';
+            selectedPersonId = null;
 
-    if (!firstName && !lastName) {
-        showSearchMessage('⚠️ Введите имя и (или) фамилию');
-        return;
-    }
+            if (!firstName && !lastName) {
+                showSearchMessage("⚠️ Введите имя и (или) фамилию");
+                return;
+            }
 
-    const resultsContainer = document.getElementById('searchResults');
-    resultsContainer.innerHTML = '<div class="search-empty">🔎 Поиск...</div>';
-    resultsContainer.classList.add('visible');
+            const resultsContainer = document.getElementById("searchResults");
+            resultsContainer.innerHTML =
+                '<div class="search-empty">🔎 Поиск...</div>';
+            resultsContainer.classList.add("visible");
 
-    try {
-        const params = new URLSearchParams();
-        if (firstName) params.append('first_name', firstName);
-        if (lastName) params.append('last_name', lastName);
+            try {
+                const params = new URLSearchParams();
+                if (firstName) params.append("first_name", firstName);
+                if (lastName) params.append("last_name", lastName);
 
-        const res = await fetch(`/person/?${params}`, { headers: { 'Accept': 'application/json' } });
-        if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+                const res = await fetch(`/person/?${params}`, {
+                    headers: { Accept: "application/json" },
+                });
+                if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
 
-        const people = await res.json();
-        renderSearchResults(people);
-    } catch(err) {
-        console.error('Ошибка поиска:', err);
-        showSearchMessage(`❌ Ошибка: ${err.message}`);
-    }
-}
+                const people = await res.json();
+                renderSearchResults(people);
+            } catch (err) {
+                console.error("Ошибка поиска:", err);
+                showSearchMessage(`❌ Ошибка: ${err.message}`);
+            }
+        }
 
-function renderSearchResults(people) {
-    const container = document.getElementById('searchResults');
-    container.scrollTop = 0;
+        function renderSearchResults(people) {
+            const container = document.getElementById("searchResults");
+            container.scrollTop = 0;
 
-    if (!people || people.length === 0) {
-        showSearchMessage('🔍 Ничего не найдено');
-        return;
-    }
+            if (!people || people.length === 0) {
+                showSearchMessage("🔍 Ничего не найдено");
+                return;
+            }
 
-    let html = '';
-    people.forEach(p => {
-        const years = p.birth_year ? ` (${p.birth_year}${p.death_year ? '–' + p.death_year : ''})` : '';
-        const isSelected = p.id === selectedPersonId ? 'selected' : '';
-        html += `
+            let html = "";
+            people.forEach((p) => {
+                const years = p.birth_year
+                    ? ` (${p.birth_year}${p.death_year ? "–" + p.death_year : ""})`
+                    : "";
+                const isSelected = p.id === selectedPersonId ? "selected" : "";
+                html += `
             <div class="search-result-item ${isSelected}" onclick="selectPerson(${p.id}, this)">
                 <span class="search-result-name">${p.first_name} ${p.last_name}</span>
-                ${years ? `<span class="search-result-years">${years}</span>` : ''}
+                ${years ? `<span class="search-result-years">${years}</span>` : ""}
             </div>
         `;
-    });
+            });
 
-    container.innerHTML = html;
-    container.classList.add('visible');
-}
+            container.innerHTML = html;
+            container.classList.add("visible");
+        }
 
-function showSearchMessage(message) {
-    const container = document.getElementById('searchResults');
-    container.innerHTML = `<div class="search-empty">${message}</div>`;
-    container.classList.add('visible');
-}
+        function showSearchMessage(message) {
+            const container = document.getElementById("searchResults");
+            container.innerHTML = `<div class="search-empty">${message}</div>`;
+            container.classList.add("visible");
+        }
 
-function selectPerson(personId, element) {
-    document.querySelectorAll('.search-result-item').forEach(el => el.classList.remove('selected'));
-    if (element) element.classList.add('selected');
+        function selectPerson(personId, element) {
+            document
+                .querySelectorAll(".search-result-item")
+                .forEach((el) => el.classList.remove("selected"));
+            if (element) element.classList.add("selected");
 
-    selectedPersonId = personId;
+            selectedPersonId = personId;
 
-    const results = document.getElementById('searchResults');
-    results.innerHTML = '';
-    results.classList.remove('visible');
+            const results = document.getElementById("searchResults");
+            results.innerHTML = "";
+            results.classList.remove("visible");
 
-    loadSelectedTree();
-}
+            loadSelectedTree();
+        }
 
-async function loadSelectedTree() {
-    if (!selectedPersonId || isLoadingTree) return;
+        async function loadSelectedTree() {
+            if (!selectedPersonId || isLoadingTree) return;
 
-    isLoadingTree = true;
-    const container = document.getElementById('pedigree-container');
-    container.innerHTML = '<div class="loading-state">Загружаем родословную</div>';
+            isLoadingTree = true;
+            const container = document.getElementById("pedigree-container");
+            container.innerHTML =
+                '<div class="loading-state">Загружаем родословную</div>';
 
-    try {
-        const res = await fetch(`/tree/${selectedPersonId}`, { headers: { 'Accept': 'application/json' } });
-        if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+            try {
+                const res = await fetch(`/tree/${selectedPersonId}`, {
+                    headers: { Accept: "application/json" },
+                });
+                if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
 
-        const data = await res.json();
-        container.innerHTML = renderPerson(data, 0);
-        scrollToTree();
+                const data = await res.json();
+                container.innerHTML = renderPerson(data, 0);
+                scrollToTree();
 
-        container.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const personBlock = card.closest('.person');
-                if (personBlock) personBlock.classList.toggle('expanded');
+                container.querySelectorAll(".card").forEach((card) => {
+                    card.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        const personBlock = card.closest(".person");
+                        if (personBlock) personBlock.classList.toggle("expanded");
+                    });
+                });
+            } catch (err) {
+                console.error("Ошибка загрузки дерева:", err);
+                container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${err.message}</div>`;
+            } finally {
+                isLoadingTree = false;
+            }
+        }
+
+        function renderPerson(person, generation, skipId = null) {
+            if (!person) return "";
+
+            const name =
+                `${person.first_name || ""} ${person.last_name || ""}`.trim() ||
+                "Без имени";
+            let years = "";
+            if (person.birth_year || person.death_year) {
+                years = ` ${person.birth_year || "?"}${person.death_year ? "–" + person.death_year : ""}`;
+            }
+
+            let html = `<div class="person generation-${generation}">
+        <div class="card">
+            <span class="label">${name}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ""}</span>
+        </div>`;
+
+            let childrenHtml = "";
+
+            if (person.father || person.mother) {
+                childrenHtml += '<div class="children">';
+                if (person.father)
+                    childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1, skipId)}</div>`;
+                if (person.mother)
+                    childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1, skipId)}</div>`;
+                childrenHtml += "</div>";
+            }
+
+            if (person.spouse && person.spouse.id !== skipId) {
+                const spouseLabel = getSpouseLabelByGender(person.spouse.gender);
+                childrenHtml += '<div class="children">';
+                childrenHtml += `<div><span class="role">${spouseLabel}</span>${renderPerson(person.spouse, generation + 1, person.id)}</div>`;
+                childrenHtml += "</div>";
+            }
+
+            if (person.children && person.children.length > 0) {
+                childrenHtml +=
+                    '<div class="children"><span class="role">Дети</span>';
+                person.children.forEach((child) => {
+                    childrenHtml += renderPerson(child, generation + 1, skipId);
+                });
+                childrenHtml += "</div>";
+            }
+
+            html += childrenHtml + "</div>";
+            return html;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const firstNameInput = document.getElementById("firstNameInput");
+            const lastNameInput = document.getElementById("lastNameInput");
+
+            [firstNameInput, lastNameInput].forEach((input) => {
+                input.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        searchPeople();
+                    }
+                });
+            });
+
+            document.addEventListener("click", (e) => {
+                const controls = document.querySelector(".controls");
+                const results = document.getElementById("searchResults");
+                if (!controls?.contains(e.target) && !results?.contains(e.target)) {
+                    results?.classList.remove("visible");
+                }
             });
         });
 
-    } catch(err) {
-        console.error('Ошибка загрузки дерева:', err);
-        container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${err.message}</div>`;
-    } finally {
-        isLoadingTree = false;
-    }
-}
+        function scrollToTree() {
+            const tree = document.getElementById("pedigree-container");
+            if (!tree) return;
 
-// 🔁 Полная рекурсивная функция с отображением супруга и всех его предков
-function renderPerson(person, generation, skipId = null) {
-    if (!person) return '';
-
-    const name = `${person.first_name || ''} ${person.last_name || ''}`.trim() || 'Без имени';
-    let years = '';
-    if (person.birth_year || person.death_year) {
-        years = ` ${person.birth_year || '?'}${person.death_year ? '–' + person.death_year : ''}`;
-    }
-
-    let html = `<div class="person generation-${generation}">
-        <div class="card">
-            <span class="label">${name}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ''}</span>
-        </div>`;
-
-    let childrenHtml = '';
-    
-    // 👨‍👩‍👧 Родители
-    if (person.father || person.mother) {
-        childrenHtml += '<div class="children">';
-        if (person.father) childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1, skipId)}</div>`;
-        if (person.mother) childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1, skipId)}</div>`;
-        childrenHtml += '</div>';
-    }
-
-    // 💑 Супруг(а) — метка по полю gender
-    if (person.spouse && person.spouse.id !== skipId) {
-        const spouseLabel = getSpouseLabelByGender(person.spouse.gender);
-        childrenHtml += '<div class="children">';
-        childrenHtml += `<div><span class="role">${spouseLabel}</span>${renderPerson(person.spouse, generation + 1, person.id)}</div>`;
-        childrenHtml += '</div>';
-    }
-
-    // 👧👦 Дети
-    if (person.children && person.children.length > 0) {
-        childrenHtml += '<div class="children"><span class="role">Дети</span>';
-        person.children.forEach(child => {
-            childrenHtml += renderPerson(child, generation + 1, skipId);
-        });
-        childrenHtml += '</div>';
-    }
-
-    html += childrenHtml + '</div>';
-    return html;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const firstNameInput = document.getElementById('firstNameInput');
-    const lastNameInput = document.getElementById('lastNameInput');
-
-    [firstNameInput, lastNameInput].forEach(input => {
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                searchPeople();
-            }
-        });
-    });
-
-    document.addEventListener('click', (e) => {
-        const controls = document.querySelector('.controls');
-        const results = document.getElementById('searchResults');
-        if (!controls?.contains(e.target) && !results?.contains(e.target)) {
-            results?.classList.remove('visible');
+            setTimeout(() => {
+                tree.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }, 200);
         }
-    });
-});
-
-function scrollToTree() {
-    const tree = document.getElementById('pedigree-container');
-    if (!tree) return;
-
-    setTimeout(() => {
-        tree.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }, 200);
-}
-</script>
+    </script>
 </body>
+
 </html>

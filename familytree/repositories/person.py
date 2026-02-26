@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import func, or_, select, and_
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from familytree.models import Person

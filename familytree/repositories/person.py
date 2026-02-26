@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import func, or_, select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from familytree.models import Person
@@ -47,6 +47,32 @@ class PersonRepository:
             or_(
                 Person.father_id == parent_id,
                 Person.mother_id == parent_id,
+            )
+        )
+        stmt = stmt.order_by(Person.birth_year.asc())
+        result = await self.db.execute(stmt)
+        return result.scalars().all()
+
+    async def get_siblings(self, person_id: int) -> list[Person]:
+        person = await self.get_by_id(person_id)
+        if not person:
+            return []
+
+        conditions = []
+
+        if person.father_id:
+            conditions.append(Person.father_id == person.father_id)
+
+        if person.mother_id:
+            conditions.append(Person.mother_id == person.mother_id)
+
+        if not conditions:
+            return []
+
+        stmt = select(Person).where(
+            and_(
+                or_(*conditions),
+                Person.id != person_id,
             )
         )
         stmt = stmt.order_by(Person.birth_year.asc())

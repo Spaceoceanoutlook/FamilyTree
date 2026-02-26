@@ -41,3 +41,11 @@ def attach_parent(
 def attach_spouse(node: Dict, spouse: Dict | None):
     if spouse:
         node["spouse"] = spouse
+
+
+def attach_siblings(
+    node: Dict,
+    siblings: List[Dict],
+):
+    if siblings:
+        node["siblings"] = siblings

@@ -772,6 +772,38 @@
                 childrenHtml += "</div>";
             }
 
+            if (person.siblings && person.siblings.length > 0) {
+                const brothers = person.siblings.filter(s => {
+                    const g = String(s.gender || "").toUpperCase().trim();
+                    return g === "M";
+                });
+
+                const sisters = person.siblings.filter(s => {
+                    const g = String(s.gender || "").toUpperCase().trim();
+                    return g === "F";
+                });
+
+                if (brothers.length > 0) {
+                    childrenHtml += '<div class="children"><span class="role">Братья</span>';
+                    brothers.forEach((brother) => {
+                        if (brother.id !== skipId) {
+                            childrenHtml += renderPerson(brother, generation + 1, skipId);
+                        }
+                    });
+                    childrenHtml += "</div>";
+                }
+
+                if (sisters.length > 0) {
+                    childrenHtml += '<div class="children"><span class="role">Сестры</span>';
+                    sisters.forEach((sister) => {
+                        if (sister.id !== skipId) {
+                            childrenHtml += renderPerson(sister, generation + 1, skipId);
+                        }
+                    });
+                    childrenHtml += "</div>";
+                }
+            }
+
             if (person.children && person.children.length > 0) {
                 childrenHtml +=
                     '<div class="children"><span class="role">Дети</span>';

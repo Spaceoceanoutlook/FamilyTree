@@ -1,3 +1,4 @@
+from familytree.logging_config import search_logger
 from familytree.repositories.person import PersonRepository
 from familytree.utils.tree_builder import (
     attach_children,
@@ -16,6 +17,9 @@ class TreeService:
         root = await self.repo.get_by_id(person_id)
         if not root:
             raise ValueError("Person not found")
+
+        logger_str = f"{root.first_name} {root.last_name or ''} {root.birth_year or ''} {root.death_year or ''}".strip()
+        search_logger.info(f"Просмотр дерева: {logger_str}")
 
         visited: set[int] = set()
 

@@ -9,6 +9,8 @@ services:
         - db
       env_file:
         - .env
+      environment:
+        - TZ=Asia/Yekaterinburg 
       volumes:
         - .:/app
   db:

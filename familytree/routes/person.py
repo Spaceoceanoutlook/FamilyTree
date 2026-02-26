@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from familytree.auth import get_current_admin
 from familytree.database import get_db
+from familytree.logging_config import search_logger
 from familytree.repositories.person import PersonRepository
 from familytree.schemas.person import (
     PersonCreate,
@@ -32,6 +33,9 @@ async def get_persons(
     search_params: PersonSearch = Depends(),
     service: PersonService = Depends(get_person_service),
 ):
+    logger_str = f"{search_params.first_name or ''} {search_params.last_name or ''}".strip()
+    search_logger.info(logger_str)
+
     if search_params.first_name or search_params.last_name:
         return await service.get_persons_by_name(
             first_name=search_params.first_name, last_name=search_params.last_name

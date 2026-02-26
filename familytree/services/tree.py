@@ -53,7 +53,7 @@ class TreeService:
                         visited,
                         include_parents=True,
                         include_children=False,
-                        include_siblings=False,
+                        include_siblings=True,
                     )
                     attach_parent(node, key, parent_node)
 
@@ -106,9 +106,8 @@ class TreeService:
                         visited,
                         include_parents=True,
                         include_children=False,
-                        include_siblings=False,
+                        include_siblings=True,
                     )
                     if spouse_node:
                         node["spouse"] = spouse_node
-
         return node

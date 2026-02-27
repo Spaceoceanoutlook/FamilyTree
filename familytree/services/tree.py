@@ -13,13 +13,21 @@ class TreeService:
         self.repo = repo
         self.db = repo.db
 
-    async def get_tree(self, person_id: int):
+    async def get_tree(
+        self,
+        person_id: int,
+        client_ip: str | None = None,
+        user_agent: str | None = None,
+    ):
         root = await self.repo.get_by_id(person_id)
         if not root:
             raise ValueError("Person not found")
 
         logger_str = f"{root.first_name} {root.last_name or ''} {root.birth_year or ''} {root.death_year or ''}".strip()
-        search_logger.info(f"Просмотр дерева: {logger_str}")
+        search_logger.info(
+            f"Просмотр дерева: {logger_str}",
+            extra={"ip": client_ip or "-", "user_agent": user_agent or "-"},
+        )
 
         visited: set[int] = set()
 

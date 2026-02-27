@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from familytree.auth import get_current_admin
@@ -14,6 +14,7 @@ from familytree.schemas.person import (
     PersonUpdate,
 )
 from familytree.services.person import PersonService
+from familytree.utils.client_info import get_client_info
 
 router = APIRouter(
     prefix="/person",
@@ -30,11 +31,16 @@ def get_person_service(
 
 @router.get("/", response_model=list[PersonOut])
 async def get_persons(
+    request: Request,
     search_params: PersonSearch = Depends(),
     service: PersonService = Depends(get_person_service),
 ):
-    logger_str = f"{search_params.first_name or ''} {search_params.last_name or ''}".strip()
-    search_logger.info(logger_str)
+    ip, user_agent = get_client_info(request)
+
+    logger_str = (
+        f"{search_params.first_name or ''} {search_params.last_name or ''}".strip()
+    )
+    search_logger.info(logger_str, extra={"ip": ip, "user_agent": user_agent})
 
     if search_params.first_name or search_params.last_name:
         return await service.get_persons_by_name(

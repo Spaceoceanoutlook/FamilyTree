@@ -254,6 +254,10 @@
             cursor: pointer;
             margin: 6px 0;
             font-family: "Inter", sans-serif;
+
+            -webkit-tap-highlight-color: transparent;
+            -webkit-focus-ring-color: transparent;
+            outline: none;
         }
 
         .card:hover {
@@ -262,6 +266,25 @@
                 0 12px 22px -12px #2b5a8c,
                 0 0 0 1px #4f8bc9;
             transform: translateY(-1px);
+        }
+
+        .card.expandable {
+            background: #ffffff;
+            border: 1px solid #4f8bc9;
+            box-shadow: 0 4px 12px -6px rgba(79, 139, 201, 0.25);
+        }
+
+        .card.final {
+            background: #f5f7fa;
+            border: 1px solid #d0d8e0;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .card.final:hover {
+            background: #f5f7fa;
+            box-shadow: none;
+            transform: none;
         }
 
         .label {
@@ -711,6 +734,18 @@
         #treeContent {
             transition: opacity 0.2s ease;
         }
+
+        /* Убираем стандартное синее/серое выделение при тапе на мобильных */
+        .card {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-focus-ring-color: transparent;
+            outline: none;
+        }
+
+        /* Убираем выделение со всей страницы для чистоты */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
     </style>
 </head>
 
@@ -762,13 +797,11 @@
         <div id="searchResults" class="search-results"></div>
 
         <div id="pedigree-container" class="pedigree-container">
-            <!-- Подсказка остаётся всегда -->
             <div id="treeHint" class="tree-hint" style="display: none;">
                 💡 Нажимайте на карточки людей, чтобы увидеть их родственников
                 <button onclick="hideTreeHint()" class="hint-close">✕</button>
             </div>
 
-            <!-- А дерево загружается в отдельный блок -->
             <div id="treeContent">
                 <div class="empty-state">
                     ✨ Введите имя и (или) фамилию человека, чтобы посмотреть его
@@ -791,6 +824,14 @@
                 if (g === "F") return "Жена";
                 if (g === "M") return "Муж";
                 return "Супруг/а";
+            }
+
+            function hasRelatives(person) {
+                return person.father ||
+                    person.mother ||
+                    person.spouse ||
+                    (person.siblings && person.siblings.length > 0) ||
+                    (person.children && person.children.length > 0);
             }
 
             async function searchPeople() {
@@ -897,7 +938,7 @@
                     showTreeHint();
                     scrollToTree();
 
-                    container.querySelectorAll(".card").forEach((card) => {
+                    container.querySelectorAll(".card.expandable").forEach((card) => {
                         card.addEventListener("click", (e) => {
                             e.stopPropagation();
                             const personBlock = card.closest(".person");
@@ -926,10 +967,13 @@
                     years = ` ${person.birth_year || "?"}${person.death_year ? "–" + person.death_year : ""}`;
                 }
 
+                const isExpandable = hasRelatives(person);
+                const cardClass = isExpandable ? 'card expandable' : 'card final';
+
                 let html = `<div class="person generation-${generation}">
-        <div class="card">
-            <span class="label">${name}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ""}</span>
-        </div>`;
+                    <div class="${cardClass}">
+                        <span class="label">${name}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ""}</span>
+                    </div>`;
 
                 let childrenHtml = "";
 

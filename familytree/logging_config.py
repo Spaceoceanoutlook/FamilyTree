@@ -11,15 +11,19 @@ class ExtraFormatter(logging.Formatter):
         return super().format(record)
 
 
-def get_search_logger() -> logging.Logger:
+def get_structured_logger(
+    name: str,
+    filename: str,
+    level: int = logging.INFO
+) -> logging.Logger:
     Path("logs").mkdir(exist_ok=True)
-
-    logger = logging.getLogger("familytree.searches")
-    logger.setLevel(logging.INFO)
+    
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
     logger.propagate = False
 
     if not logger.handlers:
-        handler = logging.FileHandler("logs/searches.log", encoding="utf-8", mode="a")
+        handler = logging.FileHandler(f"logs/{filename}", encoding="utf-8", mode="a")
         handler.setFormatter(
             ExtraFormatter(
                 "%(asctime)s - [IP:%(ip)s] [UA:%(user_agent)s] - %(message)s",
@@ -27,8 +31,9 @@ def get_search_logger() -> logging.Logger:
             )
         )
         logger.addHandler(handler)
-
+    
     return logger
 
 
-search_logger = get_search_logger()
+search_logger = get_structured_logger("familytree.searches", "searches.log")
+feedback_logger = get_structured_logger("familytree.feedback", "feedback.log")

@@ -397,6 +397,8 @@
             box-shadow: 0 14px 22px -10px rgba(5, 150, 105, 0.4);
         }
 
+
+
         @media (max-width: 460px) {
             body {
                 padding: 0.8rem 0.6rem;
@@ -474,6 +476,19 @@
                 font-size: 0.8rem;
             }
 
+            .tree-hint {
+                font-size: 0.85rem;
+                padding: 0.7rem 0.9rem;
+                gap: 0.7rem;
+                margin: 0 0.5rem 1rem;
+            }
+
+            .tree-hint button {
+                width: 24px;
+                height: 24px;
+                font-size: 0.9rem;
+            }
+
             .logo-link {
                 gap: 8px;
             }
@@ -547,6 +562,18 @@
                 padding: 0.25rem 0.7rem;
             }
 
+            .tree-hint {
+                font-size: 0.85rem;
+                padding: 0.75rem 1rem;
+                gap: 0.8rem;
+            }
+
+            .tree-hint button {
+                width: 26px;
+                height: 26px;
+                font-size: 0.9rem;
+            }
+
             .logo-link {
                 gap: 8px;
             }
@@ -614,9 +641,75 @@
                 padding: 0.25rem 0.7rem;
             }
 
+            .tree-hint {
+                font-size: 0.9rem;
+                padding: 0.8rem 1.1rem;
+                gap: 0.9rem;
+            }
+
+            .tree-hint button {
+                width: 26px;
+                height: 26px;
+                font-size: 1rem;
+            }
+
             .logo-link h1 {
                 font-size: 1.8rem;
             }
+        }
+
+        .tree-hint {
+            background: linear-gradient(135deg, #e3f0fa, #f0f9ff);
+            border: 1px solid rgba(79, 139, 201, 0.3);
+            border-radius: 20px;
+            padding: 0.9rem 1.2rem;
+            margin: 0 auto 1.5rem;
+            max-width: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #1e3c5c;
+            box-shadow: 0 4px 12px rgba(79, 139, 201, 0.15);
+            animation: slideInHint 0.3s ease;
+        }
+
+        .tree-hint button {
+            background: rgba(79, 139, 201, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #4f8bc9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .tree-hint button:hover {
+            background: rgba(79, 139, 201, 0.2);
+            transform: scale(1.1);
+        }
+
+        @keyframes slideInHint {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #treeContent {
+            transition: opacity 0.2s ease;
         }
     </style>
 </head>
@@ -669,259 +762,283 @@
         <div id="searchResults" class="search-results"></div>
 
         <div id="pedigree-container" class="pedigree-container">
-            <div class="empty-state">
-                ✨ Введите имя и (или) фамилию человека, чтобы посмотреть его
-                родословную
+            <!-- Подсказка остаётся всегда -->
+            <div id="treeHint" class="tree-hint" style="display: none;">
+                💡 Нажимайте на карточки людей, чтобы увидеть их родственников
+                <button onclick="hideTreeHint()" class="hint-close">✕</button>
+            </div>
+
+            <!-- А дерево загружается в отдельный блок -->
+            <div id="treeContent">
+                <div class="empty-state">
+                    ✨ Введите имя и (или) фамилию человека, чтобы посмотреть его
+                    родословную
+                </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        let selectedPersonId = null;
-        let isLoadingTree = false;
+        <script>
+            let selectedPersonId = null;
+            let isLoadingTree = false;
+            let treeHintShown = false;
 
-        function getSpouseLabelByGender(gender) {
-            const g = String(gender || "")
-                .toUpperCase()
-                .trim();
-            if (g === "F") return "Жена";
-            if (g === "M") return "Муж";
-            return "Супруг/а";
-        }
 
-        async function searchPeople() {
-            const firstName = document
-                .getElementById("firstNameInput")
-                .value.trim();
-            const lastName = document.getElementById("lastNameInput").value.trim();
-            const treeContainer = document.getElementById("pedigree-container");
 
-            treeContainer.innerHTML =
-                '<div class="empty-state">✨ Выберите человека из списка</div>';
-            selectedPersonId = null;
-
-            if (!firstName && !lastName) {
-                showSearchMessage("⚠️ Введите имя и (или) фамилию");
-                return;
+            function getSpouseLabelByGender(gender) {
+                const g = String(gender || "")
+                    .toUpperCase()
+                    .trim();
+                if (g === "F") return "Жена";
+                if (g === "M") return "Муж";
+                return "Супруг/а";
             }
 
-            const resultsContainer = document.getElementById("searchResults");
-            resultsContainer.innerHTML =
-                '<div class="search-empty">🔎 Поиск...</div>';
-            resultsContainer.classList.add("visible");
+            async function searchPeople() {
+                const firstName = document
+                    .getElementById("firstNameInput")
+                    .value.trim();
+                const lastName = document.getElementById("lastNameInput").value.trim();
+                const treeContainer = document.getElementById("treeContent");
+                treeContainer.innerHTML = '<div class="empty-state">✨ Выберите человека из списка</div>';
+                selectedPersonId = null;
 
-            try {
-                const params = new URLSearchParams();
-                if (firstName) params.append("first_name", firstName);
-                if (lastName) params.append("last_name", lastName);
+                if (!firstName && !lastName) {
+                    showSearchMessage("⚠️ Введите имя и (или) фамилию");
+                    return;
+                }
 
-                const res = await fetch(`/person/?${params}`, {
-                    headers: { Accept: "application/json" },
-                });
-                if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+                const resultsContainer = document.getElementById("searchResults");
+                resultsContainer.innerHTML =
+                    '<div class="search-empty">🔎 Поиск...</div>';
+                resultsContainer.classList.add("visible");
 
-                const people = await res.json();
-                renderSearchResults(people);
-            } catch (err) {
-                console.error("Ошибка поиска:", err);
-                showSearchMessage(`❌ Ошибка: ${err.message}`);
+                try {
+                    const params = new URLSearchParams();
+                    if (firstName) params.append("first_name", firstName);
+                    if (lastName) params.append("last_name", lastName);
+
+                    const res = await fetch(`/person/?${params}`, {
+                        headers: { Accept: "application/json" },
+                    });
+                    if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+
+                    const people = await res.json();
+                    renderSearchResults(people);
+                } catch (err) {
+                    console.error("Ошибка поиска:", err);
+                    showSearchMessage(`❌ Ошибка: ${err.message}`);
+                }
             }
-        }
 
-        function renderSearchResults(people) {
-            const container = document.getElementById("searchResults");
-            container.scrollTop = 0;
+            function renderSearchResults(people) {
+                const container = document.getElementById("searchResults");
+                container.scrollTop = 0;
 
-            if (!people || people.length === 0) {
-                showSearchMessage("🔍 Ничего не найдено");
-                return;
-            }
+                if (!people || people.length === 0) {
+                    showSearchMessage("🔍 Ничего не найдено");
+                    return;
+                }
 
-            let html = "";
-            people.forEach((p) => {
-                const years = p.birth_year
-                    ? ` (${p.birth_year}${p.death_year ? "–" + p.death_year : ""})`
-                    : "";
-                const isSelected = p.id === selectedPersonId ? "selected" : "";
-                html += `
+                let html = "";
+                people.forEach((p) => {
+                    const years = p.birth_year
+                        ? ` (${p.birth_year}${p.death_year ? "–" + p.death_year : ""})`
+                        : "";
+                    const isSelected = p.id === selectedPersonId ? "selected" : "";
+                    html += `
             <div class="search-result-item ${isSelected}" onclick="selectPerson(${p.id}, this)">
                 <span class="search-result-name">${p.first_name} ${p.last_name}</span>
                 ${years ? `<span class="search-result-years">${years}</span>` : ""}
             </div>
         `;
-            });
-
-            container.innerHTML = html;
-            container.classList.add("visible");
-        }
-
-        function showSearchMessage(message) {
-            const container = document.getElementById("searchResults");
-            container.innerHTML = `<div class="search-empty">${message}</div>`;
-            container.classList.add("visible");
-        }
-
-        function selectPerson(personId, element) {
-            document
-                .querySelectorAll(".search-result-item")
-                .forEach((el) => el.classList.remove("selected"));
-            if (element) element.classList.add("selected");
-
-            selectedPersonId = personId;
-
-            const results = document.getElementById("searchResults");
-            results.innerHTML = "";
-            results.classList.remove("visible");
-
-            loadSelectedTree();
-        }
-
-        async function loadSelectedTree() {
-            if (!selectedPersonId || isLoadingTree) return;
-
-            isLoadingTree = true;
-            const container = document.getElementById("pedigree-container");
-            container.innerHTML =
-                '<div class="loading-state">Загружаем родословную</div>';
-
-            try {
-                const res = await fetch(`/tree/${selectedPersonId}`, {
-                    headers: { Accept: "application/json" },
                 });
-                if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
 
-                const data = await res.json();
-                container.innerHTML = renderPerson(data, 0);
-                scrollToTree();
+                container.innerHTML = html;
+                container.classList.add("visible");
+            }
 
-                container.querySelectorAll(".card").forEach((card) => {
-                    card.addEventListener("click", (e) => {
-                        e.stopPropagation();
-                        const personBlock = card.closest(".person");
-                        if (personBlock) personBlock.classList.toggle("expanded");
+            function showSearchMessage(message) {
+                const container = document.getElementById("searchResults");
+                container.innerHTML = `<div class="search-empty">${message}</div>`;
+                container.classList.add("visible");
+            }
+
+            function selectPerson(personId, element) {
+                document
+                    .querySelectorAll(".search-result-item")
+                    .forEach((el) => el.classList.remove("selected"));
+                if (element) element.classList.add("selected");
+
+                selectedPersonId = personId;
+
+                const results = document.getElementById("searchResults");
+                results.innerHTML = "";
+                results.classList.remove("visible");
+
+                loadSelectedTree();
+            }
+
+            async function loadSelectedTree() {
+                if (!selectedPersonId || isLoadingTree) return;
+
+                isLoadingTree = true;
+                const container = document.getElementById("treeContent");
+                container.innerHTML =
+                    '<div class="loading-state">Загружаем родословную</div>';
+
+                try {
+                    const res = await fetch(`/tree/${selectedPersonId}`, {
+                        headers: { Accept: "application/json" },
                     });
-                });
-            } catch (err) {
-                console.error("Ошибка загрузки дерева:", err);
-                container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${err.message}</div>`;
-            } finally {
-                isLoadingTree = false;
+                    if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+
+                    const data = await res.json();
+                    container.innerHTML = renderPerson(data, 0);
+                    showTreeHint();
+                    scrollToTree();
+
+                    container.querySelectorAll(".card").forEach((card) => {
+                        card.addEventListener("click", (e) => {
+                            e.stopPropagation();
+                            const personBlock = card.closest(".person");
+                            if (personBlock) {
+                                personBlock.classList.toggle("expanded");
+                                hideTreeHint();
+                            }
+                        });
+                    });
+                } catch (err) {
+                    console.error("Ошибка загрузки дерева:", err);
+                    container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${err.message}</div>`;
+                } finally {
+                    isLoadingTree = false;
+                }
             }
-        }
 
-        function renderPerson(person, generation, skipId = null) {
-            if (!person) return "";
+            function renderPerson(person, generation, skipId = null) {
+                if (!person) return "";
 
-            const name =
-                `${person.first_name || ""} ${person.last_name || ""}`.trim() ||
-                "Без имени";
-            let years = "";
-            if (person.birth_year || person.death_year) {
-                years = ` ${person.birth_year || "?"}${person.death_year ? "–" + person.death_year : ""}`;
-            }
+                const name =
+                    `${person.first_name || ""} ${person.last_name || ""}`.trim() ||
+                    "Без имени";
+                let years = "";
+                if (person.birth_year || person.death_year) {
+                    years = ` ${person.birth_year || "?"}${person.death_year ? "–" + person.death_year : ""}`;
+                }
 
-            let html = `<div class="person generation-${generation}">
+                let html = `<div class="person generation-${generation}">
         <div class="card">
             <span class="label">${name}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ""}</span>
         </div>`;
 
-            let childrenHtml = "";
+                let childrenHtml = "";
 
-            if (person.father || person.mother) {
-                childrenHtml += '<div class="children">';
-                if (person.father)
-                    childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1, skipId)}</div>`;
-                if (person.mother)
-                    childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1, skipId)}</div>`;
-                childrenHtml += "</div>";
-            }
+                if (person.father || person.mother) {
+                    childrenHtml += '<div class="children">';
+                    if (person.father)
+                        childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1, skipId)}</div>`;
+                    if (person.mother)
+                        childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1, skipId)}</div>`;
+                    childrenHtml += "</div>";
+                }
 
-            if (person.spouse && person.spouse.id !== skipId) {
-                const spouseLabel = getSpouseLabelByGender(person.spouse.gender);
-                childrenHtml += '<div class="children">';
-                childrenHtml += `<div><span class="role">${spouseLabel}</span>${renderPerson(person.spouse, generation + 1, person.id)}</div>`;
-                childrenHtml += "</div>";
-            }
+                if (person.spouse && person.spouse.id !== skipId) {
+                    const spouseLabel = getSpouseLabelByGender(person.spouse.gender);
+                    childrenHtml += '<div class="children">';
+                    childrenHtml += `<div><span class="role">${spouseLabel}</span>${renderPerson(person.spouse, generation + 1, person.id)}</div>`;
+                    childrenHtml += "</div>";
+                }
 
-            if (person.siblings && person.siblings.length > 0) {
-                const brothers = person.siblings.filter(s => {
-                    const g = String(s.gender || "").toUpperCase().trim();
-                    return g === "M";
-                });
+                if (person.siblings && person.siblings.length > 0) {
+                    const brothers = person.siblings.filter(s => {
+                        const g = String(s.gender || "").toUpperCase().trim();
+                        return g === "M";
+                    });
 
-                const sisters = person.siblings.filter(s => {
-                    const g = String(s.gender || "").toUpperCase().trim();
-                    return g === "F";
-                });
+                    const sisters = person.siblings.filter(s => {
+                        const g = String(s.gender || "").toUpperCase().trim();
+                        return g === "F";
+                    });
 
-                if (brothers.length > 0) {
-                    childrenHtml += '<div class="children"><span class="role">Братья</span>';
-                    brothers.forEach((brother) => {
-                        if (brother.id !== skipId) {
-                            childrenHtml += renderPerson(brother, generation + 1, skipId);
-                        }
+                    if (brothers.length > 0) {
+                        childrenHtml += '<div class="children"><span class="role">Братья</span>';
+                        brothers.forEach((brother) => {
+                            if (brother.id !== skipId) {
+                                childrenHtml += renderPerson(brother, generation + 1, skipId);
+                            }
+                        });
+                        childrenHtml += "</div>";
+                    }
+
+                    if (sisters.length > 0) {
+                        childrenHtml += '<div class="children"><span class="role">Сестры</span>';
+                        sisters.forEach((sister) => {
+                            if (sister.id !== skipId) {
+                                childrenHtml += renderPerson(sister, generation + 1, skipId);
+                            }
+                        });
+                        childrenHtml += "</div>";
+                    }
+                }
+
+                if (person.children && person.children.length > 0) {
+                    childrenHtml +=
+                        '<div class="children"><span class="role">Дети</span>';
+                    person.children.forEach((child) => {
+                        childrenHtml += renderPerson(child, generation + 1, skipId);
                     });
                     childrenHtml += "</div>";
                 }
 
-                if (sisters.length > 0) {
-                    childrenHtml += '<div class="children"><span class="role">Сестры</span>';
-                    sisters.forEach((sister) => {
-                        if (sister.id !== skipId) {
-                            childrenHtml += renderPerson(sister, generation + 1, skipId);
+                html += childrenHtml + "</div>";
+                return html;
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const firstNameInput = document.getElementById("firstNameInput");
+                const lastNameInput = document.getElementById("lastNameInput");
+
+                [firstNameInput, lastNameInput].forEach((input) => {
+                    input.addEventListener("keypress", (e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            searchPeople();
                         }
                     });
-                    childrenHtml += "</div>";
-                }
-            }
-
-            if (person.children && person.children.length > 0) {
-                childrenHtml +=
-                    '<div class="children"><span class="role">Дети</span>';
-                person.children.forEach((child) => {
-                    childrenHtml += renderPerson(child, generation + 1, skipId);
                 });
-                childrenHtml += "</div>";
-            }
 
-            html += childrenHtml + "</div>";
-            return html;
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const firstNameInput = document.getElementById("firstNameInput");
-            const lastNameInput = document.getElementById("lastNameInput");
-
-            [firstNameInput, lastNameInput].forEach((input) => {
-                input.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter") {
-                        e.preventDefault();
-                        searchPeople();
+                document.addEventListener("click", (e) => {
+                    const controls = document.querySelector(".controls");
+                    const results = document.getElementById("searchResults");
+                    if (!controls?.contains(e.target) && !results?.contains(e.target)) {
+                        results?.classList.remove("visible");
                     }
                 });
             });
 
-            document.addEventListener("click", (e) => {
-                const controls = document.querySelector(".controls");
-                const results = document.getElementById("searchResults");
-                if (!controls?.contains(e.target) && !results?.contains(e.target)) {
-                    results?.classList.remove("visible");
+            function scrollToTree() {
+                const tree = document.getElementById("treeContent");
+                if (!tree) return;
+                setTimeout(() => {
+                    tree.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 200);
+            }
+
+            function showTreeHint() {
+                const hint = document.getElementById('treeHint');
+                if (hint && !treeHintShown) {
+                    hint.style.display = 'flex';
+                    treeHintShown = true;
                 }
-            });
-        });
+            }
 
-        function scrollToTree() {
-            const tree = document.getElementById("pedigree-container");
-            if (!tree) return;
-
-            setTimeout(() => {
-                tree.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                });
-            }, 200);
-        }
-    </script>
+            function hideTreeHint() {
+                const hint = document.getElementById('treeHint');
+                if (hint) {
+                    hint.style.display = 'none';
+                }
+            }
+        </script>
 </body>
 
 </html>

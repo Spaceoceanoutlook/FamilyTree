@@ -20,6 +20,7 @@
             box-sizing: border-box;
         }
 
+
         body {
             font-family:
                 "Inter",
@@ -28,9 +29,11 @@
                 system-ui,
                 -apple-system,
                 sans-serif;
+
             background: linear-gradient(145deg, #f6f9fc 0%, #edf4f8 100%);
             min-height: 100vh;
             padding: 2rem 1.5rem;
+
             color: #1e3c5c;
             line-height: 1.6;
         }
@@ -39,6 +42,7 @@
             max-width: 700px;
             margin: 0 auto;
         }
+
 
         h1,
         h2,
@@ -51,6 +55,7 @@
             letter-spacing: -0.3px;
         }
 
+
         .header {
             margin-bottom: 1.2rem;
             display: flex;
@@ -61,7 +66,6 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 12px;
         }
 
@@ -74,27 +78,37 @@
             font-family: "Playfair Display", "Georgia", serif;
             font-weight: 600;
             font-size: 2.2rem;
+
             letter-spacing: -0.5px;
             color: #1e3c5c;
+
             text-shadow: 0 2px 4px rgba(0, 20, 40, 0.08);
-            margin: 0;
         }
+
 
         .card {
             background: rgba(255, 255, 255, 0.7);
+
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+
             border: 1px solid rgba(255, 255, 255, 0.6);
+
             border-radius: 36px;
             padding: 2.5rem 2rem;
+
             box-shadow: 0 25px 45px -20px rgba(23, 55, 83, 0.3);
+
             margin-top: 1rem;
         }
 
+
         .intro {
             margin-bottom: 2rem;
+
             line-height: 1.7;
             color: #537a9f;
+
             font-size: 1.1rem;
         }
 
@@ -105,33 +119,13 @@
 
         .form-subtitle {
             color: #537a9f;
+
             margin-bottom: 1.5rem;
+
             line-height: 1.6;
             font-size: 1rem;
         }
 
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #4f8bc9;
-            text-decoration: none;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            padding: 0.5rem 1.2rem;
-            background: rgba(79, 139, 201, 0.08);
-            border: 1px solid rgba(79, 139, 201, 0.15);
-            border-radius: 50px;
-            transition: all 0.2s ease;
-            font-size: 0.95rem;
-            font-family: "Inter", sans-serif;
-        }
-
-        .back-link:hover {
-            background: rgba(79, 139, 201, 0.15);
-            color: #1e3c5c;
-            transform: translateX(-3px);
-        }
 
         .contact-form {
             display: flex;
@@ -142,16 +136,23 @@
         .form-group input,
         .form-group textarea {
             width: 100%;
+
             padding: 0.8rem 1.4rem;
+
             border: 1px solid rgba(79, 139, 201, 0.2);
             border-radius: 50px;
+
             font-size: 1rem;
-            font-family: "Inter", inherit;
+            font-family: "Inter", sans-serif;
+
             outline: none;
-            transition: all 0.2s ease;
+
             background: white;
             color: #1e3c5c;
+
             box-shadow: 0 4px 10px rgba(0, 20, 40, 0.05);
+
+            transition: all 0.2s ease;
         }
 
         .form-group input::placeholder,
@@ -168,61 +169,74 @@
         .form-group textarea {
             resize: vertical;
             min-height: 120px;
+
             border-radius: 24px;
+
             padding: 1rem 1.4rem;
             line-height: 1.5;
         }
 
+
         .submit-btn {
             background: linear-gradient(145deg, #4f8bc9, #3a6ca3);
+
             color: white;
             font-weight: 600;
+
             border: none;
             cursor: pointer;
+
             padding: 0.8rem 2.5rem;
+
             border-radius: 50px;
+
             font-size: 1.1rem;
-            font-family: "Inter", inherit;
-            transition: box-shadow 0.15s ease, background 0.15s ease;
+            font-family: "Inter", sans-serif;
+
             box-shadow: 0 10px 18px -8px #2b5a8c;
-            margin-top: 0.5rem;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
+
+            margin: 0.5rem auto 0;
+
             display: block;
-            transform: none;
-            will-change: box-shadow, background;
+
+            transition: all 0.15s ease;
         }
 
         .submit-btn:hover {
             background: linear-gradient(145deg, #5d9ad9, #3f78b5);
+
             box-shadow:
                 0 14px 22px -10px #1e3e60,
                 0 0 0 2px rgba(79, 139, 201, 0.3);
-            transform: none;
         }
 
         .submit-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
         }
+
 
         .form-message {
             padding: 0.8rem 1.5rem;
+
             border-radius: 50px;
+
             font-weight: 500;
             text-align: center;
+
             display: none;
+
             font-size: 0.95rem;
+
             margin-top: 1rem;
-            font-family: "Inter", sans-serif;
         }
 
         .form-message.success {
             background: #e8f5e9;
             color: #2e7d32;
+
             border: 1px solid #a5d6a7;
+
             display: block;
             animation: fadeIn 0.3s ease;
         }
@@ -230,10 +244,13 @@
         .form-message.error {
             background: #ffebee;
             color: #c62828;
+
             border: 1px solid #ef9a9a;
+
             display: block;
             animation: fadeIn 0.3s ease;
         }
+
 
         @keyframes fadeIn {
             from {
@@ -247,68 +264,73 @@
             }
         }
 
-        @media (max-width: 650px) {
-            body {
-                padding: 1rem 0.8rem;
-            }
-
-            .card {
-                padding: 1.8rem 1.2rem;
-                border-radius: 28px;
-            }
-
-            .logo-link h1 {
-                font-size: 1.8rem;
-            }
-
-            .logo-link svg {
-                width: 36px;
-                height: 36px;
-            }
-
-            .submit-btn {
-                width: 100%;
-            }
-        }
-
         @media (max-width: 480px) {
+
             body {
                 padding: 0.8rem 0.6rem;
             }
 
-            .card {
-                padding: 1.5rem 1rem;
-                border-radius: 24px;
+            .header {
+                margin-bottom: 0.8rem;
             }
 
-            .intro,
-            .form-subtitle {
-                font-size: 0.95rem;
-            }
-
-            .form-group input,
-            .form-group textarea {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 40px;
-            }
-
-            .form-group textarea {
-                border-radius: 20px;
-            }
-
-            .submit-btn {
-                font-size: 1rem;
-                padding: 0.7rem 1.5rem;
-            }
-
-            .logo-link h1 {
-                font-size: 1.6rem;
+            .logo-link {
+                gap: 8px;
             }
 
             .logo-link svg {
                 width: 32px;
                 height: 32px;
+            }
+
+            .logo-link h1 {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 1.4rem 1rem;
+                border-radius: 24px;
+            }
+
+            .intro {
+                font-size: 0.95rem;
+            }
+
+            .form-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                font-size: 0.9rem;
+                padding: 0.7rem 1.1rem;
+            }
+
+            .submit-btn {
+                width: 100%;
+                font-size: 1rem;
+                padding: 0.7rem 1.4rem;
+            }
+        }
+
+
+        @media (min-width: 481px) and (max-width: 768px) {
+
+            body {
+                padding: 1rem 0.9rem;
+            }
+
+            .logo-link h1 {
+                font-size: 1.7rem;
+            }
+
+            .card {
+                padding: 1.8rem 1.4rem;
+                border-radius: 28px;
+            }
+
+            .submit-btn {
+                width: 100%;
             }
         }
     </style>
@@ -367,8 +389,7 @@
             </p>
 
             <p class="form-subtitle">
-                Буду рад, если поделитесь информацией о вашей семье или укажете на
-                неточности. Пишите мне:
+                Вы можете помочь мне, поделившись информацией о своей семье. Пишите:
             </p>
 
             <form id="contactForm" class="contact-form" onsubmit="submitForm(event)">

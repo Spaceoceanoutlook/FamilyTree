@@ -36,4 +36,4 @@ def get_structured_logger(
 
 
 search_logger = get_structured_logger("familytree.searches", "searches.log")
-feedback_logger = get_structured_logger("familytree.feedback", "feedback.log")
+feedback_logger = get_structured_logger("familytree.feedbacks", "feedbacks.log")

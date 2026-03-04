@@ -882,8 +882,9 @@
 
                 let html = "";
                 people.forEach((p) => {
+                    const deathYearDisplay = (p.death_year == 1) ? "?" : p.death_year;
                     const years = p.birth_year
-                        ? ` (${p.birth_year}${p.death_year ? "–" + p.death_year : ""})`
+                        ? ` (${p.birth_year}${deathYearDisplay ? "–" + deathYearDisplay : ""})`
                         : "";
                     const isSelected = p.id === selectedPersonId ? "selected" : "";
                     html += `
@@ -962,9 +963,11 @@
                 const name =
                     `${person.first_name || ""} ${person.last_name || ""}`.trim() ||
                     "Без имени";
+
+                const deathYearDisplay = (person.death_year == 1) ? "?" : person.death_year;
                 let years = "";
                 if (person.birth_year || person.death_year) {
-                    years = ` ${person.birth_year || "?"}${person.death_year ? "–" + person.death_year : ""}`;
+                    years = ` ${person.birth_year || "?"}${deathYearDisplay ? "–" + deathYearDisplay : ""}`;
                 }
 
                 const isExpandable = hasRelatives(person);

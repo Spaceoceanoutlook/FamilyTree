@@ -13,15 +13,12 @@ services:
         - TZ=Asia/Yekaterinburg 
       volumes:
         - .:/app
-      restart: always
-
   db:
     image: postgres:18
     container_name: familytreedb
     env_file: .env
     volumes:
       - postgres_data:/var/lib/postgresql
-    restart: always
 
 volumes:
   postgres_data:

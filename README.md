@@ -36,3 +36,4 @@ docker compose exec api alembic upgrade head
 ```bash 
 docker compose up -d
 ```
+Swagger доступен по http://127.0.0.1:8008/docs

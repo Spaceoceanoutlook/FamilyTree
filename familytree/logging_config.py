@@ -12,12 +12,10 @@ class ExtraFormatter(logging.Formatter):
 
 
 def get_structured_logger(
-    name: str,
-    filename: str,
-    level: int = logging.INFO
+    name: str, filename: str, level: int = logging.INFO
 ) -> logging.Logger:
     Path("logs").mkdir(exist_ok=True)
-    
+
     logger = logging.getLogger(name)
     logger.setLevel(level)
     logger.propagate = False
@@ -31,7 +29,7 @@ def get_structured_logger(
             )
         )
         logger.addHandler(handler)
-    
+
     return logger
 
 

@@ -25,16 +25,21 @@ class Person(Base):
         Integer, ForeignKey("persons.id"), nullable=True
     )
 
-    father: Mapped["Person"] = relationship(
+    father: Mapped["Person | None"] = relationship(
         "Person",
         foreign_keys=[father_id],
         remote_side=[id],
         backref="children_from_father",
     )
 
-    mother: Mapped["Person"] = relationship(
+    mother: Mapped["Person | None"] = relationship(
         "Person",
         foreign_keys=[mother_id],
         remote_side=[id],
         backref="children_from_mother",
+    )
+
+    person_photos: Mapped[list["PersonPhoto"]] = relationship(
+        back_populates="person",
+        cascade="all, delete-orphan",
     )

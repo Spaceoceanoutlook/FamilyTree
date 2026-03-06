@@ -1,9 +1,10 @@
 from sqlalchemy.exc import SQLAlchemyError
 
+from familytree.logging_config import feedback_logger
 from familytree.models import Feedback
 from familytree.repositories.feedback import FeedbackRepository
 from familytree.schemas.feedback import FeedbackCreate, FeedbackOut
-from familytree.logging_config import feedback_logger
+
 
 class FeedbackService:
     def __init__(self, repo: FeedbackRepository):

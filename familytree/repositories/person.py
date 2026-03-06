@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from familytree.models import Person
+from familytree.models import Person, PersonPhoto, Photo
 
 
 class PersonRepository:
@@ -78,3 +78,20 @@ class PersonRepository:
         stmt = stmt.order_by(Person.birth_year.asc())
         result = await self.db.execute(stmt)
         return result.scalars().all()
+
+    async def attach_photos_to_persons(self, persons: list[Person]) -> None:
+        if not persons:
+            return
+
+        person_ids = [p.id for p in persons]
+
+        stmt = select(PersonPhoto).where(PersonPhoto.person_id.in_(person_ids))
+        result = await self.db.execute(stmt)
+        links = result.scalars().all()
+
+        photos_map: dict[int, list[Photo]] = {}
+        for link in links:
+            photos_map.setdefault(link.person_id, []).append(link.photo)
+
+        for p in persons:
+            p.photos = photos_map.get(p.id, [])

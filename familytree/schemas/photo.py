@@ -17,5 +17,6 @@ class PhotoCreate(PhotoBase):
 class PhotoOut(PhotoBase):
     id: int
 
+
 class PhotoUpload(BaseModel):
     description: Optional[str] = None

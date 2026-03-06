@@ -3,6 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from familytree.schemas.photo import PhotoOut
 from familytree.utils.normalization import normalize_russian_text
 
 
@@ -69,6 +70,7 @@ class PersonUpdate(BaseModel):
 
 class PersonOut(PersonBase):
     id: int
+    photos: list["PhotoOut"] = []
 
 
 class PersonSearch(BaseModel):

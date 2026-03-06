@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,7 +15,7 @@ class PhotoRepository:
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_all(self) -> List[Photo]:
+    async def get_all(self) -> list[Photo]:
         stmt = select(Photo).order_by(Photo.id)
         result = await self.db.execute(stmt)
         return result.scalars().all()

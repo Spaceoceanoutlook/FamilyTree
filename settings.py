@@ -3,17 +3,23 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    # Database
     postgres_user: str
     postgres_password: str
     postgres_db: str
     postgres_host: str
     postgres_port: int
 
+    # JWT
     jwt_secret_key: str
     jwt_algorithm: str
     access_token_expire_minutes: int
 
+    # Admin
     hashed_admin_password: str
+
+    # Photo
+    photo_upload_dir: str = "static/photos"
 
     @property
     def sqlalchemy_url(self) -> str:

@@ -1,4 +1,3 @@
-# utils/file.py
 import uuid
 from pathlib import Path
 
@@ -11,13 +10,11 @@ async def save_upload_file(file: UploadFile) -> str:
     file_ext = Path(file.filename).suffix
     unique_filename = f"{uuid.uuid4()}{file_ext}"
     file_path = Path(settings.photo_upload_dir) / unique_filename
-    
-    # Создаём папку, если её нет
+
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     try:
         content = await file.read()
-        # Используем обычный open вместо aiofiles
         with open(file_path, "wb") as f:
             f.write(content)
     except Exception as e:
@@ -25,13 +22,13 @@ async def save_upload_file(file: UploadFile) -> str:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Не удалось сохранить файл: {str(e)}",
         )
-    
+
     return unique_filename
 
 
 async def delete_file(filename: str) -> bool:
     file_path = Path(settings.photo_upload_dir) / filename
-    
+
     try:
         if file_path.exists():
             file_path.unlink()

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Path, Request
+from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from familytree.database import get_db
@@ -6,7 +6,7 @@ from familytree.repositories.person import PersonRepository
 from familytree.services.tree import TreeService
 from familytree.utils.client_info import get_client_info
 
-router = APIRouter(prefix="/tree", tags=["Tree"])
+router = APIRouter(prefix="/persons", tags=["Tree"])
 
 
 def get_tree_service(
@@ -16,7 +16,7 @@ def get_tree_service(
     return TreeService(repo)
 
 
-@router.get("/{person_id}")
+@router.get("/{person_id}/tree")
 async def get_tree(
     request: Request,
     person_id: int = Path(..., ge=1),
@@ -26,4 +26,6 @@ async def get_tree(
     try:
         return await service.get_tree(person_id, client_ip=ip, user_agent=ua)
     except ValueError:
-        raise HTTPException(404, "Person not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Person not found"
+        )

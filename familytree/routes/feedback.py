@@ -8,8 +8,8 @@ from familytree.schemas.feedback import FeedbackCreate, FeedbackOut
 from familytree.services.feedback import FeedbackService
 
 router = APIRouter(
-    prefix="/feedback",
-    tags=["Feedback"],
+    prefix="/feedbacks",
+    tags=["Feedbacks"],
 )
 
 

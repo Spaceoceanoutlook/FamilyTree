@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from familytree.auth import get_current_admin
@@ -17,8 +17,8 @@ from familytree.services.person import PersonService
 from familytree.utils.client_info import get_client_info
 
 router = APIRouter(
-    prefix="/person",
-    tags=["Person"],
+    prefix="/persons",
+    tags=["Persons"],
 )
 
 
@@ -72,7 +72,9 @@ async def get_person_by_id(
     try:
         return await service.get_person_by_id(person_id)
     except ValueError:
-        raise HTTPException(404, "Person not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Person not found"
+        )
 
 
 @router.patch(
@@ -88,7 +90,9 @@ async def update_person(
     try:
         return await service.update(person_id, data)
     except ValueError:
-        raise HTTPException(404, "Person not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Person not found"
+        )
 
 
 @router.delete(
@@ -103,4 +107,6 @@ async def delete_person(
         await service.delete(person_id)
         return {"status": "deleted", "id": person_id}
     except ValueError:
-        raise HTTPException(404, "Person not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Person not found"
+        )

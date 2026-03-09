@@ -13,24 +13,28 @@ class PhotoService:
     async def create_photo(
         self, filename: str, description: str | None = None
     ) -> Photo:
-        photo = Photo(filename=filename, description=description)
-        return await self.photo_repo.create(photo)
+        return await self.photo_repo.create(filename, description)
 
-    async def link_person_to_photo(self, person_id: int, photo_id: int):
+    async def link_person_to_photo(self, person_id: int, photo_id: int) -> None:
         photo = await self.photo_repo.get_by_id(photo_id)
         if not photo:
-            raise ValueError(f"Photo id={photo_id} не найден")
-        await self.person_photo_repo.link_person_to_photo(person_id, photo_id)
-
-    async def create_and_link_photo(
-        self, person_id: int, filename: str, description: str | None = None
-    ):
-        photo = await self.create_photo(filename, description)
-        await self.link_person_to_photo(person_id, photo.id)
-        return photo
+            raise ValueError(f"Фото с id={photo_id} не найдено")
+        await self.person_photo_repo.link(person_id, photo_id)
 
     async def get_person_photos(self, person_id: int) -> list[Photo]:
-        return await self.person_photo_repo.get_person_photos(person_id)
+        return await self.person_photo_repo.get_photos_by_person(person_id)
 
-    async def unlink_person_from_photo(self, person_id: int, photo_id: int):
-        await self.person_photo_repo.unlink_person_from_photo(person_id, photo_id)
+    async def unlink_person_from_photo(self, person_id: int, photo_id: int) -> None:
+        await self.person_photo_repo.unlink(person_id, photo_id)
+
+    async def delete_photo(self, photo_id: int) -> str:
+        photo = await self.photo_repo.get_by_id(photo_id)
+        if not photo:
+            raise ValueError(f"Фото с id={photo_id} не найдено")
+
+        filename = photo.filename
+
+        await self.person_photo_repo.delete_links_by_photo(photo_id)
+        await self.photo_repo.delete(photo)
+
+        return filename

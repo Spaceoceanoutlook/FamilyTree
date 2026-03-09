@@ -1,122 +1,110 @@
-# api/routes/photo.py
-from typing import List
-
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Path,
+    UploadFile,
+    status,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from familytree.database import get_db
 from familytree.schemas.photo import PhotoOut
 from familytree.services.photo import PhotoService
-from familytree.utils.file import delete_file, get_photo_url, save_upload_file
+from familytree.utils.file import delete_file, save_upload_file
 
 router = APIRouter(prefix="/photos", tags=["Photos"])
 
 
-@router.post("/upload", response_model=PhotoOut, status_code=status.HTTP_201_CREATED)
+def get_photo_service(db: AsyncSession = Depends(get_db)) -> PhotoService:
+    return PhotoService(db)
+
+
+@router.post("/", response_model=PhotoOut, status_code=status.HTTP_201_CREATED)
 async def upload_photo(
     file: UploadFile = File(...),
     description: str | None = Form(None),
+    service: PhotoService = Depends(get_photo_service),
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    Загрузить фото (без привязки к человеку).
-    """
-    # Сохраняем файл на диск
     filename = await save_upload_file(file)
 
-    # Создаем запись в БД
-    service = PhotoService(db)
-
     try:
-        photo = await service.create_photo(filename=filename, description=description)
+        photo = await service.create_photo(filename, description)
         await db.commit()
-    except Exception as e:
-        await db.rollback()
-        # Если ошибка БД - удаляем файл
-        await delete_file(filename)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Ошибка при создании записи: {str(e)}",
-        )
-
-    return photo
-
-
-@router.post(
-    "/upload-and-link", response_model=PhotoOut, status_code=status.HTTP_201_CREATED
-)
-async def upload_and_link_photo(
-    person_id: int = Form(...),
-    file: UploadFile = File(...),
-    description: str | None = Form(None),
-    db: AsyncSession = Depends(get_db),
-):
-    """
-    Загрузить фото и сразу привязать к человеку.
-    """
-    # Сохраняем файл на диск
-    filename = await save_upload_file(file)
-
-    # Создаем запись в БД и привязываем к человеку
-    service = PhotoService(db)
-
-    try:
-        photo = await service.create_and_link_photo(
-            person_id=person_id, filename=filename, description=description
-        )
-        await db.commit()
-    except ValueError as e:
-        await db.rollback()
-        await delete_file(filename)
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        return photo
     except Exception as e:
         await db.rollback()
         await delete_file(filename)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Ошибка БД: {str(e)}",
+            detail=f"Ошибка сохранения: {str(e)}",
         )
 
-    return photo
 
-
-@router.get("/person/{person_id}", response_model=List[PhotoOut])
-async def get_person_photos(person_id: int, db: AsyncSession = Depends(get_db)):
-    """
-    Получить все фото человека.
-    """
-    service = PhotoService(db)
-
+@router.post("/{photo_id}/persons/{person_id}", status_code=status.HTTP_201_CREATED)
+async def link_person(
+    photo_id: int = Path(...),
+    person_id: int = Path(...),
+    service: PhotoService = Depends(get_photo_service),
+    db: AsyncSession = Depends(get_db),
+):
     try:
-        photos = await service.get_person_photos(person_id)
+        await service.link_person_to_photo(person_id, photo_id)
+        await db.commit()
+        return {"status": "linked", "photo_id": photo_id, "person_id": person_id}
     except ValueError as e:
+        await db.rollback()
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Ошибка сохранения: {str(e)}",
+        )
 
+
+@router.get("/persons/{person_id}", response_model=list[PhotoOut])
+async def get_person_photos(
+    person_id: int = Path(...),
+    service: PhotoService = Depends(get_photo_service),
+):
+    photos = await service.get_person_photos(person_id)
     return photos
 
 
+@router.delete(
+    "/{photo_id}/persons/{person_id}", status_code=status.HTTP_204_NO_CONTENT
+)
+async def unlink_person(
+    photo_id: int = Path(...),
+    person_id: int = Path(...),
+    service: PhotoService = Depends(get_photo_service),
+    db: AsyncSession = Depends(get_db),
+):
+    await service.unlink_person_from_photo(person_id, photo_id)
+    await db.commit()
+    return None
+
+
 @router.delete("/{photo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_photo(photo_id: int, db: AsyncSession = Depends(get_db)):
-    """
-    Удалить фото (из БД и с диска).
-    """
-    service = PhotoService(db)
-
+async def delete_photo(
+    photo_id: int = Path(...),
+    service: PhotoService = Depends(get_photo_service),
+    db: AsyncSession = Depends(get_db),
+):
     try:
-        # Получаем фото чтобы знать имя файла
-        photo = await service.get_photo_by_id(photo_id)
-        if not photo:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Фото с id {photo_id} не найдено",
-            )
-
-        # Удаляем из БД
-        await service.delete_photo(photo_id)
+        filename = await service.delete_photo(photo_id)
         await db.commit()
 
-        # Удаляем файл с диска
-        await delete_file(photo.filename)
+        try:
+            await delete_file(filename)
+        except Exception as file_err:
+            print(
+                f"Warning: DB deleted, but file {filename} removal failed: {file_err}"
+            )
 
     except ValueError as e:
         await db.rollback()
@@ -125,5 +113,5 @@ async def delete_photo(photo_id: int, db: AsyncSession = Depends(get_db)):
         await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Ошибка при удалении: {str(e)}",
+            detail=f"Ошибка сохранения: {str(e)}",
         )

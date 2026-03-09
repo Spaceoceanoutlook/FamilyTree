@@ -1,6 +1,5 @@
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from familytree.models import PersonPhoto, Photo
 
@@ -9,27 +8,26 @@ class PersonPhotoRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def link_person_to_photo(self, person_id: int, photo_id: int) -> None:
+    async def link(self, person_id: int, photo_id: int) -> None:
         link = PersonPhoto(person_id=person_id, photo_id=photo_id)
         self.db.add(link)
         await self.db.flush()
 
-    async def get_person_photos(self, person_id: int) -> list[Photo]:
+    async def unlink(self, person_id: int, photo_id: int) -> None:
+        stmt = delete(PersonPhoto).where(
+            (PersonPhoto.person_id == person_id) & (PersonPhoto.photo_id == photo_id)
+        )
+        await self.db.execute(stmt)
+
+    async def get_photos_by_person(self, person_id: int) -> list[Photo]:
         stmt = (
-            select(PersonPhoto)
-            .options(selectinload(PersonPhoto.photo))
+            select(Photo)
+            .join(PersonPhoto, Photo.id == PersonPhoto.photo_id)
             .where(PersonPhoto.person_id == person_id)
         )
         result = await self.db.execute(stmt)
-        links = result.scalars().all()
-        return [link.photo for link in links]
+        return result.scalars().all()
 
-    async def unlink_person_from_photo(self, person_id: int, photo_id: int) -> None:
-        stmt = select(PersonPhoto).where(
-            PersonPhoto.person_id == person_id,
-            PersonPhoto.photo_id == photo_id,
-        )
-        result = await self.db.execute(stmt)
-        link = result.scalar_one_or_none()
-        if link:
-            await self.db.delete(link)
+    async def delete_links_by_photo(self, photo_id: int) -> None:
+        stmt = delete(PersonPhoto).where(PersonPhoto.photo_id == photo_id)
+        await self.db.execute(stmt)

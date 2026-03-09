@@ -858,7 +858,7 @@
                     if (firstName) params.append("first_name", firstName);
                     if (lastName) params.append("last_name", lastName);
 
-                    const res = await fetch(`/person/?${params}`, {
+                    const res = await fetch(`/persons/?${params}`, {
                         headers: { Accept: "application/json" },
                     });
                     if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
@@ -929,7 +929,7 @@
                     '<div class="loading-state">Загружаем родословную</div>';
 
                 try {
-                    const res = await fetch(`/tree/${selectedPersonId}`, {
+                    const res = await fetch(`/persons/${selectedPersonId}/tree`, {
                         headers: { Accept: "application/json" },
                     });
                     if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);

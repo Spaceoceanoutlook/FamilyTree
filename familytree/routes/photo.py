@@ -56,6 +56,14 @@ async def get_photo(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
+@router.get("/", response_model=list[PhotoOut])
+async def get_all_photos(
+    service: PhotoService = Depends(get_photo_service),
+):
+    photos = await service.get_all_photos()
+    return photos
+
+
 @router.get("/persons/{person_id}", response_model=list[PhotoOut])
 async def get_person_photos(
     person_id: int = Path(...),

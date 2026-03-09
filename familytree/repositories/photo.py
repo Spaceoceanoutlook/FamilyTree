@@ -15,6 +15,11 @@ class PhotoRepository:
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def get_all(self) -> list[Photo]:
+        stmt = select(Photo).order_by(Photo.id)
+        result = await self.db.execute(stmt)
+        return result.scalars().all()
+
     async def create(self, filename: str, description: Optional[str] = None) -> Photo:
         photo = Photo(filename=filename, description=description)
         self.db.add(photo)

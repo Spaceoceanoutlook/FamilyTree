@@ -15,3 +15,5 @@ class Photo(Base):
         back_populates="photo",
         cascade="all, delete-orphan",
     )
+
+    persons: list = []

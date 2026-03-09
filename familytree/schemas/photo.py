@@ -2,6 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from familytree.schemas.base import PersonRef
+
 
 class PhotoBase(BaseModel):
     filename: str
@@ -16,6 +18,7 @@ class PhotoCreate(PhotoBase):
 
 class PhotoOut(PhotoBase):
     id: int
+    persons: list[PersonRef] = []
 
 
 class PhotoUpload(BaseModel):

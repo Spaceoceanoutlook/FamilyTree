@@ -13,7 +13,8 @@ class PhotoService:
     async def create_photo(
         self, filename: str, description: str | None = None
     ) -> Photo:
-        return await self.photo_repo.create(filename, description)
+        photo = Photo(filename=filename, description=description)
+        return await self.photo_repo.create(photo)
 
     async def get_photo_by_id(self, photo_id: int) -> Photo:
         photo = await self.photo_repo.get_by_id(photo_id)
@@ -31,7 +32,7 @@ class PhotoService:
         await self.person_photo_repo.link(person_id, photo_id)
 
     async def get_person_photos(self, person_id: int) -> list[Photo]:
-        return await self.person_photo_repo.get_photos_by_person(person_id)
+        return await self.photo_repo.get_by_person_id(person_id)
 
     async def unlink_person_from_photo(self, person_id: int, photo_id: int) -> None:
         await self.person_photo_repo.unlink(person_id, photo_id)

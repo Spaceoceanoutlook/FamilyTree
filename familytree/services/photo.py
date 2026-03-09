@@ -15,6 +15,12 @@ class PhotoService:
     ) -> Photo:
         return await self.photo_repo.create(filename, description)
 
+    async def get_photo_by_id(self, photo_id: int) -> Photo:
+        photo = await self.photo_repo.get_by_id(photo_id)
+        if not photo:
+            raise ValueError(f"Photo with id {photo_id} not found")
+        return photo
+
     async def link_person_to_photo(self, person_id: int, photo_id: int) -> None:
         photo = await self.photo_repo.get_by_id(photo_id)
         if not photo:

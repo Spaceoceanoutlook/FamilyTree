@@ -44,6 +44,27 @@ async def upload_photo(
         )
 
 
+@router.get("/{photo_id}", response_model=PhotoOut)
+async def get_photo(
+    photo_id: int = Path(..., ge=1),
+    service: PhotoService = Depends(get_photo_service),
+):
+    try:
+        photo = await service.get_photo_by_id(photo_id)
+        return photo
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@router.get("/persons/{person_id}", response_model=list[PhotoOut])
+async def get_person_photos(
+    person_id: int = Path(...),
+    service: PhotoService = Depends(get_photo_service),
+):
+    photos = await service.get_person_photos(person_id)
+    return photos
+
+
 @router.post("/{photo_id}/persons/{person_id}", status_code=status.HTTP_201_CREATED)
 async def link_person(
     photo_id: int = Path(...),
@@ -64,15 +85,6 @@ async def link_person(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Ошибка сохранения: {str(e)}",
         )
-
-
-@router.get("/persons/{person_id}", response_model=list[PhotoOut])
-async def get_person_photos(
-    person_id: int = Path(...),
-    service: PhotoService = Depends(get_photo_service),
-):
-    photos = await service.get_person_photos(person_id)
-    return photos
 
 
 @router.delete(

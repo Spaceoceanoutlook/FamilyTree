@@ -18,6 +18,19 @@ def build_node(
         node["birth_year"] = person.birth_year
     if person.death_year is not None:
         node["death_year"] = person.death_year
+
+    if hasattr(person, "photos") and person.photos:
+        node["photos"] = [
+            {
+                "id": photo.id,
+                "filename": photo.filename,
+                "description": photo.description,
+            }
+            for photo in person.photos
+        ]
+    else:
+        node["photos"] = []
+
     return node
 
 

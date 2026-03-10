@@ -432,7 +432,7 @@
             };
 
             try {
-                const res = await fetch("/feedback", {
+                const res = await fetch("/feedbacks/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(formData),

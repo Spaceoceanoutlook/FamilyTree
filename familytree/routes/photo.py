@@ -10,6 +10,7 @@ from fastapi import (
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from familytree.auth import get_current_admin
 from familytree.database import get_db
 from familytree.schemas.photo import PhotoOut
 from familytree.services.photo import PhotoService
@@ -22,7 +23,12 @@ def get_photo_service(db: AsyncSession = Depends(get_db)) -> PhotoService:
     return PhotoService(db)
 
 
-@router.post("/", response_model=PhotoOut, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/",
+    response_model=PhotoOut,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_admin)],
+)
 async def upload_photo(
     file: UploadFile = File(...),
     description: str | None = Form(None),
@@ -61,7 +67,7 @@ async def get_person_photos(
     return photos
 
 
-@router.post("/{photo_id}/persons/{person_id}", status_code=status.HTTP_201_CREATED)
+@router.post("/{photo_id}/persons/{person_id}", status_code=status.HTTP_201_CREATED, dependencies=[Depends(get_current_admin)])
 async def link_person(
     photo_id: int = Path(...),
     person_id: int = Path(...),
@@ -84,7 +90,7 @@ async def link_person(
 
 
 @router.delete(
-    "/{photo_id}/persons/{person_id}", status_code=status.HTTP_204_NO_CONTENT
+    "/{photo_id}/persons/{person_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(get_current_admin)]
 )
 async def unlink_person(
     photo_id: int = Path(...),
@@ -97,7 +103,7 @@ async def unlink_person(
     return None
 
 
-@router.delete("/{photo_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{photo_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(get_current_admin)])
 async def delete_photo(
     photo_id: int = Path(...),
     service: PhotoService = Depends(get_photo_service),

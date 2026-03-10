@@ -9,3 +9,4 @@ logs/
 .vscode/
 .ruff_cache/
 /static/photos/
+.pytest_cache

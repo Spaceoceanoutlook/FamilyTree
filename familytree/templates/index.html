@@ -21,13 +21,7 @@
         }
 
         body {
-            font-family:
-                "Inter",
-                "Segoe UI",
-                Roboto,
-                system-ui,
-                -apple-system,
-                sans-serif;
+            font-family: "Inter", "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
             background: linear-gradient(145deg, #f6f9fc 0%, #edf4f8 100%);
             min-height: 100vh;
             padding: 2rem 1.5rem;
@@ -137,16 +131,36 @@
             font-size: 1.1rem;
             font-family: "Inter", inherit;
             white-space: nowrap;
-            transform: none;
-            will-change: box-shadow, background;
         }
 
         .search-btn:hover {
             background: linear-gradient(145deg, #5d9ad9, #3f78b5);
-            box-shadow:
-                0 14px 22px -10px #1e3e60,
-                0 0 0 2px rgba(79, 139, 201, 0.3);
-            transform: none;
+            box-shadow: 0 14px 22px -10px #1e3e60, 0 0 0 2px rgba(79, 139, 201, 0.3);
+        }
+
+        .about-btn {
+            background: linear-gradient(145deg, #10b981, #059669);
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-family: "Inter", inherit;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 10px 18px -8px rgba(5, 150, 105, 0.3);
+        }
+
+        .about-btn:hover {
+            background: linear-gradient(145deg, #34d399, #10b981);
+            transform: scale(1.02);
+            box-shadow: 0 14px 22px -10px rgba(5, 150, 105, 0.4);
         }
 
         .search-results {
@@ -247,24 +261,18 @@
             border-radius: 40px;
             padding: 0.6rem 1.8rem 0.6rem 1.5rem;
             border: none;
-            box-shadow:
-                0 8px 16px -8px rgba(0, 32, 64, 0.12),
-                0 0 0 1px rgba(79, 139, 201, 0.1);
+            box-shadow: 0 8px 16px -8px rgba(0, 32, 64, 0.12), 0 0 0 1px rgba(79, 139, 201, 0.1);
             transition: all 0.2s ease;
             cursor: pointer;
             margin: 6px 0;
             font-family: "Inter", sans-serif;
-
             -webkit-tap-highlight-color: transparent;
-            -webkit-focus-ring-color: transparent;
             outline: none;
         }
 
         .card:hover {
             background: #f0f9ff;
-            box-shadow:
-                0 12px 22px -12px #2b5a8c,
-                0 0 0 1px #4f8bc9;
+            box-shadow: 0 12px 22px -12px #2b5a8c, 0 0 0 1px #4f8bc9;
             transform: translateY(-1px);
         }
 
@@ -336,9 +344,7 @@
 
         .generation-0>.card {
             background: linear-gradient(115deg, #f0f7ff, #e3f0fa);
-            box-shadow:
-                0 8px 18px -10px #2b5a8c,
-                0 0 0 1px #8bb9e5;
+            box-shadow: 0 8px 18px -10px #2b5a8c, 0 0 0 1px #8bb9e5;
         }
 
         .generation-0>.card .label {
@@ -346,44 +352,191 @@
             font-weight: 600;
         }
 
-        .loading-state {
-            display: flex;
+        .photo-icon {
+            margin-left: 8px;
+            font-size: 1.2rem;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .card:hover .photo-icon {
+            opacity: 1;
+        }
+
+        .photo-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            color: #1e3c5c;
-            font-size: 1.2rem;
-            padding: 2rem;
-            font-family: "Inter", sans-serif;
+            padding: 1rem;
         }
 
-        .loading-state::after {
-            content: "";
-            width: 24px;
-            height: 24px;
-            border: 3px solid #b3d2f0;
-            border-top: 3px solid #4f8bc9;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        .photo-modal.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
         }
 
-        @keyframes spin {
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
             to {
-                transform: rotate(360deg);
+                opacity: 1;
             }
         }
 
-        .error-message {
-            background: #ffefef;
-            color: #b33f3f;
-            padding: 1rem 2rem;
-            border-radius: 40px;
-            border-left: 8px solid #c74a4a;
-            font-weight: 500;
-            box-shadow: 0 8px 18px rgba(180, 60, 60, 0.1);
-            text-align: center;
-            font-size: 1.1rem;
-            font-family: "Inter", sans-serif;
+        .photo-modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+
+        .photo-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .photo-modal-close:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .photo-modal-image {
+            position: relative;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            max-height: 60vh;
+        }
+
+        .photo-modal-image img {
+            max-width: 100%;
+            max-height: 60vh;
+            object-fit: contain;
+            display: block;
+            transition: opacity 0.15s ease;
+        }
+
+        .photo-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-nav:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .photo-nav.prev {
+            left: 16px;
+        }
+
+        .photo-nav.next {
+            right: 16px;
+        }
+
+        .photo-modal-caption {
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .photo-modal-caption p {
+            margin: 0 0 0.5rem 0;
+            color: #1e3c5c;
+            font-size: 1.05rem;
+            line-height: 1.4;
+        }
+
+        .photo-counter {
+            font-size: 0.85rem;
+            color: #6f8fa8;
+            text-align: right;
+        }
+
+        .photo-thumbnails {
+            display: flex;
+            gap: 8px;
+            padding: 0.8rem 1.5rem 1.2rem;
+            overflow-x: auto;
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .photo-thumbnails::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .photo-thumbnails::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .thumbnail {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .thumbnail:hover {
+            border-color: #4f8bc9;
+            opacity: 0.9;
+        }
+
+        .thumbnail.active {
+            border-color: #4f8bc9;
+            box-shadow: 0 0 0 2px rgba(79, 139, 201, 0.3);
         }
 
         .empty-state {
@@ -393,292 +546,6 @@
             font-style: italic;
             font-size: 1.2rem;
             font-family: "Inter", sans-serif;
-        }
-
-        .about-btn {
-            background: linear-gradient(145deg, #10b981, #059669);
-            color: white;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-family: "Inter", inherit;
-            white-space: nowrap;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            box-shadow: 0 10px 18px -8px rgba(5, 150, 105, 0.3);
-        }
-
-        .about-btn:hover {
-            background: linear-gradient(145deg, #34d399, #10b981);
-            transform: scale(1.02);
-            box-shadow: 0 14px 22px -10px rgba(5, 150, 105, 0.4);
-        }
-
-
-
-        @media (max-width: 460px) {
-            body {
-                padding: 0.8rem 0.6rem;
-            }
-
-            .header {
-                margin-bottom: 0.8rem;
-            }
-
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-                border-radius: 28px;
-                padding: 0.8rem;
-                gap: 0.7rem;
-            }
-
-            .search-input,
-            .search-btn,
-            .about-btn {
-                width: 100%;
-                justify-content: center;
-                font-size: 0.9rem;
-                padding: 0.6rem 0.9rem;
-                border-radius: 24px;
-
-            }
-
-            .search-input {
-                padding: 0.65rem 0.9rem;
-            }
-
-            .pedigree-container {
-                padding: 1.2rem 0.8rem;
-                border-radius: 22px;
-                max-width: 100%;
-                overflow-x: auto;
-            }
-
-            .card {
-                padding: 0.35rem 0.7rem;
-                font-size: 0.9rem;
-                border-radius: 22px;
-            }
-
-            .label {
-                font-size: 0.9rem;
-                line-height: 1.3;
-            }
-
-            .empty-state {
-                font-size: 1rem;
-            }
-
-            .children {
-                margin-left: 5px;
-                padding-left: 10px;
-                border-left: none;
-            }
-
-            .role {
-                font-size: 0.75rem;
-                padding: 0.25rem 0.7rem;
-            }
-
-            .search-result-item {
-                padding: 0.6rem 1rem;
-            }
-
-            .search-result-name {
-                font-size: 0.95rem;
-            }
-
-            .search-result-years {
-                font-size: 0.8rem;
-            }
-
-            .tree-hint {
-                font-size: 0.85rem;
-                padding: 0.7rem 0.9rem;
-                gap: 0.7rem;
-                margin: 0 0.5rem 1rem;
-            }
-
-            .tree-hint button {
-                width: 24px;
-                height: 24px;
-                font-size: 0.9rem;
-            }
-
-            .logo-link {
-                gap: 8px;
-            }
-
-            .logo-link svg {
-                width: 32px;
-                height: 32px;
-            }
-
-            .logo-link h1 {
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (min-width: 461px) and (max-width: 600px) {
-            body {
-                padding: 0.8rem 0.6rem;
-            }
-
-            .header {
-                margin-bottom: 0.9rem;
-            }
-
-            .controls {
-                flex-direction: row;
-                border-radius: 24px;
-                padding: 0.7rem;
-                gap: 0.5rem;
-            }
-
-            .search-input,
-            .search-btn,
-            .about-btn {
-                width: auto;
-                font-size: 0.9rem;
-                padding: 0.45rem 0.8rem;
-                border-radius: 20px;
-            }
-
-            .pedigree-container {
-                padding: 1.2rem 0.8rem;
-                border-radius: 22px;
-                max-width: 100%;
-                overflow-x: auto;
-            }
-
-            .card {
-                padding: 0.4rem 1rem;
-                font-size: 0.8rem;
-                border-radius: 22px;
-            }
-
-            .label {
-                font-size: 0.9rem;
-                line-height: 1.3;
-            }
-
-
-            .empty-state {
-                font-size: 1rem;
-            }
-
-            .children {
-                margin-left: 5px;
-                padding-left: 10px;
-                border-left: none;
-            }
-
-            .role {
-                font-size: 0.75rem;
-                padding: 0.25rem 0.7rem;
-            }
-
-            .tree-hint {
-                font-size: 0.85rem;
-                padding: 0.75rem 1rem;
-                gap: 0.8rem;
-            }
-
-            .tree-hint button {
-                width: 26px;
-                height: 26px;
-                font-size: 0.9rem;
-            }
-
-            .logo-link {
-                gap: 8px;
-            }
-
-            .logo-link svg {
-                width: 32px;
-                height: 32px;
-            }
-
-            .logo-link h1 {
-                font-size: 1.6rem;
-            }
-        }
-
-        @media (min-width: 601px) and (max-width: 650px) {
-            body {
-                padding: 1rem 0.8rem;
-            }
-
-            .header {
-                margin-bottom: 1rem;
-            }
-
-            .controls {
-                flex-direction: row;
-                border-radius: 32px;
-                padding: 0.8rem;
-                gap: 0.5rem;
-            }
-
-            .search-input,
-            .search-btn,
-            .about-btn {
-                width: auto;
-                font-size: 0.95rem;
-                padding: 0.5rem 0.9rem;
-                border-radius: 22px;
-            }
-
-            .pedigree-container {
-                padding: 1.5rem 1rem;
-                border-radius: 26px;
-                max-width: 100%;
-                overflow-x: auto;
-            }
-
-            .card {
-                padding: 0.5rem 1.2rem;
-                border-radius: 26px;
-            }
-
-            .label {
-                font-size: 0.95rem;
-            }
-
-
-            .children {
-                margin-left: 5px;
-                padding-left: 10px;
-                border-left: none;
-            }
-
-            .role {
-                font-size: 0.75rem;
-                padding: 0.25rem 0.7rem;
-            }
-
-            .tree-hint {
-                font-size: 0.9rem;
-                padding: 0.8rem 1.1rem;
-                gap: 0.9rem;
-            }
-
-            .tree-hint button {
-                width: 26px;
-                height: 26px;
-                font-size: 1rem;
-            }
-
-            .logo-link h1 {
-                font-size: 1.8rem;
-            }
         }
 
         .tree-hint {
@@ -731,18 +598,383 @@
             }
         }
 
+        .loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #1e3c5c;
+            font-size: 1.2rem;
+            padding: 2rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .loading-state::after {
+            content: "";
+            width: 24px;
+            height: 24px;
+            border: 3px solid #b3d2f0;
+            border-top: 3px solid #4f8bc9;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #ffefef;
+            color: #b33f3f;
+            padding: 1rem 2rem;
+            border-radius: 40px;
+            border-left: 8px solid #c74a4a;
+            font-weight: 500;
+            box-shadow: 0 8px 18px rgba(180, 60, 60, 0.1);
+            text-align: center;
+            font-size: 1.1rem;
+            font-family: "Inter", sans-serif;
+        }
+
         #treeContent {
             transition: opacity 0.2s ease;
         }
 
-        /* Убираем стандартное синее/серое выделение при тапе на мобильных */
-        .card {
-            -webkit-tap-highlight-color: transparent;
-            -webkit-focus-ring-color: transparent;
-            outline: none;
+        @media (max-width: 470px) {
+            body {
+                padding: 0.8rem 0.6rem;
+            }
+
+            .header {
+                margin-bottom: 0.8rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+                border-radius: 28px;
+                padding: 0.8rem;
+                gap: 0.7rem;
+            }
+
+            .search-input,
+            .search-btn,
+            .about-btn {
+                width: 100%;
+                justify-content: center;
+                font-size: 0.9rem;
+                padding: 0.6rem 0.9rem;
+                border-radius: 24px;
+            }
+
+            .search-input {
+                padding: 0.65rem 0.9rem;
+            }
+
+            .pedigree-container {
+                padding: 1.2rem 0.8rem;
+                border-radius: 22px;
+                max-width: 100%;
+                overflow-x: auto;
+            }
+
+            .card {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.9rem;
+                border-radius: 22px;
+            }
+
+            .label {
+                font-size: 0.9rem;
+                line-height: 1.3;
+            }
+
+            .empty-state {
+                font-size: 1rem;
+                padding: 2rem 0.8rem;
+            }
+
+            .children {
+                margin-left: 5px;
+                padding-left: 10px;
+                border-left: none;
+            }
+
+            .role {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.7rem;
+            }
+
+            .search-result-item {
+                padding: 0.6rem 1rem;
+            }
+
+            .search-result-name {
+                font-size: 0.95rem;
+            }
+
+            .search-result-years {
+                font-size: 0.8rem;
+            }
+
+            .tree-hint {
+                font-size: 0.85rem;
+                padding: 0.7rem 0.9rem;
+                gap: 0.7rem;
+                margin: 0 0.5rem 1rem;
+            }
+
+            .tree-hint button {
+                width: 24px;
+                height: 24px;
+                font-size: 0.9rem;
+            }
+
+            .logo-link {
+                gap: 8px;
+            }
+
+            .logo-link svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            .logo-link h1 {
+                font-size: 1.5rem;
+            }
+
+            .photo-modal {
+                padding: 0.5rem;
+            }
+
+            .photo-modal-content {
+                border-radius: 16px;
+                max-height: 95vh;
+            }
+
+            .photo-modal-image {
+                max-height: 50vh;
+            }
+
+            .photo-modal-image img {
+                max-height: 50vh;
+            }
+
+            .photo-nav {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+
+            .photo-nav.prev {
+                left: 8px;
+            }
+
+            .photo-nav.next {
+                right: 8px;
+            }
+
+            .photo-modal-close {
+                width: 32px;
+                height: 32px;
+                font-size: 1.3rem;
+                top: 8px;
+                right: 8px;
+            }
+
+            .photo-modal-caption {
+                padding: 0.8rem 1rem;
+            }
+
+            .photo-modal-caption p {
+                font-size: 0.95rem;
+            }
+
+            .photo-counter {
+                font-size: 0.75rem;
+            }
+
+            .photo-thumbnails {
+                padding: 0.6rem 1rem 1rem;
+                gap: 6px;
+            }
+
+            .thumbnail {
+                width: 50px;
+                height: 50px;
+                border-radius: 6px;
+            }
         }
 
-        /* Убираем выделение со всей страницы для чистоты */
+        @media (min-width: 471px) and (max-width: 600px) {
+            body {
+                padding: 0.8rem 0.6rem;
+            }
+
+            .header {
+                margin-bottom: 0.9rem;
+            }
+
+            .controls {
+                flex-direction: row;
+                border-radius: 24px;
+                padding: 0.7rem;
+                gap: 0.5rem;
+            }
+
+            .search-input,
+            .search-btn,
+            .about-btn {
+                width: auto;
+                font-size: 0.9rem;
+                padding: 0.45rem 0.8rem;
+                border-radius: 20px;
+            }
+
+            .pedigree-container {
+                padding: 1.2rem 0.8rem;
+                border-radius: 22px;
+                max-width: 100%;
+                overflow-x: auto;
+            }
+
+            .card {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+                border-radius: 22px;
+            }
+
+            .label {
+                font-size: 0.9rem;
+                line-height: 1.3;
+            }
+
+            .empty-state {
+                font-size: 1rem;
+            }
+
+            .children {
+                margin-left: 5px;
+                padding-left: 10px;
+                border-left: none;
+            }
+
+            .role {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.7rem;
+            }
+
+            .tree-hint {
+                font-size: 0.85rem;
+                padding: 0.75rem 1rem;
+                gap: 0.8rem;
+            }
+
+            .tree-hint button {
+                width: 26px;
+                height: 26px;
+                font-size: 0.9rem;
+            }
+
+            .logo-link {
+                gap: 8px;
+            }
+
+            .logo-link svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            .logo-link h1 {
+                font-size: 1.6rem;
+            }
+
+            .photo-modal-content {
+                border-radius: 18px;
+            }
+
+            .photo-nav {
+                width: 40px;
+                height: 40px;
+            }
+
+            .thumbnail {
+                width: 55px;
+                height: 55px;
+            }
+        }
+
+        @media (min-width: 601px) and (max-width: 650px) {
+            body {
+                padding: 1rem 0.8rem;
+            }
+
+            .header {
+                margin-bottom: 1rem;
+            }
+
+            .controls {
+                flex-direction: row;
+                border-radius: 32px;
+                padding: 0.8rem;
+                gap: 0.5rem;
+            }
+
+            .search-input,
+            .search-btn,
+            .about-btn {
+                width: auto;
+                font-size: 0.95rem;
+                padding: 0.5rem 0.9rem;
+                border-radius: 22px;
+            }
+
+            .pedigree-container {
+                padding: 1.5rem 1rem;
+                border-radius: 26px;
+                max-width: 100%;
+                overflow-x: auto;
+            }
+
+            .card {
+                padding: 0.5rem 1.2rem;
+                border-radius: 26px;
+            }
+
+            .label {
+                font-size: 0.95rem;
+            }
+
+            .children {
+                margin-left: 5px;
+                padding-left: 10px;
+                border-left: none;
+            }
+
+            .role {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.7rem;
+            }
+
+            .tree-hint {
+                font-size: 0.9rem;
+                padding: 0.8rem 1.1rem;
+                gap: 0.9rem;
+            }
+
+            .tree-hint button {
+                width: 26px;
+                height: 26px;
+                font-size: 1rem;
+            }
+
+            .logo-link h1 {
+                font-size: 1.8rem;
+            }
+        }
+
         * {
             -webkit-tap-highlight-color: transparent;
         }
@@ -789,9 +1021,7 @@
             <input type="text" id="firstNameInput" placeholder="Имя" class="search-input" autocomplete="off" />
             <input type="text" id="lastNameInput" placeholder="Фамилия" class="search-input" autocomplete="off" />
             <button onclick="searchPeople()" class="search-btn">🔍 Найти</button>
-            <button onclick="location.href='/about'" class="about-btn">
-                О проекте
-            </button>
+            <button onclick="location.href='/about'" class="about-btn">О проекте</button>
         </div>
 
         <div id="searchResults" class="search-results"></div>
@@ -801,291 +1031,538 @@
                 💡 Нажимайте на карточки людей, чтобы увидеть их родственников
                 <button onclick="hideTreeHint()" class="hint-close">✕</button>
             </div>
-
             <div id="treeContent">
                 <div class="empty-state">
-                    ✨ Введите полное имя и (или) фамилию человека, чтобы посмотреть его
-                    родословную
+                    ✨ Введите полное имя и (или) фамилию человека, чтобы посмотреть его родословную
                 </div>
             </div>
         </div>
+    </div>
 
-        <script>
-            let selectedPersonId = null;
-            let isLoadingTree = false;
-            let treeHintShown = false;
+    <div id="photoModal" class="photo-modal" onclick="closePhotoModal(event)">
+        <div class="photo-modal-content" onclick="event.stopPropagation()">
+            <button class="photo-modal-close" onclick="closePhotoModal()" aria-label="Закрыть">&times;</button>
 
-
-
-            function getSpouseLabelByGender(gender) {
-                const g = String(gender || "")
-                    .toUpperCase()
-                    .trim();
-                if (g === "F") return "Жена";
-                if (g === "M") return "Муж";
-                return "Супруг/а";
-            }
-
-            function hasRelatives(person) {
-                return person.father ||
-                    person.mother ||
-                    person.spouse ||
-                    (person.siblings && person.siblings.length > 0) ||
-                    (person.children && person.children.length > 0);
-            }
-
-            async function searchPeople() {
-                const firstName = document
-                    .getElementById("firstNameInput")
-                    .value.trim();
-                const lastName = document.getElementById("lastNameInput").value.trim();
-                const treeContainer = document.getElementById("treeContent");
-                treeContainer.innerHTML = '<div class="empty-state">✨ Выберите человека из списка</div>';
-                selectedPersonId = null;
-
-                if (!firstName && !lastName) {
-                    showSearchMessage("⚠️ Введите имя и (или) фамилию");
-                    return;
-                }
-
-                const resultsContainer = document.getElementById("searchResults");
-                resultsContainer.innerHTML =
-                    '<div class="search-empty">🔎 Поиск...</div>';
-                resultsContainer.classList.add("visible");
-
-                try {
-                    const params = new URLSearchParams();
-                    if (firstName) params.append("first_name", firstName);
-                    if (lastName) params.append("last_name", lastName);
-
-                    const res = await fetch(`/persons/?${params}`, {
-                        headers: { Accept: "application/json" },
-                    });
-                    if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
-
-                    const people = await res.json();
-                    renderSearchResults(people);
-                } catch (err) {
-                    console.error("Ошибка поиска:", err);
-                    showSearchMessage(`❌ Ошибка: ${err.message}`);
-                }
-            }
-
-            function renderSearchResults(people) {
-                const container = document.getElementById("searchResults");
-                container.scrollTop = 0;
-
-                if (!people || people.length === 0) {
-                    showSearchMessage("🔍 Ничего не найдено");
-                    return;
-                }
-
-                let html = "";
-                people.forEach((p) => {
-                    const deathYearDisplay = (p.death_year == 1) ? "?" : p.death_year;
-                    const years = p.birth_year
-                        ? ` (${p.birth_year}${deathYearDisplay ? "–" + deathYearDisplay : ""})`
-                        : "";
-                    const isSelected = p.id === selectedPersonId ? "selected" : "";
-                    html += `
-            <div class="search-result-item ${isSelected}" onclick="selectPerson(${p.id}, this)">
-                <span class="search-result-name">${p.first_name} ${p.last_name}</span>
-                ${years ? `<span class="search-result-years">${years}</span>` : ""}
+            <div class="photo-modal-image">
+                <img id="modalImage" src="" alt="">
+                <button class="photo-nav prev" onclick="navigatePhoto(-1)" aria-label="Предыдущее">&#10094;</button>
+                <button class="photo-nav next" onclick="navigatePhoto(1)" aria-label="Следующее">&#10095;</button>
             </div>
-        `;
+
+            <div class="photo-modal-caption">
+                <p id="modalCaption"></p>
+                <div class="photo-counter" id="photoCounter"></div>
+            </div>
+
+            <div class="photo-thumbnails" id="photoThumbnails"></div>
+        </div>
+    </div>
+
+    <script>
+        const PHOTO_BASE_URL = '/static/photos/';
+        let selectedPersonId = null;
+        let isLoadingTree = false;
+        let treeHintShown = false;
+
+        let currentPhotos = [];
+        let currentPhotoIndex = 0;
+
+
+        function openPhotoModal(photos, startIndex = 0) {
+            if (!photos || photos.length === 0) return;
+
+            currentPhotos = photos.map(p => {
+                if (typeof p === 'string') {
+                    return {
+                        url: p.startsWith('http') ? p : PHOTO_BASE_URL + p,
+                        caption: '',
+                        thumbnail: p
+                    };
+                }
+
+                const filename = p.filename || p.url || p;
+                const description = p.description || p.caption || '';
+
+                return {
+                    id: p.id || null,
+                    url: filename.startsWith('http') ? filename : PHOTO_BASE_URL + filename,
+                    caption: description,
+                    thumbnail: filename.startsWith('http') ? filename : PHOTO_BASE_URL + filename
+                };
+            });
+
+            currentPhotoIndex = Math.max(0, Math.min(startIndex, currentPhotos.length - 1));
+
+            const modal = document.getElementById('photoModal');
+            if (!modal) return;
+
+            updateModalImage();
+            renderThumbnails();
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(() => {
+                const closeBtn = modal.querySelector('.photo-modal-close');
+                if (closeBtn) closeBtn.focus();
+            }, 100);
+        }
+
+        function updateModalImage() {
+            if (!currentPhotos[currentPhotoIndex]) return;
+
+            const photo = currentPhotos[currentPhotoIndex];
+            const img = document.getElementById('modalImage');
+            const caption = document.getElementById('modalCaption');
+            const counter = document.getElementById('photoCounter');
+
+            if (img) {
+                img.style.opacity = '0';
+                setTimeout(() => {
+                    img.src = photo.url;
+                    img.alt = photo.caption || 'Фотография';
+                    img.onload = () => { img.style.opacity = '1'; };
+                    img.onerror = () => {
+                        img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"%3E%3Crect fill="%23f1f5f9" width="400" height="300"/%3E%3Ctext fill="%2394a3b8" font-family="sans-serif" font-size="16" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EНе удалось загрузить фото%3C/text%3E%3C/svg%3E';
+                        img.style.opacity = '1';
+                    };
+                }, 150);
+            }
+
+            if (caption) {
+                caption.textContent = photo.caption || '';
+                caption.style.display = photo.caption ? 'block' : 'none';
+            }
+
+            if (counter) {
+                counter.textContent = `${currentPhotoIndex + 1} / ${currentPhotos.length}`;
+            }
+
+            document.querySelectorAll('.thumbnail').forEach((thumb, idx) => {
+                thumb.classList.toggle('active', idx === currentPhotoIndex);
+            });
+        }
+
+        function renderThumbnails() {
+            const container = document.getElementById('photoThumbnails');
+            if (!container) return;
+
+            container.innerHTML = currentPhotos.map((photo, idx) => `
+                <img 
+                    src="${escapeHtml(photo.thumbnail)}" 
+                    alt="${escapeHtml(photo.caption || 'Фото ' + (idx + 1))}" 
+                    class="thumbnail ${idx === currentPhotoIndex ? 'active' : ''}"
+                    onclick="jumpToPhoto(${idx})"
+                    loading="lazy"
+                >
+            `).join('');
+
+            setTimeout(() => {
+                const active = container.querySelector('.thumbnail.active');
+                if (active) {
+                    active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }, 100);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function navigatePhoto(direction) {
+            if (currentPhotos.length === 0) return;
+
+            currentPhotoIndex += direction;
+
+            if (currentPhotoIndex < 0) {
+                currentPhotoIndex = currentPhotos.length - 1;
+            } else if (currentPhotoIndex >= currentPhotos.length) {
+                currentPhotoIndex = 0;
+            }
+
+            updateModalImage();
+        }
+
+        function jumpToPhoto(index) {
+            if (index >= 0 && index < currentPhotos.length) {
+                currentPhotoIndex = index;
+                updateModalImage();
+            }
+        }
+
+        function closePhotoModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+
+            const modal = document.getElementById('photoModal');
+            if (!modal) return;
+
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+
+            setTimeout(() => {
+                const img = document.getElementById('modalImage');
+                if (img) {
+                    img.src = '';
+                    img.style.opacity = '1';
+                }
+                currentPhotos = [];
+                currentPhotoIndex = 0;
+            }, 200);
+        }
+
+        function handlePhotoClick(element) {
+            if (event) event.stopPropagation?.();
+
+            try {
+                const photosData = element.dataset.photos;
+                if (!photosData) {
+                    console.warn('⚠️ Нет данных о фото в data-атрибуте');
+                    return;
+                }
+
+                const photos = JSON.parse(photosData);
+                openPhotoModal(photos, 0);
+
+            } catch (e) {
+                console.error('❌ Ошибка при открытии фото:', e);
+                showTemporaryMessage('Не удалось загрузить фотографии', 'error');
+            }
+        }
+
+        function showTemporaryMessage(text, type = 'info') {
+            const msg = document.createElement('div');
+            msg.textContent = text;
+            msg.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 24px;
+                border-radius: 12px;
+                background: ${type === 'error' ? '#fee2e2' : '#e0f2fe'};
+                color: ${type === 'error' ? '#991b1b' : '#0369a1'};
+                font-weight: 500;
+                font-family: "Inter", sans-serif;
+                box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+                z-index: 2000;
+                animation: slideUp 0.3s ease;
+            `;
+            document.body.appendChild(msg);
+
+            setTimeout(() => {
+                msg.style.opacity = '0';
+                msg.style.transition = 'opacity 0.2s';
+                setTimeout(() => msg.remove(), 200);
+            }, 3000);
+        }
+
+        function getSpouseLabelByGender(gender) {
+            const g = String(gender || "").toUpperCase().trim();
+            if (g === "F") return "Жена";
+            if (g === "M") return "Муж";
+            return "Супруг/а";
+        }
+
+        function hasRelatives(person) {
+            return person.father ||
+                person.mother ||
+                person.spouse ||
+                (person.siblings && person.siblings.length > 0) ||
+                (person.children && person.children.length > 0);
+        }
+
+        async function searchPeople() {
+            const firstName = document.getElementById("firstNameInput").value.trim();
+            const lastName = document.getElementById("lastNameInput").value.trim();
+            const treeContainer = document.getElementById("treeContent");
+
+            treeContainer.innerHTML = '<div class="empty-state">✨ Выберите человека из списка</div>';
+            selectedPersonId = null;
+
+            if (!firstName && !lastName) {
+                showSearchMessage("⚠️ Введите имя и (или) фамилию");
+                return;
+            }
+
+            const resultsContainer = document.getElementById("searchResults");
+            resultsContainer.innerHTML = '<div class="search-empty">🔎 Поиск...</div>';
+            resultsContainer.classList.add("visible");
+
+            try {
+                const params = new URLSearchParams();
+                if (firstName) params.append("first_name", firstName);
+                if (lastName) params.append("last_name", lastName);
+
+                const res = await fetch(`/persons/?${params}`, {
+                    headers: { Accept: "application/json" },
                 });
+                if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
 
-                container.innerHTML = html;
-                container.classList.add("visible");
+                const people = await res.json();
+                renderSearchResults(people);
+            } catch (err) {
+                console.error("Ошибка поиска:", err);
+                showSearchMessage(`❌ Ошибка: ${err.message}`);
+            }
+        }
+
+        function renderSearchResults(people) {
+            const container = document.getElementById("searchResults");
+            container.scrollTop = 0;
+
+            if (!people || people.length === 0) {
+                showSearchMessage("🔍 Ничего не найдено");
+                return;
             }
 
-            function showSearchMessage(message) {
-                const container = document.getElementById("searchResults");
-                container.innerHTML = `<div class="search-empty">${message}</div>`;
-                container.classList.add("visible");
-            }
+            let html = "";
+            people.forEach((p) => {
+                const deathYearDisplay = (p.death_year == 1) ? "?" : p.death_year;
+                const years = p.birth_year
+                    ? ` (${p.birth_year}${deathYearDisplay ? "–" + deathYearDisplay : ""})`
+                    : "";
+                const isSelected = p.id === selectedPersonId ? "selected" : "";
+                html += `
+                    <div class="search-result-item ${isSelected}" onclick="selectPerson(${p.id}, this)">
+                        <span class="search-result-name">${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</span>
+                        ${years ? `<span class="search-result-years">${years}</span>` : ""}
+                    </div>
+                `;
+            });
 
-            function selectPerson(personId, element) {
-                document
-                    .querySelectorAll(".search-result-item")
-                    .forEach((el) => el.classList.remove("selected"));
-                if (element) element.classList.add("selected");
+            container.innerHTML = html;
+            container.classList.add("visible");
+        }
 
-                selectedPersonId = personId;
+        function showSearchMessage(message) {
+            const container = document.getElementById("searchResults");
+            container.innerHTML = `<div class="search-empty">${escapeHtml(message)}</div>`;
+            container.classList.add("visible");
+        }
 
-                const results = document.getElementById("searchResults");
-                results.innerHTML = "";
-                results.classList.remove("visible");
+        function selectPerson(personId, element) {
+            document.querySelectorAll(".search-result-item").forEach((el) => el.classList.remove("selected"));
+            if (element) element.classList.add("selected");
 
-                loadSelectedTree();
-            }
+            selectedPersonId = personId;
 
-            async function loadSelectedTree() {
-                if (!selectedPersonId || isLoadingTree) return;
+            const results = document.getElementById("searchResults");
+            results.innerHTML = "";
+            results.classList.remove("visible");
 
-                isLoadingTree = true;
-                const container = document.getElementById("treeContent");
-                container.innerHTML =
-                    '<div class="loading-state">Загружаем родословную</div>';
+            loadSelectedTree();
+        }
 
-                try {
-                    const res = await fetch(`/persons/${selectedPersonId}/tree`, {
-                        headers: { Accept: "application/json" },
-                    });
-                    if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+        async function loadSelectedTree() {
+            if (!selectedPersonId || isLoadingTree) return;
 
-                    const data = await res.json();
-                    container.innerHTML = renderPerson(data, 0);
-                    showTreeHint();
-                    scrollToTree();
+            isLoadingTree = true;
+            const container = document.getElementById("treeContent");
+            container.innerHTML = '<div class="loading-state">Загружаем родословную</div>';
 
-                    container.querySelectorAll(".card.expandable").forEach((card) => {
-                        card.addEventListener("click", (e) => {
-                            e.stopPropagation();
-                            const personBlock = card.closest(".person");
-                            if (personBlock) {
-                                personBlock.classList.toggle("expanded");
-                                hideTreeHint();
-                            }
-                        });
-                    });
-                } catch (err) {
-                    console.error("Ошибка загрузки дерева:", err);
-                    container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${err.message}</div>`;
-                } finally {
-                    isLoadingTree = false;
-                }
-            }
+            try {
+                const res = await fetch(`/persons/${selectedPersonId}/tree`, {
+                    headers: { Accept: "application/json" },
+                });
+                if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
 
-            function renderPerson(person, generation, skipId = null) {
-                if (!person) return "";
+                const data = await res.json();
+                container.innerHTML = renderPerson(data, 0);
 
-                const name =
-                    `${person.first_name || ""} ${person.last_name || ""}`.trim() ||
-                    "Без имени";
-
-                const deathYearDisplay = (person.death_year == 1) ? "?" : person.death_year;
-                let years = "";
-                if (person.birth_year || person.death_year) {
-                    years = ` ${person.birth_year || "?"}${deathYearDisplay ? "–" + deathYearDisplay : ""}`;
-                }
-
-                const isExpandable = hasRelatives(person);
-                const cardClass = isExpandable ? 'card expandable' : 'card final';
-
-                let html = `<div class="person generation-${generation}">
-                    <div class="${cardClass}">
-                        <span class="label">${name}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ""}</span>
-                    </div>`;
-
-                let childrenHtml = "";
-
-                if (person.father || person.mother) {
-                    childrenHtml += '<div class="children">';
-                    if (person.father)
-                        childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1, skipId)}</div>`;
-                    if (person.mother)
-                        childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1, skipId)}</div>`;
-                    childrenHtml += "</div>";
-                }
-
-                if (person.spouse && person.spouse.id !== skipId) {
-                    const spouseLabel = getSpouseLabelByGender(person.spouse.gender);
-                    childrenHtml += '<div class="children">';
-                    childrenHtml += `<div><span class="role">${spouseLabel}</span>${renderPerson(person.spouse, generation + 1, person.id)}</div>`;
-                    childrenHtml += "</div>";
-                }
-
-                if (person.siblings && person.siblings.length > 0) {
-                    const brothers = person.siblings.filter(s => {
-                        const g = String(s.gender || "").toUpperCase().trim();
-                        return g === "M";
-                    });
-
-                    const sisters = person.siblings.filter(s => {
-                        const g = String(s.gender || "").toUpperCase().trim();
-                        return g === "F";
-                    });
-
-                    if (brothers.length > 0) {
-                        childrenHtml += '<div class="children"><span class="role">Братья</span>';
-                        brothers.forEach((brother) => {
-                            if (brother.id !== skipId) {
-                                childrenHtml += renderPerson(brother, generation + 1, skipId);
-                            }
-                        });
-                        childrenHtml += "</div>";
-                    }
-
-                    if (sisters.length > 0) {
-                        childrenHtml += '<div class="children"><span class="role">Сестры</span>';
-                        sisters.forEach((sister) => {
-                            if (sister.id !== skipId) {
-                                childrenHtml += renderPerson(sister, generation + 1, skipId);
-                            }
-                        });
-                        childrenHtml += "</div>";
-                    }
-                }
-
-                if (person.children && person.children.length > 0) {
-                    childrenHtml +=
-                        '<div class="children"><span class="role">Дети</span>';
-                    person.children.forEach((child) => {
-                        childrenHtml += renderPerson(child, generation + 1, skipId);
-                    });
-                    childrenHtml += "</div>";
-                }
-
-                html += childrenHtml + "</div>";
-                return html;
-            }
-
-            document.addEventListener("DOMContentLoaded", () => {
-                const firstNameInput = document.getElementById("firstNameInput");
-                const lastNameInput = document.getElementById("lastNameInput");
-
-                [firstNameInput, lastNameInput].forEach((input) => {
-                    input.addEventListener("keypress", (e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault();
-                            searchPeople();
+                container.querySelectorAll(".card.expandable").forEach((card) => {
+                    card.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        const personBlock = card.closest(".person");
+                        if (personBlock) {
+                            personBlock.classList.toggle("expanded");
+                            hideTreeHint();
                         }
                     });
                 });
 
-                document.addEventListener("click", (e) => {
-                    const controls = document.querySelector(".controls");
-                    const results = document.getElementById("searchResults");
-                    if (!controls?.contains(e.target) && !results?.contains(e.target)) {
-                        results?.classList.remove("visible");
+                container.querySelectorAll(".photo-icon").forEach((icon) => {
+                    icon.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        handlePhotoClick(icon);
+                    });
+                });
+
+                showTreeHint();
+                scrollToTree();
+
+            } catch (err) {
+                console.error("Ошибка загрузки дерева:", err);
+                container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${escapeHtml(err.message)}</div>`;
+            } finally {
+                isLoadingTree = false;
+            }
+        }
+
+        function renderPerson(person, generation, skipId = null) {
+            if (!person) return "";
+
+            const name = `${person.first_name || ""} ${person.last_name || ""}`.trim() || "Без имени";
+            const deathYearDisplay = (person.death_year == 1) ? "?" : person.death_year;
+            let years = "";
+            if (person.birth_year || person.death_year) {
+                years = ` ${person.birth_year || "?"}${deathYearDisplay ? "–" + deathYearDisplay : ""}`;
+            }
+
+            const isExpandable = hasRelatives(person);
+            const cardClass = isExpandable ? 'card expandable' : 'card final';
+
+            const hasPhotos = person.photos && person.photos.length > 0;
+            const photoIcon = hasPhotos
+                ? `<span class="photo-icon" 
+                        title="Посмотреть фото (${person.photos.length})" 
+                        data-photos='${JSON.stringify(person.photos).replace(/'/g, "&apos;")}'
+                        role="button"
+                        tabindex="0"
+                        onkeydown="if(event.key==='Enter'||event.key===' ')handlePhotoClick(this)">
+                    📸
+                  </span>`
+                : '';
+
+            let html = `<div class="person generation-${generation}">
+                <div class="${cardClass}">
+                    <span class="label">${escapeHtml(name)}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ""}</span>
+                    ${photoIcon}
+                </div>`;
+
+            let childrenHtml = "";
+
+            if (person.father || person.mother) {
+                childrenHtml += '<div class="children">';
+                if (person.father)
+                    childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1, skipId)}</div>`;
+                if (person.mother)
+                    childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1, skipId)}</div>`;
+                childrenHtml += "</div>";
+            }
+
+            if (person.spouse && person.spouse.id !== skipId) {
+                const spouseLabel = getSpouseLabelByGender(person.spouse.gender);
+                childrenHtml += '<div class="children">';
+                childrenHtml += `<div><span class="role">${spouseLabel}</span>${renderPerson(person.spouse, generation + 1, person.id)}</div>`;
+                childrenHtml += "</div>";
+            }
+
+            if (person.siblings && person.siblings.length > 0) {
+                const brothers = person.siblings.filter(s => {
+                    const g = String(s.gender || "").toUpperCase().trim();
+                    return g === "M";
+                });
+                const sisters = person.siblings.filter(s => {
+                    const g = String(s.gender || "").toUpperCase().trim();
+                    return g === "F";
+                });
+
+                if (brothers.length > 0) {
+                    childrenHtml += '<div class="children"><span class="role">Братья</span>';
+                    brothers.forEach((brother) => {
+                        if (brother.id !== skipId) {
+                            childrenHtml += renderPerson(brother, generation + 1, skipId);
+                        }
+                    });
+                    childrenHtml += "</div>";
+                }
+
+                if (sisters.length > 0) {
+                    childrenHtml += '<div class="children"><span class="role">Сестры</span>';
+                    sisters.forEach((sister) => {
+                        if (sister.id !== skipId) {
+                            childrenHtml += renderPerson(sister, generation + 1, skipId);
+                        }
+                    });
+                    childrenHtml += "</div>";
+                }
+            }
+
+            if (person.children && person.children.length > 0) {
+                childrenHtml += '<div class="children"><span class="role">Дети</span>';
+                person.children.forEach((child) => {
+                    childrenHtml += renderPerson(child, generation + 1, skipId);
+                });
+                childrenHtml += "</div>";
+            }
+
+            html += childrenHtml + "</div>";
+            return html;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const firstNameInput = document.getElementById("firstNameInput");
+            const lastNameInput = document.getElementById("lastNameInput");
+
+            [firstNameInput, lastNameInput].forEach((input) => {
+                input.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        searchPeople();
                     }
                 });
             });
 
-            function scrollToTree() {
-                const tree = document.getElementById("treeContent");
-                if (!tree) return;
-                setTimeout(() => {
-                    tree.scrollIntoView({ behavior: "smooth", block: "start" });
-                }, 200);
-            }
-
-            function showTreeHint() {
-                const hint = document.getElementById('treeHint');
-                if (hint && !treeHintShown) {
-                    hint.style.display = 'flex';
-                    treeHintShown = true;
+            document.addEventListener("click", (e) => {
+                const controls = document.querySelector(".controls");
+                const results = document.getElementById("searchResults");
+                if (!controls?.contains(e.target) && !results?.contains(e.target)) {
+                    results?.classList.remove("visible");
                 }
-            }
+            });
 
-            function hideTreeHint() {
-                const hint = document.getElementById('treeHint');
-                if (hint) {
-                    hint.style.display = 'none';
+            document.addEventListener("keydown", (e) => {
+                const modal = document.getElementById('photoModal');
+                if (!modal?.classList.contains('active')) return;
+
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closePhotoModal();
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    navigatePhoto(-1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    navigatePhoto(1);
                 }
+            });
+
+            const modal = document.getElementById('photoModal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closePhotoModal(e);
+                    }
+                });
             }
-        </script>
+        });
+
+        function scrollToTree() {
+            const tree = document.getElementById("treeContent");
+            if (!tree) return;
+            setTimeout(() => {
+                tree.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 200);
+        }
+
+        function showTreeHint() {
+            const hint = document.getElementById('treeHint');
+            if (hint && !treeHintShown) {
+                hint.style.display = 'flex';
+                treeHintShown = true;
+            }
+        }
+
+        function hideTreeHint() {
+            const hint = document.getElementById('treeHint');
+            if (hint) {
+                hint.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Родословная</title>
     <link rel="icon"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234f8bc9'/%3E%3Cstop offset='100%25' stop-color='%233a6ca3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='90' fill='url(%23g)'/%3E%3Ccircle cx='100' cy='75' r='28' fill='white'/%3E%3Ccircle cx='75' cy='95' r='18' fill='white' opacity='0.85'/%3E%3Ccircle cx='125' cy='95' r='18' fill='white' opacity='0.85'/%3E%3Crect x='92' y='110' width='16' height='35' rx='4' fill='white'/%3E%3C/svg%3E" />
@@ -319,8 +320,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 48px;
+            height: 48px;
             background: transparent;
             border-radius: 0;
             cursor: pointer;
@@ -1508,11 +1509,23 @@
                     role="button"
                     tabindex="0"
                     onkeydown="if(event.key==='Enter'||event.key===' ')handlePhotoClick(this)">
-                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="25" y="60" width="150" height="110" rx="8" fill="none" stroke="#4f8bc9" stroke-width="8"/>
-                    <path d="M 55 60 L 75 35 L 125 35 L 145 60" fill="none" stroke="#4f8bc9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="100" cy="115" r="32" fill="none" stroke="#4f8bc9" stroke-width="8"/>
-                    <circle cx="100" cy="115" r="16" fill="#4f8bc9" opacity="0.3"/>
+                    
+                    <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Layer 2 (back) -->
+                    <rect x="180" y="180" width="520" height="400" fill="#B8E6D4" stroke="#2C3E50" stroke-width="12" stroke-linejoin="round"/>
+                    
+                    <!-- Layer 1 (front) -->
+                    <rect x="240" y="140" width="520" height="400" fill="#89CFF0" stroke="#2C3E50" stroke-width="12" stroke-linejoin="round"/>
+                    
+                    <!-- Sun -->
+                    <circle cx="460" cy="240" r="32" fill="#FFB347" stroke="#2C3E50" stroke-width="8"/>
+                    
+                    <!-- Mountains (smooth curves) -->
+                    <path d="M 240 540 Q 320 540 380 460 Q 440 380 500 420 Q 560 460 620 380 Q 680 300 760 360 L 760 540 Z" 
+                            fill="#4A7C8C" stroke="#2C3E50" stroke-width="8" stroke-linejoin="round"/>
+                    
+                    <path d="M 240 540 Q 300 540 360 490 Q 420 440 480 470 Q 540 500 600 450 Q 660 400 720 420 L 760 540 Z" 
+                            fill="#6B9B8F" stroke="#2C3E50" stroke-width="8" stroke-linejoin="round"/>
                     </svg>
                     </span>`
                 : '';

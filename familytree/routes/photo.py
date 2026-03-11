@@ -32,13 +32,14 @@ def get_photo_service(db: AsyncSession = Depends(get_db)) -> PhotoService:
 async def upload_photo(
     file: UploadFile = File(...),
     description: str | None = Form(None),
+    year: int | None = Form(None),
     service: PhotoService = Depends(get_photo_service),
     db: AsyncSession = Depends(get_db),
 ):
     filename = await save_upload_file(file)
 
     try:
-        photo = await service.create_photo(filename, description)
+        photo = await service.create_photo(filename, description, year)
         await db.commit()
         return photo
     except Exception as e:

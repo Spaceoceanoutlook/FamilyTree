@@ -8,6 +8,7 @@ from familytree.schemas.base import PersonRef
 class PhotoBase(BaseModel):
     filename: str
     description: Optional[str] = None
+    year: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 

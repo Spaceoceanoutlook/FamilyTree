@@ -11,9 +11,9 @@ class PhotoService:
         self.person_photo_repo = PersonPhotoRepository(db)
 
     async def create_photo(
-        self, filename: str, description: str | None = None
+        self, filename: str, description: str | None = None, year: int | None = None
     ) -> Photo:
-        photo = Photo(filename=filename, description=description)
+        photo = Photo(filename=filename, description=description, year=year)
         return await self.photo_repo.create(photo)
 
     async def get_all_photos(self) -> list[Photo]:

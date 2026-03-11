@@ -19,7 +19,8 @@ class Settings(BaseSettings):
     hashed_admin_password: str
 
     # Photo
-    photo_upload_dir: str = "static/photos"
+    photo_upload_dir: str
+    photo_url_prefix: str
 
     @property
     def sqlalchemy_url(self) -> str:

@@ -67,7 +67,11 @@ async def get_person_photos(
     return photos
 
 
-@router.post("/{photo_id}/persons/{person_id}", status_code=status.HTTP_201_CREATED, dependencies=[Depends(get_current_admin)])
+@router.post(
+    "/{photo_id}/persons/{person_id}",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_admin)],
+)
 async def link_person(
     photo_id: int = Path(...),
     person_id: int = Path(...),
@@ -90,7 +94,9 @@ async def link_person(
 
 
 @router.delete(
-    "/{photo_id}/persons/{person_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(get_current_admin)]
+    "/{photo_id}/persons/{person_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_admin)],
 )
 async def unlink_person(
     photo_id: int = Path(...),
@@ -103,7 +109,11 @@ async def unlink_person(
     return None
 
 
-@router.delete("/{photo_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(get_current_admin)])
+@router.delete(
+    "/{photo_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_admin)],
+)
 async def delete_photo(
     photo_id: int = Path(...),
     service: PhotoService = Depends(get_photo_service),

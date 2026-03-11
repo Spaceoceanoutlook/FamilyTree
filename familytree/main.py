@@ -1,10 +1,21 @@
+from contextlib import asynccontextmanager
+from pathlib import Path
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from familytree.routes import auth, feedback, frontend, person, photo, tree
+from settings import settings
 
-app = FastAPI(title="Family Tree")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Path(settings.photo_upload_dir).mkdir(parents=True, exist_ok=True)
+    yield
+
+
+app = FastAPI(title="Family Tree", lifespan=lifespan)
 
 app.include_router(auth.router)
 app.include_router(person.router)

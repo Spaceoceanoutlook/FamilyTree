@@ -12,7 +12,8 @@ services:
       environment:
         - TZ=Asia/Yekaterinburg 
       volumes:
-        - .:/app
+        - ./static:/app/static
+        - ./logs:/app/logs 
       restart: always
 
   db:

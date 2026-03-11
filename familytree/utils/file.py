@@ -40,4 +40,4 @@ async def delete_file(filename: str) -> bool:
 
 
 def get_photo_url(filename: str) -> str:
-    return f"/static/photos/{filename}"
+    return f"{settings.photo_url_prefix}/{filename}"

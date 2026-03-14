@@ -15,5 +15,6 @@ class PhotoRef(BaseModel):
     id: int
     filename: str
     description: Optional[str] = None
+    year: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)

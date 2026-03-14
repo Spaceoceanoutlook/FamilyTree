@@ -20,13 +20,15 @@ def build_node(
         node["death_year"] = person.death_year
 
     if hasattr(person, "photos") and person.photos:
+        sorted_photos = sorted(person.photos, key=lambda photo: (photo.year is None, photo.year))
         node["photos"] = [
             {
                 "id": photo.id,
                 "filename": photo.filename,
                 "description": photo.description,
+                "year": photo.year
             }
-            for photo in person.photos
+            for photo in sorted_photos
         ]
     else:
         node["photos"] = []

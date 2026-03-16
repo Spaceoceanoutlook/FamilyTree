@@ -406,7 +406,6 @@
             font-weight: 600;
         }
 
-        /* === ОБНОВЛЕННЫЙ МОДАЛ ФОТО === */
         .photo-modal {
             display: none;
             position: fixed;
@@ -450,7 +449,6 @@
             padding: 0;
         }
 
-        /* Контейнер изображения */
         .photo-modal-image {
             position: relative;
             background: #000;
@@ -474,7 +472,6 @@
             transition: opacity 0.15s ease;
         }
 
-        /* Панель управления */
         .photo-controls-bar {
             display: flex;
             align-items: center;
@@ -490,7 +487,6 @@
             z-index: 15;
         }
 
-        /* Базовые стили кнопок */
         .photo-control-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.3);
@@ -516,7 +512,6 @@
             stroke: white;
         }
 
-        /* Только для устройств с hover (десктоп) */
         @media (hover: hover) {
             .photo-control-btn:hover {
                 transform: scale(1.1);
@@ -525,20 +520,17 @@
             }
         }
 
-        /* Для всех устройств (тач и мышь) - эффект нажатия */
         .photo-control-btn:active {
             transform: scale(0.95);
             background: rgba(255, 255, 255, 0.2);
             transition: transform 0.1s ease;
         }
 
-        /* Скрытые кнопки */
         .photo-control-btn.hidden {
             opacity: 0.2;
             pointer-events: none;
         }
 
-        /* Подпись под фото */
         .photo-modal-caption {
             width: 100%;
             padding: 1rem 1.5rem;
@@ -566,7 +558,6 @@
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        /* === ОРИГИНАЛЬНЫЕ МЕДИАЗАПРОСЫ (ВОССТАНОВЛЕНЫ) === */
         @media (max-width: 470px) {
             body {
                 padding: 0.8rem 0.6rem;
@@ -696,7 +687,6 @@
                 flex-wrap: nowrap;
             }
 
-            /* Мобильные стили для модала */
             .photo-modal-content {
                 flex-direction: column;
                 justify-content: flex-end;
@@ -832,7 +822,6 @@
                 font-size: 1.6rem;
             }
 
-            /* Мобильные стили для модала */
             .photo-modal-content {
                 flex-direction: column;
                 justify-content: flex-end;
@@ -936,7 +925,6 @@
                 font-size: 1.8rem;
             }
 
-            /* Десктопная ориентация модала для планшетов */
             .photo-modal-content {
                 flex-direction: column;
             }
@@ -966,7 +954,6 @@
             }
         }
 
-        /* Десктопный вариант модала (шире 650px) */
         @media (min-width: 651px) {
             .photo-modal-content {
                 flex-direction: column;
@@ -1145,10 +1132,8 @@
         </div>
     </div>
 
-    <!-- ОБНОВЛЕННЫЙ МОДАЛ -->
     <div id="photoModal" class="photo-modal" onclick="closePhotoModal(event)">
         <div class="photo-modal-content" onclick="event.stopPropagation()">
-            <!-- Единая панель управления -->
             <div class="photo-controls-bar">
                 <button class="photo-control-btn prev" onclick="navigatePhoto(-1)" aria-label="Предыдущее"
                     id="modalPrevBtn">
@@ -1172,12 +1157,10 @@
                 </button>
             </div>
 
-            <!-- Контейнер изображения -->
             <div class="photo-modal-image">
                 <img id="modalImage" src="" alt="">
             </div>
 
-            <!-- Подпись и счётчик -->
             <div class="photo-modal-caption">
                 <p id="modalCaption"></p>
                 <div class="photo-counter" id="photoCounter"></div>

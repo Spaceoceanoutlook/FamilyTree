@@ -8,7 +8,11 @@ router = APIRouter(tags=["Frontend"])
 
 @router.get("/", response_class=FileResponse, summary="Главная страница")
 async def get_index():
-    return FileResponse("familytree/templates/index.html")
+    response = FileResponse("familytree/templates/index.html")
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 @router.get("/about", response_class=FileResponse, summary="О проекте")

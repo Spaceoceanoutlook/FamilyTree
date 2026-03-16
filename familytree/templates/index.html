@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 
 <head>
@@ -406,6 +406,7 @@
             font-weight: 600;
         }
 
+        /* === ОБНОВЛЕННЫЙ МОДАЛ ФОТО === */
         .photo-modal {
             display: none;
             position: fixed;
@@ -438,60 +439,28 @@
 
         .photo-modal-content {
             background: transparent;
-            max-width: 100%;
             width: 100%;
             height: 100%;
+            max-width: 1400px;
             max-height: 100%;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: none;
             border-radius: 0;
-        }
-
-        .photo-modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 0;
-            transition: all 0.2s;
-            backdrop-filter: blur(4px);
         }
 
-        .photo-modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .photo-modal-close svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-        }
-
+        /* Контейнер изображения */
         .photo-modal-image {
             position: relative;
             background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: 1;
+            flex: 1 1 auto;
             min-height: 0;
-            height: 100%;
             width: 100%;
-            max-width: 100%;
+            height: 100%;
             max-height: 100%;
         }
 
@@ -505,70 +474,81 @@
             transition: opacity 0.15s ease;
         }
 
-        .photo-modal-image.landscape img {
-            width: 100%;
-            height: auto;
-            max-height: 100%;
-        }
-
-        .photo-modal-image.portrait img {
-            height: 100%;
-            width: auto;
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        .photo-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 48px;
-            height: 48px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            cursor: pointer;
+        /* Панель управления */
+        .photo-controls-bar {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
-            transition: all 0.2s;
+            gap: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            width: 100%;
+            flex-shrink: 0;
+            z-index: 15;
+        }
+
+        /* Базовые стили кнопок */
+        .photo-control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 40px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            z-index: 10;
             backdrop-filter: blur(4px);
+            color: white;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .photo-nav:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-50%) scale(1.1);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .photo-nav svg {
+        .photo-control-btn svg {
             width: 24px;
             height: 24px;
             fill: white;
+            stroke: white;
         }
 
-        .photo-nav.prev {
-            left: 20px;
+        /* Только для устройств с hover (десктоп) */
+        @media (hover: hover) {
+            .photo-control-btn:hover {
+                transform: scale(1.1);
+                background: rgba(255, 255, 255, 0.3);
+                border-color: rgba(255, 255, 255, 0.5);
+            }
         }
 
-        .photo-nav.next {
-            right: 20px;
+        /* Для всех устройств (тач и мышь) - эффект нажатия */
+        .photo-control-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.2);
+            transition: transform 0.1s ease;
         }
 
-        .photo-modal-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 2rem 1.5rem 1.5rem;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-            border: none;
-            color: white;
-            z-index: 5;
+        /* Скрытые кнопки */
+        .photo-control-btn.hidden {
+            opacity: 0.2;
             pointer-events: none;
+        }
+
+        /* Подпись под фото */
+        .photo-modal-caption {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5));
+            backdrop-filter: blur(4px);
+            color: white;
+            z-index: 10;
+            flex-shrink: 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .photo-modal-caption p {
@@ -582,113 +562,11 @@
         .photo-counter {
             font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.7);
-            text-align: left;
+            text-align: center;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        .empty-state {
-            color: #6f8fa8;
-            text-align: center;
-            padding: 3rem 1rem;
-            font-style: italic;
-            font-size: 1.2rem;
-            font-family: "Inter", sans-serif;
-        }
-
-        .tree-hint {
-            background: linear-gradient(135deg, #e3f0fa, #f0f9ff);
-            border: 1px solid rgba(79, 139, 201, 0.3);
-            border-radius: 20px;
-            padding: 0.9rem 1.2rem;
-            margin: 0 auto 1.5rem;
-            max-width: 800px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            font-size: 0.9rem;
-            color: #1e3c5c;
-            box-shadow: 0 4px 12px rgba(79, 139, 201, 0.15);
-            animation: slideInHint 0.3s ease;
-        }
-
-        .tree-hint button {
-            background: rgba(79, 139, 201, 0.1);
-            border: none;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            font-size: 1rem;
-            cursor: pointer;
-            color: #4f8bc9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-
-        .tree-hint button:hover {
-            background: rgba(79, 139, 201, 0.2);
-            transform: scale(1.1);
-        }
-
-        @keyframes slideInHint {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .loading-state {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            color: #1e3c5c;
-            font-size: 1.2rem;
-            padding: 2rem;
-            font-family: "Inter", sans-serif;
-        }
-
-        .loading-state::after {
-            content: "";
-            width: 24px;
-            height: 24px;
-            border: 3px solid #b3d2f0;
-            border-top: 3px solid #4f8bc9;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .error-message {
-            background: #ffefef;
-            color: #b33f3f;
-            padding: 1rem 2rem;
-            border-radius: 40px;
-            border-left: 8px solid #c74a4a;
-            font-weight: 500;
-            box-shadow: 0 8px 18px rgba(180, 60, 60, 0.1);
-            text-align: center;
-            font-size: 1.1rem;
-            font-family: "Inter", sans-serif;
-        }
-
-        #treeContent {
-            transition: opacity 0.2s ease;
-        }
-
+        /* === ОРИГИНАЛЬНЫЕ МЕДИАЗАПРОСЫ (ВОССТАНОВЛЕНЫ) === */
         @media (max-width: 470px) {
             body {
                 padding: 0.8rem 0.6rem;
@@ -818,56 +696,44 @@
                 flex-wrap: nowrap;
             }
 
-            .photo-modal-close {
-                top: 12px;
-                right: 12px;
-                width: 40px;
-                height: 40px;
+            /* Мобильные стили для модала */
+            .photo-modal-content {
+                flex-direction: column;
+                justify-content: flex-end;
             }
 
-            .photo-modal-close svg {
-                width: 20px;
-                height: 20px;
+            .photo-modal-image {
+                flex: 1 1 auto;
+                min-height: 0;
+                order: 0;
             }
 
-            .photo-nav {
+            .photo-modal-caption {
+                order: 1;
+                border-top: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(8px);
+                padding: 0.75rem 1rem;
+            }
+
+            .photo-controls-bar {
+                order: 2;
+                border-bottom: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.15);
+                padding: 0.75rem 0.5rem;
+                gap: 0.8rem;
+                background: rgba(0, 0, 0, 0.8);
+            }
+
+            .photo-control-btn {
                 width: 44px;
                 height: 44px;
             }
 
-            .photo-nav svg {
+            .photo-control-btn svg {
                 width: 22px;
                 height: 22px;
-            }
-
-            .photo-nav.prev {
-                left: 12px;
-            }
-
-            .photo-nav.next {
-                right: 12px;
-            }
-
-            .photo-modal-caption {
-                padding: 2rem 1rem 1rem;
-            }
-
-            .photo-modal-caption p {
-                font-size: 0.9rem;
-            }
-
-            .photo-counter {
-                font-size: 0.75rem;
-            }
-
-            .photo-modal-content {
-                width: 100%;
-                left: 0;
-                right: 0;
-            }
-
-            .photo-nav {
-                -webkit-tap-highlight-color: transparent;
             }
 
             .photo-nav:hover {
@@ -966,6 +832,29 @@
                 font-size: 1.6rem;
             }
 
+            /* Мобильные стили для модала */
+            .photo-modal-content {
+                flex-direction: column;
+                justify-content: flex-end;
+            }
+
+            .photo-modal-image {
+                order: 0;
+            }
+
+            .photo-modal-caption {
+                order: 1;
+                border-top: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(0, 0, 0, 0.7);
+            }
+
+            .photo-controls-bar {
+                order: 2;
+                border-bottom: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.15);
+            }
+
             .photo-nav:hover {
                 transform: translateY(-50%) scale(1);
                 background: rgba(0, 0, 0, 0.5);
@@ -1047,6 +936,23 @@
                 font-size: 1.8rem;
             }
 
+            /* Десктопная ориентация модала для планшетов */
+            .photo-modal-content {
+                flex-direction: column;
+            }
+
+            .photo-controls-bar {
+                order: 0;
+            }
+
+            .photo-modal-image {
+                order: 1;
+            }
+
+            .photo-modal-caption {
+                order: 2;
+            }
+
             .photo-nav:hover {
                 transform: translateY(-50%) scale(1);
                 background: rgba(0, 0, 0, 0.5);
@@ -1059,6 +965,128 @@
                 transition: transform 0.1s ease;
             }
         }
+
+        /* Десктопный вариант модала (шире 650px) */
+        @media (min-width: 651px) {
+            .photo-modal-content {
+                flex-direction: column;
+            }
+
+            .photo-controls-bar {
+                order: 0;
+            }
+
+            .photo-modal-image {
+                order: 1;
+            }
+
+            .photo-modal-caption {
+                order: 2;
+            }
+        }
+
+        .empty-state {
+            color: #6f8fa8;
+            text-align: center;
+            padding: 3rem 1rem;
+            font-style: italic;
+            font-size: 1.2rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .tree-hint {
+            background: linear-gradient(135deg, #e3f0fa, #f0f9ff);
+            border: 1px solid rgba(79, 139, 201, 0.3);
+            border-radius: 20px;
+            padding: 0.9rem 1.2rem;
+            margin: 0 auto 1.5rem;
+            max-width: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #1e3c5c;
+            box-shadow: 0 4px 12px rgba(79, 139, 201, 0.15);
+            animation: slideInHint 0.3s ease;
+        }
+
+        .tree-hint button {
+            background: rgba(79, 139, 201, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #4f8bc9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .tree-hint button:hover {
+            background: rgba(79, 139, 201, 0.2);
+            transform: scale(1.1);
+        }
+
+        @keyframes slideInHint {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #1e3c5c;
+            font-size: 1.2rem;
+            padding: 2rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .loading-state::after {
+            content: "";
+            width: 24px;
+            height: 24px;
+            border: 3px solid #b3d2f0;
+            border-top: 3px solid #4f8bc9;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #ffefef;
+            color: #b33f3f;
+            padding: 1rem 2rem;
+            border-radius: 40px;
+            border-left: 8px solid #c74a4a;
+            font-weight: 500;
+            box-shadow: 0 8px 18px rgba(180, 60, 60, 0.1);
+            text-align: center;
+            font-size: 1.1rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        #treeContent {
+            transition: opacity 0.2s ease;
+        }
     </style>
 </head>
 
@@ -1066,14 +1094,13 @@
     <div class="app-container">
         <div class="header">
             <a href="/" class="logo-link">
-                <svg width="42" height="42" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"
-                    style="flex-shrink: 0">
+                <svg width="42" height="42" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color: #4f8bc9; stop-opacity: 1" />
-                            <stop offset="100%" style="stop-color: #3a6ca3; stop-opacity: 1" />
+                            <stop offset="0%" stop-color="#4f8bc9" />
+                            <stop offset="100%" stop-color="#3a6ca3" />
                         </linearGradient>
-                        <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+                        <filter id="softShadow">
                             <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.15" />
                         </filter>
                     </defs>
@@ -1110,39 +1137,47 @@
         <div id="pedigree-container" class="pedigree-container">
             <div id="treeHint" class="tree-hint" style="display: none;">
                 💡 Нажимайте на карточки людей, чтобы увидеть их родственников
-                <button onclick="hideTreeHint()" class="hint-close">✕</button>
+                <button onclick="hideTreeHint()">✕</button>
             </div>
             <div id="treeContent">
-                <div class="empty-state">
-                    ✨ Введите полное имя и (или) фамилию человека, чтобы посмотреть его родословную
-                </div>
+                <div class="empty-state">✨ Введите имя и фамилию, чтобы посмотреть родословную</div>
             </div>
         </div>
     </div>
 
+    <!-- ОБНОВЛЕННЫЙ МОДАЛ -->
     <div id="photoModal" class="photo-modal" onclick="closePhotoModal(event)">
         <div class="photo-modal-content" onclick="event.stopPropagation()">
-            <button class="photo-modal-close" onclick="closePhotoModal()" aria-label="Закрыть">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18 6L6 18M6 6L18 18" stroke="white" stroke-width="2.5" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-            </button>
-            <div class="photo-modal-image">
-                <img id="modalImage" src="" alt="">
-                <button class="photo-nav prev" onclick="navigatePhoto(-1)" aria-label="Предыдущее">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 18L9 12L15 6" stroke="white" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
+            <!-- Единая панель управления -->
+            <div class="photo-controls-bar">
+                <button class="photo-control-btn prev" onclick="navigatePhoto(-1)" aria-label="Предыдущее"
+                    id="modalPrevBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2.5" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </button>
-                <button class="photo-nav next" onclick="navigatePhoto(1)" aria-label="Следующее">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 18L15 12L9 6" stroke="white" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
+                <button class="photo-control-btn close" onclick="closePhotoModal()" aria-label="Закрыть">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2.5" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <button class="photo-control-btn next" onclick="navigatePhoto(1)" aria-label="Следующее"
+                    id="modalNextBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2.5" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </button>
             </div>
+
+            <!-- Контейнер изображения -->
+            <div class="photo-modal-image">
+                <img id="modalImage" src="" alt="">
+            </div>
+
+            <!-- Подпись и счётчик -->
             <div class="photo-modal-caption">
                 <p id="modalCaption"></p>
                 <div class="photo-counter" id="photoCounter"></div>
@@ -1160,127 +1195,50 @@
 
         function openPhotoModal(photos, startIndex = 0) {
             if (!photos || photos.length === 0) return;
-
             currentPhotos = photos.map(p => {
-                if (typeof p === 'string') {
-                    return {
-                        url: p.startsWith('http') ? p : PHOTO_BASE_URL + p,
-                        caption: ''
-                    };
-                }
+                if (typeof p === 'string') return { url: p.startsWith('http') ? p : PHOTO_BASE_URL + p, caption: '' };
                 const filename = p.filename || p.url || p;
                 const description = p.description || p.caption || '';
-                return {
-                    id: p.id || null,
-                    url: filename.startsWith('http') ? filename : PHOTO_BASE_URL + filename,
-                    caption: description
-                };
+                return { id: p.id || null, url: filename.startsWith('http') ? filename : PHOTO_BASE_URL + filename, caption: description };
             });
-
             currentPhotoIndex = Math.max(0, Math.min(startIndex, currentPhotos.length - 1));
-
             const modal = document.getElementById('photoModal');
             if (!modal) return;
-
             updateModalImage();
-
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
-
-            setTimeout(() => {
-                const closeBtn = modal.querySelector('.photo-modal-close');
-                if (closeBtn) closeBtn.focus();
-            }, 100);
         }
 
         function updateModalImage() {
             if (!currentPhotos[currentPhotoIndex]) return;
-
             const photo = currentPhotos[currentPhotoIndex];
             const img = document.getElementById('modalImage');
             const caption = document.getElementById('modalCaption');
             const counter = document.getElementById('photoCounter');
-            const imageContainer = document.querySelector('.photo-modal-image');
+            const prevBtn = document.getElementById('modalPrevBtn');
+            const nextBtn = document.getElementById('modalNextBtn');
 
             if (img) {
-                imageContainer?.classList.remove('portrait', 'landscape', 'square');
                 img.style.opacity = '0';
-
-                img.onload = () => {
-                    img.style.opacity = '1';
-                    const naturalWidth = img.naturalWidth;
-                    const naturalHeight = img.naturalHeight;
-
-                    if (naturalWidth > 0 && naturalHeight > 0) {
-                        const aspectRatio = naturalWidth / naturalHeight;
-                        if (imageContainer) {
-                            if (aspectRatio < 0.8) {
-                                imageContainer.classList.add('portrait');
-                            } else if (aspectRatio > 1.25) {
-                                imageContainer.classList.add('landscape');
-                            } else {
-                                imageContainer.classList.add('square');
-                            }
-                        }
-                    }
-                };
-
+                img.onload = () => { img.style.opacity = '1'; };
                 img.onerror = () => {
-                    img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"%3E%3Crect fill="%23252525" width="400" height="300"/%3E%3Ctext fill="%2394a3b8" font-family="sans-serif" font-size="16" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EНе удалось загрузить фото%3C/text%3E%3C/svg%3E';
+                    img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"%3E%3Crect fill="%23252525" width="400" height="300"/%3E%3Ctext fill="%2394a3b8" font-family="sans-serif" font-size="16" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EНе удалось загрузить%3C/text%3E%3C/svg%3E';
                     img.style.opacity = '1';
                 };
-
-                setTimeout(() => {
-                    img.src = photo.url;
-                    img.alt = photo.caption || 'Фотография';
-                }, 150);
+                setTimeout(() => { img.src = photo.url; img.alt = photo.caption || 'Фотография'; }, 150);
             }
+            if (caption) { caption.textContent = photo.caption || ''; }
+            if (counter) { counter.textContent = `${currentPhotoIndex + 1} / ${currentPhotos.length}`; }
 
-            if (caption) {
-                caption.textContent = photo.caption || '';
-                caption.style.display = photo.caption ? 'block' : 'none';
-            }
-
-            if (counter) {
-                counter.textContent = `${currentPhotoIndex + 1} / ${currentPhotos.length}`;
-            }
-
-            updateNavigationArrows();
-        }
-
-        function updateNavigationArrows() {
-            const prevBtn = document.querySelector('.photo-nav.prev');
-            const nextBtn = document.querySelector('.photo-nav.next');
-            if (!prevBtn || !nextBtn) return;
-
-            const isFirstPhoto = currentPhotoIndex === 0;
-            const isLastPhoto = currentPhotoIndex === currentPhotos.length - 1;
-            const isSinglePhoto = currentPhotos.length === 1;
-
-            if (isSinglePhoto) {
-                prevBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
-            } else {
-                prevBtn.style.display = isFirstPhoto ? 'none' : 'flex';
-                nextBtn.style.display = isLastPhoto ? 'none' : 'flex';
-            }
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+            if (prevBtn) prevBtn.classList.toggle('hidden', currentPhotoIndex === 0);
+            if (nextBtn) nextBtn.classList.toggle('hidden', currentPhotoIndex === currentPhotos.length - 1);
         }
 
         function navigatePhoto(direction) {
             if (currentPhotos.length === 0) return;
             currentPhotoIndex += direction;
-            if (currentPhotoIndex < 0) {
-                currentPhotoIndex = currentPhotos.length - 1;
-            } else if (currentPhotoIndex >= currentPhotos.length) {
-                currentPhotoIndex = 0;
-            }
+            if (currentPhotoIndex < 0) currentPhotoIndex = currentPhotos.length - 1;
+            else if (currentPhotoIndex >= currentPhotos.length) currentPhotoIndex = 0;
             updateModalImage();
         }
 
@@ -1288,382 +1246,133 @@
             if (event && event.target !== event.currentTarget) return;
             const modal = document.getElementById('photoModal');
             if (!modal) return;
-
             modal.classList.remove('active');
             document.body.style.overflow = '';
-
             setTimeout(() => {
-                const img = document.getElementById('modalImage');
-                if (img) {
-                    img.src = '';
-                    img.style.opacity = '1';
-                }
+                document.getElementById('modalImage').src = '';
                 currentPhotos = [];
                 currentPhotoIndex = 0;
             }, 200);
         }
 
         function handlePhotoClick(element) {
-            if (event) event.stopPropagation?.();
+            event?.stopPropagation?.();
             try {
                 const photosData = element.dataset.photos;
-                if (!photosData) {
-                    console.warn('⚠️ Нет данных о фото в data-атрибуте');
-                    return;
-                }
+                if (!photosData) return;
                 const photos = JSON.parse(photosData);
                 openPhotoModal(photos, 0);
-            } catch (e) {
-                console.error('❌ Ошибка при открытии фото:', e);
-                showTemporaryMessage('Не удалось загрузить фотографии', 'error');
-            }
+            } catch (e) { showTemporaryMessage('Не удалось загрузить фотографии', 'error'); }
         }
 
         function showTemporaryMessage(text, type = 'info') {
             const msg = document.createElement('div');
             msg.textContent = text;
-            msg.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 12px;
-            background: ${type === 'error' ? '#fee2e2' : '#e0f2fe'};
-            color: ${type === 'error' ? '#991b1b' : '#0369a1'};
-            font-weight: 500;
-            font-family: "Inter", sans-serif;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-            z-index: 2000;
-            animation: slideUp 0.3s ease;
-            `;
+            msg.style.cssText = `position:fixed; bottom:20px; left:50%; transform:translateX(-50%); padding:12px 24px; border-radius:12px; background:${type === 'error' ? '#fee2e2' : '#e0f2fe'}; color:${type === 'error' ? '#991b1b' : '#0369a1'}; font-weight:500; font-family:Inter; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1); z-index:2000; animation:slideUp 0.3s ease;`;
             document.body.appendChild(msg);
-            setTimeout(() => {
-                msg.style.opacity = '0';
-                msg.style.transition = 'opacity 0.2s';
-                setTimeout(() => msg.remove(), 200);
-            }, 3000);
+            setTimeout(() => { msg.style.opacity = '0'; setTimeout(() => msg.remove(), 200); }, 3000);
         }
 
-        function getSpouseLabelByGender(gender) {
-            const g = String(gender || "").toUpperCase().trim();
-            if (g === "F") return "Жена";
-            if (g === "M") return "Муж";
-            return "Супруг/а";
-        }
-
-        function hasRelatives(person) {
-            return person.father ||
-                person.mother ||
-                person.spouse ||
-                (person.siblings && person.siblings.length > 0) ||
-                (person.children && person.children.length > 0);
-        }
+        function getSpouseLabelByGender(g) { let gend = String(g || "").toUpperCase(); return gend === "F" ? "Жена" : gend === "M" ? "Муж" : "Супруг/а"; }
+        function hasRelatives(p) { return p.father || p.mother || p.spouse || (p.siblings?.length) || (p.children?.length); }
 
         async function searchPeople() {
             const firstName = document.getElementById("firstNameInput").value.trim();
             const lastName = document.getElementById("lastNameInput").value.trim();
-            const treeContainer = document.getElementById("treeContent");
-            treeContainer.innerHTML = '<div class="empty-state">✨ Выберите человека из списка</div>';
+            document.getElementById("treeContent").innerHTML = '<div class="empty-state">✨ Выберите человека</div>';
             selectedPersonId = null;
-
-            if (!firstName && !lastName) {
-                showSearchMessage("⚠️ Введите имя и (или) фамилию");
-                return;
-            }
-
+            if (!firstName && !lastName) { showSearchMessage("⚠️ Введите имя и (или) фамилию"); return; }
             const resultsContainer = document.getElementById("searchResults");
             resultsContainer.innerHTML = '<div class="search-empty">🔎 Поиск...</div>';
             resultsContainer.classList.add("visible");
-
             try {
                 const params = new URLSearchParams();
                 if (firstName) params.append("first_name", firstName);
                 if (lastName) params.append("last_name", lastName);
-
-                const res = await fetch(`/persons/?${params}`, {
-                    headers: { Accept: "application/json" },
-                });
-                if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
-
+                const res = await fetch(`/persons/?${params}`, { headers: { Accept: "application/json" } });
+                if (!res.ok) throw new Error(`Ошибка ${res.status}`);
                 const people = await res.json();
                 renderSearchResults(people);
-            } catch (err) {
-                console.error("Ошибка поиска:", err);
-                showSearchMessage(`❌ Ошибка: ${err.message}`);
-            }
+            } catch (err) { showSearchMessage(`❌ Ошибка: ${err.message}`); }
         }
 
         function renderSearchResults(people) {
             const container = document.getElementById("searchResults");
             container.scrollTop = 0;
-
-            if (!people || people.length === 0) {
-                showSearchMessage("🔍 Ничего не найдено");
-                return;
-            }
-
+            if (!people?.length) { showSearchMessage("🔍 Ничего не найдено"); return; }
             let html = "";
-            people.forEach((p) => {
+            people.forEach(p => {
                 const deathYearDisplay = (p.death_year == 1) ? "?" : p.death_year;
-                const years = p.birth_year
-                    ? ` (${p.birth_year}${deathYearDisplay ? "–" + deathYearDisplay : ""})`
-                    : "";
-                const isSelected = p.id === selectedPersonId ? "selected" : "";
-                html += `
-                    <div class="search-result-item ${isSelected}" onclick="selectPerson(${p.id}, this)">
-                    <span class="search-result-name">${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</span>
-                    ${years ? `<span class="search-result-years">${years}</span>` : ""}
-                    </div>
-                    `;
+                const years = p.birth_year ? ` (${p.birth_year}${deathYearDisplay ? "–" + deathYearDisplay : ""})` : "";
+                const sel = p.id === selectedPersonId ? "selected" : "";
+                html += `<div class="search-result-item ${sel}" onclick="selectPerson(${p.id}, this)"><span class="search-result-name">${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</span>${years ? `<span class="search-result-years">${years}</span>` : ''}</div>`;
             });
-
             container.innerHTML = html;
             container.classList.add("visible");
         }
 
-        function showSearchMessage(message) {
-            const container = document.getElementById("searchResults");
-            container.innerHTML = `<div class="search-empty">${escapeHtml(message)}</div>`;
-            container.classList.add("visible");
-        }
+        function showSearchMessage(m) { document.getElementById("searchResults").innerHTML = `<div class="search-empty">${escapeHtml(m)}</div>`; }
 
-        function selectPerson(personId, element) {
-            document.querySelectorAll(".search-result-item").forEach((el) => el.classList.remove("selected"));
-            if (element) element.classList.add("selected");
-            selectedPersonId = personId;
-
-            const results = document.getElementById("searchResults");
-            results.innerHTML = "";
-            results.classList.remove("visible");
-
+        function selectPerson(id, el) {
+            document.querySelectorAll(".search-result-item").forEach(e => e.classList.remove("selected"));
+            if (el) el.classList.add("selected");
+            selectedPersonId = id;
+            document.getElementById("searchResults").innerHTML = "";
+            document.getElementById("searchResults").classList.remove("visible");
             loadSelectedTree();
         }
 
         async function loadSelectedTree() {
             if (!selectedPersonId || isLoadingTree) return;
-
             isLoadingTree = true;
             const container = document.getElementById("treeContent");
             container.innerHTML = '<div class="loading-state">Загружаем родословную</div>';
-
             try {
-                const res = await fetch(`/persons/${selectedPersonId}/tree`, {
-                    headers: { Accept: "application/json" },
-                });
-                if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
-
+                const res = await fetch(`/persons/${selectedPersonId}/tree`, { headers: { Accept: "application/json" } });
+                if (!res.ok) throw new Error(`Ошибка ${res.status}`);
                 const data = await res.json();
                 container.innerHTML = renderPerson(data, 0);
-
-                container.querySelectorAll(".card.expandable").forEach((card) => {
-                    card.addEventListener("click", (e) => {
-                        e.stopPropagation();
-                        const personBlock = card.closest(".person");
-                        if (personBlock) {
-                            personBlock.classList.toggle("expanded");
-                            hideTreeHint();
-                        }
-                    });
-                });
-
-                container.querySelectorAll(".photo-icon").forEach((icon) => {
-                    icon.addEventListener("click", (e) => {
-                        e.stopPropagation();
-                        handlePhotoClick(icon);
-                    });
-                });
-
+                container.querySelectorAll(".card.expandable").forEach(card => card.addEventListener("click", (e) => { e.stopPropagation(); card.closest(".person")?.classList.toggle("expanded"); hideTreeHint(); }));
+                container.querySelectorAll(".photo-icon").forEach(icon => icon.addEventListener("click", (e) => { e.stopPropagation(); handlePhotoClick(icon); }));
                 showTreeHint();
-                scrollToTree();
-            } catch (err) {
-                console.error("Ошибка загрузки дерева:", err);
-                container.innerHTML = `<div class="error-message">❌ Ошибка загрузки: ${escapeHtml(err.message)}</div>`;
-            } finally {
-                isLoadingTree = false;
-            }
+                setTimeout(() => container.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+            } catch (err) { container.innerHTML = `<div class="error-message">❌ Ошибка: ${escapeHtml(err.message)}</div>`; }
+            finally { isLoadingTree = false; }
         }
 
         function renderPerson(person, generation, skipId = null) {
             if (!person) return "";
-
             const name = `${person.first_name || ""} ${person.last_name || ""}`.trim() || "Без имени";
-            const deathYearDisplay = (person.death_year == 1) ? "?" : person.death_year;
-            let years = "";
-            if (person.birth_year || person.death_year) {
-                years = ` ${person.birth_year || "?"}${deathYearDisplay ? "–" + deathYearDisplay : ""}`;
-            }
-
+            const deathDisplay = (person.death_year == 1) ? "?" : person.death_year;
+            const years = (person.birth_year || person.death_year) ? ` ${person.birth_year || "?"}${deathDisplay ? "–" + deathDisplay : ""}` : "";
             const isExpandable = hasRelatives(person);
             const cardClass = isExpandable ? 'card expandable' : 'card final';
-
-            const hasPhotos = person.photos && person.photos.length > 0;
-            const photoIcon = hasPhotos
-                ? `<span class="photo-icon"
-                    title="Посмотреть фото (${person.photos.length})"
-                    data-photos='${JSON.stringify(person.photos).replace(/'/g, "&apos;")}'
-                    role="button"
-                    tabindex="0"
-                    onkeydown="if(event.key==='Enter'||event.key===' ')handlePhotoClick(this)">
-                    
-                    <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Layer 2 (back) -->
-                    <rect x="180" y="180" width="520" height="400" fill="#B8E6D4" stroke="#2C3E50" stroke-width="12" stroke-linejoin="round"/>
-                    
-                    <!-- Layer 1 (front) -->
-                    <rect x="240" y="140" width="520" height="400" fill="#89CFF0" stroke="#2C3E50" stroke-width="12" stroke-linejoin="round"/>
-                    
-                    <!-- Sun -->
-                    <circle cx="460" cy="240" r="32" fill="#FFB347" stroke="#2C3E50" stroke-width="8"/>
-                    
-                    <!-- Mountains (smooth curves) -->
-                    <path d="M 240 540 Q 320 540 380 460 Q 440 380 500 420 Q 560 460 620 380 Q 680 300 760 360 L 760 540 Z" 
-                            fill="#4A7C8C" stroke="#2C3E50" stroke-width="8" stroke-linejoin="round"/>
-                    
-                    <path d="M 240 540 Q 300 540 360 490 Q 420 440 480 470 Q 540 500 600 450 Q 660 400 720 420 L 760 540 Z" 
-                            fill="#6B9B8F" stroke="#2C3E50" stroke-width="8" stroke-linejoin="round"/>
-                    </svg>
-                    </span>`
-                : '';
-
-            let html = `<div class="person generation-${generation}">
-                        <div class="person-row">
-                        <div class="${cardClass}">
-                        <span class="label">${escapeHtml(name)}${years ? `<span style="font-weight:300; margin-left:8px; opacity:0.75;">${years}</span>` : ""}</span>
-                        </div>
-                        ${photoIcon ? `<div class="photo-wrapper">${photoIcon}</div>` : ''}
-                        </div>`;
-
+            const hasPhotos = person.photos?.length > 0;
+            const photoIcon = hasPhotos ? `<span class="photo-icon" title="Фото (${person.photos.length})" data-photos='${JSON.stringify(person.photos).replace(/'/g, "&apos;")}' role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')handlePhotoClick(this)"><svg viewBox="0 0 800 800"><rect x="180" y="180" width="520" height="400" fill="#B8E6D4" stroke="#2C3E50" stroke-width="12"/><rect x="240" y="140" width="520" height="400" fill="#89CFF0" stroke="#2C3E50" stroke-width="12"/><circle cx="460" cy="240" r="32" fill="#FFB347" stroke="#2C3E50" stroke-width="8"/><path d="M 240 540 Q 320 540 380 460 Q 440 380 500 420 Q 560 460 620 380 Q 680 300 760 360 L 760 540 Z" fill="#4A7C8C" stroke="#2C3E50" stroke-width="8"/><path d="M 240 540 Q 300 540 360 490 Q 420 440 480 470 Q 540 500 600 450 Q 660 400 720 420 L 760 540 Z" fill="#6B9B8F" stroke="#2C3E50" stroke-width="8"/></svg></span>` : '';
+            let html = `<div class="person generation-${generation}"><div class="person-row"><div class="${cardClass}"><span class="label">${escapeHtml(name)}${years ? `<span style="font-weight:300; margin-left:8px;">${years}</span>` : ''}</span></div>${photoIcon ? `<div class="photo-wrapper">${photoIcon}</div>` : ''}</div>`;
             let childrenHtml = "";
-
-            if (person.father || person.mother) {
-                childrenHtml += '<div class="children">';
-                if (person.father)
-                    childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1, skipId)}</div>`;
-                if (person.mother)
-                    childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1, skipId)}</div>`;
-                childrenHtml += "</div>";
-            }
-
-            if (person.spouse && person.spouse.id !== skipId) {
-                const spouseLabel = getSpouseLabelByGender(person.spouse.gender);
-                childrenHtml += '<div class="children">';
-                childrenHtml += `<div><span class="role">${spouseLabel}</span>${renderPerson(person.spouse, generation + 1, person.id)}</div>`;
-                childrenHtml += "</div>";
-            }
-
-            if (person.siblings && person.siblings.length > 0) {
-                const brothers = person.siblings.filter(s => {
-                    const g = String(s.gender || "").toUpperCase().trim();
-                    return g === "M";
-                });
-                const sisters = person.siblings.filter(s => {
-                    const g = String(s.gender || "").toUpperCase().trim();
-                    return g === "F";
-                });
-
-                if (brothers.length > 0) {
-                    childrenHtml += '<div class="children"><span class="role">Братья</span>';
-                    brothers.forEach((brother) => {
-                        if (brother.id !== skipId) {
-                            childrenHtml += renderPerson(brother, generation + 1, skipId);
-                        }
-                    });
-                    childrenHtml += "</div>";
-                }
-
-                if (sisters.length > 0) {
-                    childrenHtml += '<div class="children"><span class="role">Сестры</span>';
-                    sisters.forEach((sister) => {
-                        if (sister.id !== skipId) {
-                            childrenHtml += renderPerson(sister, generation + 1, skipId);
-                        }
-                    });
-                    childrenHtml += "</div>";
-                }
-            }
-
-            if (person.children && person.children.length > 0) {
-                childrenHtml += '<div class="children"><span class="role">Дети</span>';
-                person.children.forEach((child) => {
-                    childrenHtml += renderPerson(child, generation + 1, skipId);
-                });
-                childrenHtml += "</div>";
-            }
-
-            html += childrenHtml + "</div>";
-            return html;
+            if (person.father || person.mother) { childrenHtml += '<div class="children">'; if (person.father) childrenHtml += `<div><span class="role">Отец</span>${renderPerson(person.father, generation + 1, skipId)}</div>`; if (person.mother) childrenHtml += `<div><span class="role">Мать</span>${renderPerson(person.mother, generation + 1, skipId)}</div>`; childrenHtml += '</div>'; }
+            if (person.spouse && person.spouse.id !== skipId) { childrenHtml += `<div class="children"><div><span class="role">${getSpouseLabelByGender(person.spouse.gender)}</span>${renderPerson(person.spouse, generation + 1, person.id)}</div></div>`; }
+            if (person.siblings?.length) { let bro = person.siblings.filter(s => String(s.gender || "").toUpperCase() === "M"); let sis = person.siblings.filter(s => String(s.gender || "").toUpperCase() === "F"); if (bro.length) { childrenHtml += '<div class="children"><span class="role">Братья</span>'; bro.forEach(b => { if (b.id !== skipId) childrenHtml += renderPerson(b, generation + 1, skipId); }); childrenHtml += '</div>'; } if (sis.length) { childrenHtml += '<div class="children"><span class="role">Сестры</span>'; sis.forEach(s => { if (s.id !== skipId) childrenHtml += renderPerson(s, generation + 1, skipId); }); childrenHtml += '</div>'; } }
+            if (person.children?.length) { childrenHtml += '<div class="children"><span class="role">Дети</span>'; person.children.forEach(c => childrenHtml += renderPerson(c, generation + 1, skipId)); childrenHtml += '</div>'; }
+            return html + childrenHtml + '</div>';
         }
+
+        function escapeHtml(t) { if (!t) return ''; let d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        function hideTreeHint() { let h = document.getElementById('treeHint'); if (h) h.style.display = 'none'; }
+        function showTreeHint() { let h = document.getElementById('treeHint'); if (h && !treeHintShown) { h.style.display = 'flex'; treeHintShown = true; } }
 
         document.addEventListener("DOMContentLoaded", () => {
-            const firstNameInput = document.getElementById("firstNameInput");
-            const lastNameInput = document.getElementById("lastNameInput");
-
-            [firstNameInput, lastNameInput].forEach((input) => {
-                input.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter") {
-                        e.preventDefault();
-                        searchPeople();
-                    }
-                });
-            });
-
-            document.addEventListener("click", (e) => {
-                const controls = document.querySelector(".controls");
-                const results = document.getElementById("searchResults");
-                if (!controls?.contains(e.target) && !results?.contains(e.target)) {
-                    results?.classList.remove("visible");
-                }
-            });
-
+            ["firstNameInput", "lastNameInput"].forEach(id => document.getElementById(id).addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); searchPeople(); } }));
+            document.addEventListener("click", (e) => { let c = document.querySelector(".controls"), r = document.getElementById("searchResults"); if (!c?.contains(e.target) && !r?.contains(e.target)) r?.classList.remove("visible"); });
             document.addEventListener("keydown", (e) => {
-                const modal = document.getElementById('photoModal');
+                let modal = document.getElementById('photoModal');
                 if (!modal?.classList.contains('active')) return;
-
-                if (e.key === 'Escape') {
-                    e.preventDefault();
-                    closePhotoModal();
-                } else if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    navigatePhoto(-1);
-                } else if (e.key === 'ArrowRight') {
-                    e.preventDefault();
-                    navigatePhoto(1);
-                }
+                if (e.key === 'Escape') { e.preventDefault(); closePhotoModal(); }
+                else if (e.key === 'ArrowLeft') { e.preventDefault(); navigatePhoto(-1); }
+                else if (e.key === 'ArrowRight') { e.preventDefault(); navigatePhoto(1); }
             });
-
-            const modal = document.getElementById('photoModal');
-            if (modal) {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        closePhotoModal(e);
-                    }
-                });
-            }
         });
-
-        function scrollToTree() {
-            const tree = document.getElementById("treeContent");
-            if (!tree) return;
-            setTimeout(() => {
-                tree.scrollIntoView({ behavior: "smooth", block: "start" });
-            }, 200);
-        }
-
-        function showTreeHint() {
-            const hint = document.getElementById('treeHint');
-            if (hint && !treeHintShown) {
-                hint.style.display = 'flex';
-                treeHintShown = true;
-            }
-        }
-
-        function hideTreeHint() {
-            const hint = document.getElementById('treeHint');
-            if (hint) {
-                hint.style.display = 'none';
-            }
-        }
     </script>
 </body>
 

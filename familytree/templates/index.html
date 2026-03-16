@@ -1127,7 +1127,7 @@
                 <button onclick="hideTreeHint()">✕</button>
             </div>
             <div id="treeContent">
-                <div class="empty-state">✨ Введите имя и фамилию, чтобы посмотреть родословную</div>
+                <div class="empty-state">✨ Введите полное имя и (или) фамилию человека, для поиска его родословной</div>
             </div>
         </div>
     </div>
@@ -1262,12 +1262,16 @@
         async function searchPeople() {
             const firstName = document.getElementById("firstNameInput").value.trim();
             const lastName = document.getElementById("lastNameInput").value.trim();
-            document.getElementById("treeContent").innerHTML = '<div class="empty-state">✨ Выберите человека</div>';
-            selectedPersonId = null;
-            if (!firstName && !lastName) { showSearchMessage("⚠️ Введите имя и (или) фамилию"); return; }
             const resultsContainer = document.getElementById("searchResults");
-            resultsContainer.innerHTML = '<div class="search-empty">🔎 Поиск...</div>';
             resultsContainer.classList.add("visible");
+            if (!firstName && !lastName) {
+                resultsContainer.innerHTML = '<div class="search-empty">⚠️ Заполните хотя бы одно поле</div>';
+                selectedPersonId = null;
+                return;
+            }
+
+            resultsContainer.innerHTML = '<div class="search-empty">🔎 Поиск...</div>';
+
             try {
                 const params = new URLSearchParams();
                 if (firstName) params.append("first_name", firstName);
@@ -1275,14 +1279,26 @@
                 const res = await fetch(`/persons/?${params}`, { headers: { Accept: "application/json" } });
                 if (!res.ok) throw new Error(`Ошибка ${res.status}`);
                 const people = await res.json();
+
+                if (people?.length > 0) {
+                    document.getElementById("treeContent").innerHTML = '<div class="empty-state">🔍 Выберите человека из списка</div>';
+                } else {
+                    document.getElementById("treeContent").innerHTML = '<div class="empty-state">✨ Введите полное имя и (или) фамилию человека, для поиска его родословной</div>';
+                }
+
                 renderSearchResults(people);
-            } catch (err) { showSearchMessage(`❌ Ошибка: ${err.message}`); }
+            } catch (err) {
+                showSearchMessage(`❌ Ошибка: ${err.message}`);
+            }
         }
 
         function renderSearchResults(people) {
             const container = document.getElementById("searchResults");
             container.scrollTop = 0;
-            if (!people?.length) { showSearchMessage("🔍 Ничего не найдено"); return; }
+            if (!people?.length) {
+                showSearchMessage("🔍 Ничего не найдено");
+                return;
+            }
             let html = "";
             people.forEach(p => {
                 const deathYearDisplay = (p.death_year == 1) ? "?" : p.death_year;
@@ -1294,7 +1310,9 @@
             container.classList.add("visible");
         }
 
-        function showSearchMessage(m) { document.getElementById("searchResults").innerHTML = `<div class="search-empty">${escapeHtml(m)}</div>`; }
+        function showSearchMessage(m) {
+            document.getElementById("searchResults").innerHTML = `<div class="search-empty">${escapeHtml(m)}</div>`;
+        }
 
         function selectPerson(id, el) {
             document.querySelectorAll(".search-result-item").forEach(e => e.classList.remove("selected"));

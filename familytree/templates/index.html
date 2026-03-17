@@ -396,6 +396,109 @@
             font-family: "Inter", sans-serif;
         }
 
+        .empty-state {
+            color: #6f8fa8;
+            text-align: center;
+            padding: 3rem 1rem;
+            font-style: italic;
+            font-size: 1.2rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .tree-hint {
+            background: linear-gradient(135deg, #e3f0fa, #f0f9ff);
+            border: 1px solid rgba(79, 139, 201, 0.3);
+            border-radius: 20px;
+            padding: 0.9rem 1.2rem;
+            margin: 0 auto 1.5rem;
+            max-width: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #1e3c5c;
+            box-shadow: 0 4px 12px rgba(79, 139, 201, 0.15);
+            animation: slideInHint 0.3s ease;
+        }
+
+        .tree-hint button {
+            background: rgba(79, 139, 201, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #4f8bc9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .tree-hint button:hover {
+            background: rgba(79, 139, 201, 0.2);
+            transform: scale(1.1);
+        }
+
+        @keyframes slideInHint {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #1e3c5c;
+            font-size: 1.2rem;
+            padding: 2rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .loading-state::after {
+            content: "";
+            width: 24px;
+            height: 24px;
+            border: 3px solid #b3d2f0;
+            border-top: 3px solid #4f8bc9;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #ffefef;
+            color: #b33f3f;
+            padding: 1rem 2rem;
+            border-radius: 40px;
+            border-left: 8px solid #c74a4a;
+            font-weight: 500;
+            box-shadow: 0 8px 18px rgba(180, 60, 60, 0.1);
+            text-align: center;
+            font-size: 1.1rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        #treeContent {
+            transition: opacity 0.2s ease;
+        }
+
         .generation-0>.person-row>.card {
             background: linear-gradient(115deg, #f0f7ff, #e3f0fa);
             box-shadow: 0 8px 18px -10px #2b5a8c, 0 0 0 1px #8bb9e5;
@@ -615,7 +718,7 @@
             }
 
             .empty-state {
-                font-size: 18px;
+                font-size: 1rem;
             }
 
             .children {
@@ -782,7 +885,7 @@
             }
 
             .empty-state {
-                font-size: 18px;
+                font-size: 1.1rem;
             }
 
             .children {
@@ -969,109 +1072,6 @@
             .photo-modal-caption {
                 order: 2;
             }
-        }
-
-        .empty-state {
-            color: #6f8fa8;
-            text-align: center;
-            padding: 3rem 1rem;
-            font-style: italic;
-            font-size: 1.2rem;
-            font-family: "Inter", sans-serif;
-        }
-
-        .tree-hint {
-            background: linear-gradient(135deg, #e3f0fa, #f0f9ff);
-            border: 1px solid rgba(79, 139, 201, 0.3);
-            border-radius: 20px;
-            padding: 0.9rem 1.2rem;
-            margin: 0 auto 1.5rem;
-            max-width: 800px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            font-size: 0.9rem;
-            color: #1e3c5c;
-            box-shadow: 0 4px 12px rgba(79, 139, 201, 0.15);
-            animation: slideInHint 0.3s ease;
-        }
-
-        .tree-hint button {
-            background: rgba(79, 139, 201, 0.1);
-            border: none;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            font-size: 1rem;
-            cursor: pointer;
-            color: #4f8bc9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-
-        .tree-hint button:hover {
-            background: rgba(79, 139, 201, 0.2);
-            transform: scale(1.1);
-        }
-
-        @keyframes slideInHint {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .loading-state {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            color: #1e3c5c;
-            font-size: 1.2rem;
-            padding: 2rem;
-            font-family: "Inter", sans-serif;
-        }
-
-        .loading-state::after {
-            content: "";
-            width: 24px;
-            height: 24px;
-            border: 3px solid #b3d2f0;
-            border-top: 3px solid #4f8bc9;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .error-message {
-            background: #ffefef;
-            color: #b33f3f;
-            padding: 1rem 2rem;
-            border-radius: 40px;
-            border-left: 8px solid #c74a4a;
-            font-weight: 500;
-            box-shadow: 0 8px 18px rgba(180, 60, 60, 0.1);
-            text-align: center;
-            font-size: 1.1rem;
-            font-family: "Inter", sans-serif;
-        }
-
-        #treeContent {
-            transition: opacity 0.2s ease;
         }
     </style>
 </head>

@@ -615,8 +615,7 @@
             }
 
             .empty-state {
-                font-size: 1rem;
-                padding: 2rem 0.8rem;
+                font-size: 18px;
             }
 
             .children {
@@ -783,7 +782,7 @@
             }
 
             .empty-state {
-                font-size: 1rem;
+                font-size: 18px;
             }
 
             .children {
@@ -1127,7 +1126,7 @@
                 <button onclick="hideTreeHint()">✕</button>
             </div>
             <div id="treeContent">
-                <div class="empty-state">✨ Введите полное имя и (или) фамилию человека, для поиска его родословной</div>
+                <div class="empty-state">✨ Введите полное имя и (или) фамилию человека</div>
             </div>
         </div>
     </div>
@@ -1263,37 +1262,51 @@
             const firstName = document.getElementById("firstNameInput").value.trim();
             const lastName = document.getElementById("lastNameInput").value.trim();
             const resultsContainer = document.getElementById("searchResults");
-            resultsContainer.classList.add("visible");
+            const treeContent = document.getElementById("treeContent");
+            const treeHint = document.getElementById("treeHint");
+            const pedigreeContainer = document.getElementById("pedigree-container");
+
             if (!firstName && !lastName) {
-                resultsContainer.innerHTML = '<div class="search-empty">⚠️ Заполните хотя бы одно поле</div>';
-                selectedPersonId = null;
                 return;
             }
 
+            pedigreeContainer.style.display = "none";
+            treeContent.innerHTML = "";
+            if (treeHint) treeHint.style.display = "none";
+            selectedPersonId = null;
+
+            resultsContainer.classList.add("visible");
             resultsContainer.innerHTML = '<div class="search-empty">🔎 Поиск...</div>';
 
             try {
                 const params = new URLSearchParams();
                 if (firstName) params.append("first_name", firstName);
                 if (lastName) params.append("last_name", lastName);
-                const res = await fetch(`/persons/?${params}`, { headers: { Accept: "application/json" } });
-                if (!res.ok) throw new Error(`Ошибка ${res.status}`);
-                const people = await res.json();
 
-                if (people?.length > 0) {
-                    document.getElementById("treeContent").innerHTML = '<div class="empty-state">🔍 Выберите человека из списка</div>';
-                } else {
-                    document.getElementById("treeContent").innerHTML = '<div class="empty-state">✨ Введите полное имя и (или) фамилию человека, для поиска его родословной</div>';
+                const res = await fetch(`/persons/?${params}`, {
+                    headers: { Accept: "application/json" }
+                });
+
+                if (!res.ok) {
+                    throw new Error(`Ошибка ${res.status}`);
                 }
 
+                const people = await res.json();
                 renderSearchResults(people);
+
             } catch (err) {
-                showSearchMessage(`❌ Ошибка: ${err.message}`);
+                resultsContainer.innerHTML = `<div class="search-empty">❌ Ошибка: ${err.message}</div>`;
             }
         }
 
         function renderSearchResults(people) {
             const container = document.getElementById("searchResults");
+            const treeContent = document.getElementById("treeContent");
+            const treeHint = document.getElementById("treeHint");
+
+            treeContent.innerHTML = "";
+            treeHint.style.display = "none";
+            selectedPersonId = null;
             container.scrollTop = 0;
             if (!people?.length) {
                 showSearchMessage("🔍 Ничего не найдено");
@@ -1314,12 +1327,10 @@
             document.getElementById("searchResults").innerHTML = `<div class="search-empty">${escapeHtml(m)}</div>`;
         }
 
-        function selectPerson(id, el) {
-            document.querySelectorAll(".search-result-item").forEach(e => e.classList.remove("selected"));
-            if (el) el.classList.add("selected");
+        function selectPerson(id) {
             selectedPersonId = id;
-            document.getElementById("searchResults").innerHTML = "";
             document.getElementById("searchResults").classList.remove("visible");
+            document.getElementById("pedigree-container").style.display = "block";
             loadSelectedTree();
         }
 

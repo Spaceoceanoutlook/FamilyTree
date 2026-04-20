@@ -4,7 +4,7 @@ services:
       container_name: familytree_app
       command: uvicorn familytree.main:app --host 0.0.0.0 --port 8000
       ports:
-        - "8008:8000"
+        - "127.0.0.1:8008:8000"
       depends_on:
         - db
       env_file:
